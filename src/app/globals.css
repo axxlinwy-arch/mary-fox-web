@@ -1,0 +1,358 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 100%;
+    --primary: 328 100% 54%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 240 5% 65%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 328 100% 54%;
+    --accent-foreground: 0 0% 100%;
+    --border: 328 100% 54%;
+    --ring: 328 100% 54%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    touch-action: manipulation;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background-color: #000000;
+  }
+
+  ::selection {
+    background: rgba(255, 20, 147, 0.35);
+    color: #ffffff;
+  }
+}
+
+@layer utilities {
+  .text-gradient-euphoria {
+    background-image: linear-gradient(90deg, #fdb813 0%, #ff1493 50%, #e6007e 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .neon-border {
+    box-shadow:
+      0 0 0 1px rgba(255, 20, 147, 0.4),
+      0 0 20px rgba(255, 20, 147, 0.15),
+      inset 0 0 20px rgba(255, 20, 147, 0.05);
+  }
+
+  .neon-border-gold {
+    box-shadow:
+      0 0 0 1px rgba(253, 184, 19, 0.35),
+      0 0 16px rgba(253, 184, 19, 0.12);
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes studio-orbit-float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, -4px, 0);
+    }
+  }
+
+  @keyframes studio-main-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .studio-main-enter {
+    animation: studio-main-fade 0.35s ease-out;
+  }
+
+  .studio-orbit-float {
+    animation: studio-orbit-float 6s ease-in-out infinite;
+  }
+
+  .studio-orbit-float-paused {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .studio-orbit-float {
+      animation: none;
+    }
+
+    .studio-main-enter {
+      animation: none;
+    }
+  }
+
+  /* Hero — шёлковая aurora (без круглых пятен) + вертикальный блик */
+  @keyframes hero-silk-shift {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes hero-silk-drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1.08);
+    }
+    50% {
+      transform: translate3d(3%, -2%, 0) scale(1.14);
+    }
+  }
+
+  @keyframes hero-bridge-breathe {
+    0%,
+    100% {
+      opacity: 0.45;
+      transform: scaleX(1);
+    }
+    50% {
+      opacity: 0.75;
+      transform: scaleX(1.06);
+    }
+  }
+
+  @keyframes hero-shimmer-sweep {
+    0%,
+    12% {
+      left: -32%;
+      opacity: 0;
+    }
+    18% {
+      opacity: 0.9;
+    }
+    58% {
+      left: 112%;
+      opacity: 0.9;
+    }
+    68%,
+    100% {
+      left: 112%;
+      opacity: 0;
+    }
+  }
+
+  .hero-ambient__silk {
+    position: absolute;
+    top: -25%;
+    bottom: -25%;
+    left: 28%;
+    right: -25%;
+    filter: blur(36px);
+    will-change: transform, background-position;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.35) 12%, black 28%, black 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.35) 12%, black 28%, black 100%);
+  }
+
+  .hero-ambient__silk--primary {
+    background: linear-gradient(
+      118deg,
+      transparent 0%,
+      rgba(255, 20, 147, 0.04) 18%,
+      rgba(255, 20, 147, 0.1) 36%,
+      rgba(230, 0, 126, 0.12) 50%,
+      rgba(255, 20, 147, 0.08) 64%,
+      rgba(255, 105, 180, 0.05) 80%,
+      transparent 100%
+    );
+    background-size: 220% 220%;
+    animation: hero-silk-shift 16s ease-in-out infinite;
+  }
+
+  .hero-ambient__silk--secondary {
+    background: linear-gradient(
+      242deg,
+      transparent 0%,
+      rgba(230, 0, 126, 0.05) 28%,
+      rgba(255, 20, 147, 0.09) 52%,
+      rgba(255, 20, 147, 0.04) 72%,
+      transparent 100%
+    );
+    background-size: 240% 240%;
+    opacity: 0.85;
+    animation:
+      hero-silk-shift 22s ease-in-out infinite reverse,
+      hero-silk-drift 20s ease-in-out infinite;
+  }
+
+  .hero-ambient__bridge {
+    position: absolute;
+    top: 12%;
+    bottom: 12%;
+    left: 38%;
+    right: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 20, 147, 0.04) 18%,
+      rgba(255, 20, 147, 0.11) 55%,
+      rgba(255, 20, 147, 0.08) 82%,
+      transparent 100%
+    );
+    filter: blur(40px);
+    transform-origin: center right;
+    animation: hero-bridge-breathe 9s ease-in-out infinite;
+  }
+
+  .hero-ambient__shimmer {
+    position: absolute;
+    top: -10%;
+    bottom: -10%;
+    width: min(22vw, 140px);
+    left: -32%;
+    transform: rotate(-22deg) skewX(-8deg);
+    transform-origin: center center;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 20, 147, 0) 12%,
+      rgba(255, 160, 210, 0.05) 32%,
+      rgba(255, 255, 255, 0.09) 50%,
+      rgba(255, 160, 210, 0.05) 68%,
+      rgba(255, 20, 147, 0) 88%,
+      transparent 100%
+    );
+    filter: blur(4px);
+    mix-blend-mode: screen;
+    animation: hero-shimmer-sweep 8s cubic-bezier(0.45, 0.05, 0.25, 1) infinite;
+  }
+
+  .hero-ambient__vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 88% 78% at 50% 42%,
+      transparent 35%,
+      rgba(0, 0, 0, 0.55) 100%
+    );
+  }
+
+  @media (max-width: 767px) {
+    .hero-ambient__silk {
+      top: auto;
+      bottom: -14%;
+      left: 10%;
+      right: -28%;
+      height: 58%;
+      filter: blur(28px);
+      -webkit-mask-image: radial-gradient(
+        ellipse 110% 110% at 100% 100%,
+        black 28%,
+        rgba(0, 0, 0, 0.65) 52%,
+        transparent 82%
+      );
+      mask-image: radial-gradient(
+        ellipse 110% 110% at 100% 100%,
+        black 28%,
+        rgba(0, 0, 0, 0.65) 52%,
+        transparent 82%
+      );
+    }
+
+    .hero-ambient__silk--primary {
+      background: linear-gradient(
+        118deg,
+        transparent 0%,
+        rgba(255, 20, 147, 0.08) 18%,
+        rgba(255, 20, 147, 0.18) 36%,
+        rgba(230, 0, 126, 0.22) 50%,
+        rgba(255, 20, 147, 0.15) 64%,
+        rgba(255, 105, 180, 0.1) 80%,
+        transparent 100%
+      );
+    }
+
+    .hero-ambient__silk--secondary {
+      opacity: 1;
+      background: linear-gradient(
+        242deg,
+        transparent 0%,
+        rgba(230, 0, 126, 0.1) 28%,
+        rgba(255, 20, 147, 0.16) 52%,
+        rgba(255, 20, 147, 0.08) 72%,
+        transparent 100%
+      );
+    }
+
+    .hero-ambient__bridge {
+      top: auto;
+      bottom: 0;
+      left: 15%;
+      right: -12%;
+      height: 50%;
+      filter: blur(32px);
+      background: radial-gradient(
+        ellipse 100% 100% at 94% 92%,
+        rgba(255, 20, 147, 0.24) 0%,
+        rgba(255, 20, 147, 0.15) 32%,
+        rgba(255, 20, 147, 0.08) 55%,
+        transparent 78%
+      );
+      transform-origin: bottom right;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-ambient__silk,
+    .hero-ambient__bridge,
+    .hero-ambient__shimmer {
+      animation: none;
+    }
+
+    .hero-ambient__silk--primary,
+    .hero-ambient__silk--secondary {
+      background-position: 50% 50%;
+      transform: none;
+    }
+
+    .hero-ambient__bridge {
+      opacity: 0.55;
+    }
+
+    .hero-ambient__shimmer {
+      display: none;
+    }
+  }
+}
