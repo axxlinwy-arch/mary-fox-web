@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 type ImageKey = (typeof PHOTO_SECTIONS)[number]["imageKey"];
 
 const IMAGE_MAP: Record<ImageKey, string> = {
-  maryMachine: ASSETS.maryMachine,
+  
   course: ASSETS.course,
 };
 
