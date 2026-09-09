@@ -8,7 +8,7 @@ import { CONTACT, LAYOUT, ASSETS } from "@/constants/site";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "#offer", label: "Оферта" },
+  { href: "/offer", label: "Оферта" },
   { href: "#contacts", label: "Контакты" },
 ] as const;
 

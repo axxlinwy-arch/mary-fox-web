@@ -116,13 +116,13 @@ export function MasterSection() {
                 <span className="font-medium tracking-wide">{CONTACT.maryInstagramHandle}</span>
               </a>
               <a
-                href={CONTACT.maryTiktok}
+                href={CONTACT.telegram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm text-accent-gold transition-opacity hover:opacity-80"
               >
-                <span className="text-secondary-foreground">TikTok</span>
-                <span className="font-medium tracking-wide">{CONTACT.maryTiktokHandle}</span>
+                <span className="text-secondary-foreground">Telegram</span>
+                <span className="font-medium tracking-wide">@maryfoxtattooo</span>
               </a>
             </div>
           </motion.div>

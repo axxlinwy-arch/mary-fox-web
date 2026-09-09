@@ -3,7 +3,7 @@ import { CONTACT } from "@/constants/site";
 export function BookButton({ className }: { className?: string }) {
   return (
     <a
-      href={CONTACT.telegram}
+      href={CONTACT.maryInstagram}
       target="_blank"
       rel="noopener noreferrer"
       className={`inline-flex flex-col justify-center rounded-lg border-2 border-accent-gold/80 bg-black/65 px-6 py-3 backdrop-blur-sm transition-all duration-300 hover:border-accent-gold hover:bg-black/80 ${className ?? ""}`}

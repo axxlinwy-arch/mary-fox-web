@@ -11,16 +11,20 @@ export const SITE = {
 
 export const CONTACT = {
   address: "Минск, ул. Корш Саблина, 11",
-  phone: "",
-  email: "",
+  phone: "+375336022893",
+  phoneDisplay: "+375 33 602-28-93",
+  email: "kutasmary893@gmail.com",
   instagram: "https://instagram.com/euphoria.minsk",
   instagramHandle: "@euphoria.minsk",
-  maryInstagram: "https://instagram.com/tattoominsk_",
+  instagramCoworkingHighlight:
+    "https://www.instagram.com/stories/highlights/18106992593137408/",
+  maryInstagram: "https://www.instagram.com/tattoominsk_",
   maryInstagramHandle: "@tattoominsk_",
   maryTiktok: "https://www.tiktok.com/@maryfoxtattoo",
   maryTiktokHandle: "@maryfoxtattoo",
   telegram: "https://t.me/maryfoxtattooo",
-  legalEntity: "ИП (наименование уточняется)",
+  legalEntity: "ИП Кутас Мария Павловна",
+  unp: "193845768",
   mapEmbed: "",
 } as const;
 

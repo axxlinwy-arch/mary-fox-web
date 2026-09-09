@@ -7,7 +7,7 @@ import { CONTACT } from "@/constants/site";
 
 export function EuphoriaOffer() {
   return (
-    <section id="offer" className="relative py-24 md:py-32 scroll-mt-20">
+    <section className="relative py-16 md:py-24">
       <div className="absolute inset-0 bg-gradient-radial-gold opacity-10 pointer-events-none" />
 
       <div className="relative mx-auto max-w-4xl px-6 md:px-8">
@@ -23,9 +23,9 @@ export function EuphoriaOffer() {
               <FileText className="w-6 h-6 text-accent-gold" />
             </div>
             <div>
-              <h2 className="font-display text-4xl md:text-5xl tracking-wide text-foreground mb-2">
+              <h1 className="font-display text-4xl md:text-5xl tracking-wide text-foreground mb-2">
                 {OFFER.title}
-              </h2>
+              </h1>
               <p className="text-sm text-secondary-foreground">
                 {CONTACT.legalEntity}
               </p>

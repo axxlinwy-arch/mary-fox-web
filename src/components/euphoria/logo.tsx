@@ -11,7 +11,7 @@ interface EuphoriaLogoProps {
 const sizes = {
   sm: { height: 36, width: 90 },
   md: { height: 52, width: 128 },
-  lg: { height: 64, width: 158 },
+  lg: { height: 80, width: 88 },
 } as const;
 
 export function EuphoriaLogo({
