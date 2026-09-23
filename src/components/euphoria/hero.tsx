@@ -33,7 +33,7 @@ export function EuphoriaHero() {
         height={1254}
         decoding="async"
         fetchPriority="high"
-        className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-[88%] w-full object-cover object-[40%_34%] md:inset-auto md:right-0 md:top-[48px] md:h-[118%] md:w-[70%] md:object-[68%_36%] lg:w-[64%] md:[mask-image:linear-gradient(90deg,transparent,black_16%,black)]"
+        className="pointer-events-none absolute top-0 right-[-8%] z-[1] h-[78%] w-[116%] max-w-none object-cover object-[30%_40%] md:inset-auto md:right-0 md:top-[48px] md:h-[118%] md:w-[70%] md:object-[68%_36%] lg:w-[64%] md:[mask-image:linear-gradient(90deg,transparent,black_16%,black)]"
       />
       <div className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-[#090709]/80 via-[#090709]/55 to-[#090709] md:hidden" />
 

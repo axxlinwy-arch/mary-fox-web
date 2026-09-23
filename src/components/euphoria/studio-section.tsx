@@ -54,7 +54,6 @@ export function StudioSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const photos = STUDIO.photos;
   const [activeIndex, setActiveIndex] = useState(0);
-  const [orbitAnimating, setOrbitAnimating] = useState(true);
   const prefersReducedMotion = useReducedMotion();
 
   const selectPhoto = useCallback((index: number) => {
@@ -88,18 +87,6 @@ export function StudioSection() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [goNext, goPrev]);
 
-  useEffect(() => {
-    const node = sectionRef.current;
-    if (!node || prefersReducedMotion) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setOrbitAnimating(entry.isIntersecting),
-      { rootMargin: "80px 0px", threshold: 0 }
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [prefersReducedMotion]);
-
   const activePhoto = photos[activeIndex];
   const collageSlotCount = Math.min(COLLAGE_SLOTS.length, photos.length - 1);
 
@@ -110,13 +97,7 @@ export function StudioSection() {
       className="relative scroll-mt-20 bg-[#090709] py-20 md:py-28"
     >
       <div className="relative mx-auto w-full px-6 md:px-8">
-        <motion.header
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.55, ease: "easeOut" }}
-          className="mx-auto max-w-xl text-center"
-        >
+        <header className="mx-auto max-w-xl text-center">
           <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
             <span className="h-px w-8 bg-accent-yellow/40" />
             {STUDIO.label}
@@ -132,7 +113,7 @@ export function StudioSection() {
           <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[#F1ECE5]/48 sm:text-[15px]">
             {STUDIO.text}
           </p>
-        </motion.header>
+        </header>
 
         {/* Mobile: карусель с peek */}
         <div className="relative mt-8 lg:hidden" aria-label="Галерея студии">
@@ -155,27 +136,11 @@ export function StudioSection() {
               if (!photo || !slot) return null;
 
               return (
-                <motion.div
+                <div
                   key={slotIdx}
-                  initial={
-                    prefersReducedMotion ? false : { opacity: 0, y: 16 }
-                  }
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-40px" }}
-                  transition={{
-                    duration: 0.5,
-                    delay: 0.05 * slotIdx,
-                    ease: "easeOut",
-                  }}
                   className={cn("absolute z-10", slot.className)}
                 >
-                  <div
-                    className={cn(
-                      "h-full w-full studio-orbit-float",
-                      !orbitAnimating && "studio-orbit-float-paused"
-                    )}
-                    style={{ animationDelay: slot.delay }}
-                  >
+                  <div className="h-full w-full">
                     <button
                       type="button"
                       aria-label={`Показать фото ${photoIndex + 1}`}
@@ -191,30 +156,18 @@ export function StudioSection() {
                         loading="lazy"
                         decoding="async"
                         draggable={false}
-                        className={cn(
-                          "absolute inset-0 h-full w-full object-cover",
-                          !prefersReducedMotion && "studio-main-enter"
-                        )}
+                        className="absolute inset-0 h-full w-full object-cover"
                       />
                     </button>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
 
             <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
-              <motion.div
-                initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.96 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="pointer-events-auto relative w-[min(46%,22rem)]"
-              >
-                <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-accent/20 blur-3xl" />
-                <MainFrame
-                  photo={activePhoto}
-                  prefersReducedMotion={Boolean(prefersReducedMotion)}
-                />
+              <div className="pointer-events-auto relative w-[min(46%,22rem)]">
+                <div className="glow-wash-soft pointer-events-none absolute -inset-24 -z-10" />
+                <MainFrame photo={activePhoto} />
                 <button
                   type="button"
                   onClick={goPrev}
@@ -237,7 +190,7 @@ export function StudioSection() {
                   onSelect={selectPhoto}
                   className="mt-3"
                 />
-              </motion.div>
+              </div>
             </div>
           </div>
         </div>
@@ -411,10 +364,8 @@ function MobilePeekCarousel({
 
 function MainFrame({
   photo,
-  prefersReducedMotion,
 }: {
   photo: (typeof STUDIO.photos)[number];
-  prefersReducedMotion: boolean;
 }) {
   return (
     <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl neon-border">
@@ -425,10 +376,7 @@ function MainFrame({
         alt={photo.alt}
         decoding="async"
         draggable={false}
-        className={cn(
-          "pointer-events-none absolute inset-0 h-full w-full object-cover",
-          !prefersReducedMotion && "studio-main-enter"
-        )}
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover"
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
       <div className="pointer-events-none absolute bottom-4 left-4 right-4">

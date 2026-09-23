@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Sparkles, Star } from "lucide-react";
 import { TESTIMONIALS, TESTIMONIALS_INTRO } from "@/constants/content";
 import { ASSETS, CONTACT } from "@/constants/site";
@@ -90,7 +89,6 @@ function ReviewCard({
 }
 
 export function TestimonialsSection() {
-  const prefersReducedMotion = useReducedMotion();
   const visible = useVisibleCount();
   const [index, setIndex] = useState(0);
   const total = TESTIMONIALS.length;
@@ -124,13 +122,7 @@ export function TestimonialsSection() {
       />
 
       <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 md:px-8">
-        <motion.div
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.55 }}
-          className="mb-10 text-center md:mb-12"
-        >
+        <div className="mb-10 text-center md:mb-12">
           <p className="mb-5 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
             <span className="h-px w-8 bg-accent-yellow/40" />
             {TESTIMONIALS_INTRO.label}
@@ -146,7 +138,7 @@ export function TestimonialsSection() {
           <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[#F1ECE5]/48 sm:text-[15px]">
             {TESTIMONIALS_INTRO.text}
           </p>
-        </motion.div>
+        </div>
 
         <div className="relative">
           <div className="overflow-hidden py-5">
@@ -201,13 +193,7 @@ export function TestimonialsSection() {
           ))}
         </div>
 
-        <motion.div
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="mt-8 flex flex-col items-center text-center"
-        >
+        <div className="mt-8 flex flex-col items-center text-center">
           <p className="inline-flex max-w-md items-center justify-center gap-2 text-sm uppercase tracking-[0.18em] text-champagne sm:text-[15px] sm:tracking-[0.22em]">
             <Sparkles className="h-4 w-4 shrink-0 text-accent-gold" strokeWidth={1.5} />
             <span>Подарочный заживляющий набор в конце сеанса</span>
@@ -218,7 +204,7 @@ export function TestimonialsSection() {
               Записаться к Mary
             </span>
           </CtaButton>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

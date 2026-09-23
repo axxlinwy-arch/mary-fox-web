@@ -18,15 +18,15 @@ export function EuphoriaHeader() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/10 backdrop-blur-md transition-colors duration-500",
-        scrolled && "bg-black/20 backdrop-blur-lg"
+        "fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#090709]/88 transition-colors duration-500",
+        scrolled && "bg-[#090709]/95"
       )}
     >
       <nav
@@ -84,7 +84,7 @@ export function EuphoriaHeader() {
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="md:hidden space-y-4 border-t border-accent-gold/20 bg-background/95 px-6 py-6 backdrop-blur-xl"
+          className="md:hidden space-y-4 border-t border-accent-gold/20 bg-[#090709] px-6 py-6"
         >
           {NAV.map((link) => (
             <a

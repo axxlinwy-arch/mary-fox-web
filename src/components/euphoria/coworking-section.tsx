@@ -1,7 +1,6 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
 import { COWORKING } from "@/constants/content";
 import { ASSETS, CONTACT } from "@/constants/site";
@@ -38,7 +37,6 @@ function ComfortExtras() {
 }
 
 export function CoworkingSection() {
-  const prefersReducedMotion = useReducedMotion();
   const [activeId, setActiveId] = useState<TariffId>("standard");
   const active = COWORKING.tariffs.find((t) => t.id === activeId) ?? COWORKING.tariffs[1];
   const showExtras = active.id === "comfort";
@@ -94,13 +92,7 @@ export function CoworkingSection() {
       <div className="pointer-events-none absolute inset-y-[10%] left-[24%] right-[24%] z-[1] bg-gradient-to-r from-transparent via-[#090709]/28 to-transparent" />
 
       <div className="relative z-10 mx-auto w-full max-w-[58rem] px-6 md:px-8">
-        <motion.header
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.55, ease: "easeOut" }}
-          className="mx-auto max-w-xl text-center"
-        >
+        <header className="mx-auto max-w-xl text-center">
           <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
             <span className="h-px w-8 bg-accent-yellow/40" />
             {COWORKING.label}
@@ -116,16 +108,12 @@ export function CoworkingSection() {
           <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[#F1ECE5]/48 sm:text-[15px]">
             {COWORKING.text}
           </p>
-        </motion.header>
+        </header>
 
         <div className="mt-10 grid grid-cols-3 gap-2 sm:gap-3 md:mt-12 md:gap-4">
           {COWORKING.photos.map((photo, index) => (
-            <motion.figure
+            <figure
               key={photo.key}
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.75, delay: 0.08 * index, ease: [0.22, 1, 0.36, 1] }}
               className={cn(
                 "group relative overflow-hidden rounded-xl neon-border",
                 index === 1 ? "aspect-[3/4] sm:aspect-[4/5]" : "aspect-[3/4] translate-y-3 sm:translate-y-4"
@@ -140,7 +128,7 @@ export function CoworkingSection() {
                 className="media-zoom absolute inset-0 h-full w-full object-cover"
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
-            </motion.figure>
+            </figure>
           ))}
         </div>
 
@@ -241,13 +229,7 @@ export function CoworkingSection() {
         }}
       />
 
-      <motion.div
-        initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative z-10 mx-auto mt-8 w-full max-w-[58rem] px-6 md:mt-10 md:px-8"
-      >
+      <div className="relative z-10 mx-auto mt-8 w-full max-w-[58rem] px-6 md:mt-10 md:px-8">
         <div className="review-glow-card relative overflow-hidden rounded-2xl">
           <div className="pointer-events-none absolute right-4 top-6 z-20 hidden h-[calc(100%-3rem)] w-3 flex-col items-center gap-2 md:flex">
             <span className="h-[6px] w-[6px] shrink-0 rotate-45 bg-gradient-to-br from-accent-yellow to-[#F21B83]" />
@@ -285,7 +267,7 @@ export function CoworkingSection() {
             </article>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       <div className="relative z-10 mt-10 flex justify-center px-6">
         <CtaButton href={CONTACT.instagram}>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { EDUCATION, STUDENT_REVIEWS } from "@/constants/content";
 import { ASSETS, CONTACT } from "@/constants/site";
@@ -73,7 +72,6 @@ function ReviewCard({ name, text }: { name: string; text: string }) {
 }
 
 export function StudentReviewsSection() {
-  const prefersReducedMotion = useReducedMotion();
   const visible = useVisibleCount();
   const [index, setIndex] = useState(0);
   const reviews = STUDENT_REVIEWS.reviews;
@@ -97,17 +95,11 @@ export function StudentReviewsSection() {
       id={STUDENT_REVIEWS.id}
       className="relative scroll-mt-20 overflow-hidden bg-[#090709] py-20 md:py-28"
     >
-      <div className="pointer-events-none absolute right-[-12%] top-[18%] h-96 w-80 rounded-full bg-[radial-gradient(circle,rgba(196,20,98,0.18)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)] blur-2xl" />
-      <div className="pointer-events-none absolute bottom-[-8%] left-[-12%] h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(196,20,98,0.18)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)] blur-2xl" />
+      <div className="glow-wash pointer-events-none absolute right-[-22%] top-[10%] h-[40rem] w-[34rem]" />
+      <div className="glow-wash pointer-events-none absolute bottom-[-20%] left-[-22%] h-[40rem] w-[40rem]" />
 
       <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 md:px-8">
-        <motion.header
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.55, ease: "easeOut" }}
-          className="mb-8 text-center md:mb-10"
-        >
+        <header className="mb-8 text-center md:mb-10">
           <p className="mb-5 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
             <span className="h-px w-8 bg-accent-yellow/40" />
             {STUDENT_REVIEWS.label}
@@ -116,7 +108,7 @@ export function StudentReviewsSection() {
           <h2 className="font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight sm:text-4xl lg:text-[2.6rem]">
             <span className="text-gradient-euphoria">{STUDENT_REVIEWS.title}</span>
           </h2>
-        </motion.header>
+        </header>
 
         <div className="relative">
           <div className="overflow-hidden py-5">
@@ -171,13 +163,7 @@ export function StudentReviewsSection() {
           ))}
         </div>
 
-        <motion.figure
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="relative mt-10 aspect-[15/11] w-full overflow-hidden rounded-xl neon-border sm:mt-12"
-        >
+        <figure className="relative mt-10 aspect-[15/11] w-full overflow-hidden rounded-xl neon-border sm:mt-12">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={ASSETS.team}
@@ -185,7 +171,7 @@ export function StudentReviewsSection() {
             className="absolute left-0 w-full max-w-none"
             style={{ height: "181.818%", top: "-63.636%" }}
           />
-        </motion.figure>
+        </figure>
 
         <div className="mt-10 flex flex-col items-center text-center md:mt-12">
           <p className="inline-flex max-w-md items-center justify-center text-sm uppercase tracking-[0.18em] text-champagne sm:text-[15px] sm:tracking-[0.22em]">

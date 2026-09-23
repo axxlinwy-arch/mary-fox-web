@@ -61,7 +61,7 @@ function GalleryCard({
         if (dragGuardRef.current) return;
         onOpen();
       }}
-      className="hero-space-card-face group relative h-56 w-40 shrink-0 cursor-pointer overflow-hidden rounded-[0.9rem] transition-transform duration-300 ease-out hover:-translate-y-2 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 active:scale-[0.98] md:h-72 md:w-52"
+      className="gallery-marquee-card hero-space-card-face group relative h-56 w-40 shrink-0 cursor-pointer overflow-hidden rounded-[0.9rem] transition-transform duration-300 ease-out hover:-translate-y-2 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 active:scale-[0.98] md:h-72 md:w-52"
       style={{ touchAction: "pan-x" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}

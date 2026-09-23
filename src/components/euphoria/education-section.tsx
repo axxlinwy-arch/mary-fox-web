@@ -17,17 +17,11 @@ export function EducationSection() {
       id={EDUCATION.id}
       className="relative scroll-mt-20 overflow-hidden bg-[#090709] py-20 md:py-28"
     >
-      <div className="pointer-events-none absolute right-[-12%] top-[18%] h-96 w-80 rounded-full bg-[radial-gradient(circle,rgba(196,20,98,0.18)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)] blur-2xl" />
-      <div className="pointer-events-none absolute bottom-[-8%] left-[-12%] h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(196,20,98,0.18)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)] blur-2xl" />
+      <div className="glow-wash pointer-events-none absolute right-[-22%] top-[10%] h-[40rem] w-[34rem]" />
+      <div className="glow-wash pointer-events-none absolute bottom-[-20%] left-[-22%] h-[40rem] w-[40rem]" />
 
       <div className="relative mx-auto w-full max-w-[58rem] px-6 md:px-8">
-        <motion.header
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.55, ease: "easeOut" }}
-          className="mx-auto max-w-xl text-center"
-        >
+        <header className="mx-auto max-w-xl text-center">
           <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
             <span className="h-px w-8 bg-accent-yellow/40" />
             {EDUCATION.label}
@@ -42,7 +36,7 @@ export function EducationSection() {
           <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[#F1ECE5]/48 sm:text-[15px]">
             {EDUCATION.text}
           </p>
-        </motion.header>
+        </header>
 
         <div className="mt-10 space-y-3 md:mt-14">
           {EDUCATION.items.map((item, index) => {
@@ -51,12 +45,8 @@ export function EducationSection() {
             const n = String(index + 1).padStart(2, "0");
 
             return (
-              <motion.article
+              <article
                 key={item.id}
-                initial={prefersReducedMotion ? false : { opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-30px" }}
-                transition={{ duration: 0.45, delay: 0.05 * index, ease: "easeOut" }}
                 className={cn(
                   secret ? "neon-border-gold rounded-2xl bg-card" : "surface-card rounded-2xl"
                 )}
@@ -164,7 +154,7 @@ export function EducationSection() {
                     </motion.div>
                   ) : null}
                 </AnimatePresence>
-              </motion.article>
+              </article>
             );
           })}
         </div>

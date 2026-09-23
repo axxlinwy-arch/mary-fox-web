@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from "react";
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { MARY_FOX } from "@/constants/content";
 import { ASSETS, CONTACT } from "@/constants/site";
@@ -55,14 +54,12 @@ function PhotoFrame({
   sizes,
   priority,
   className,
-  enter,
 }: {
   src: string;
   alt: string;
   sizes: string;
   priority?: boolean;
   className?: string;
-  enter?: boolean;
 }) {
   return (
     <div className={cn("hero-space-card-face relative overflow-hidden rounded-[0.9rem]", className)}>
@@ -70,11 +67,7 @@ function PhotoFrame({
         src={src}
         alt={alt}
         fill
-        className={cn(
-          "object-cover",
-          src === ASSETS.mary && "object-top",
-          enter && "studio-main-enter"
-        )}
+        className={cn("object-cover", src === ASSETS.mary && "object-top")}
         sizes={sizes}
         priority={priority}
       />
@@ -84,7 +77,6 @@ function PhotoFrame({
 }
 
 export function MasterSection() {
-  const prefersReducedMotion = useReducedMotion();
   const [mobileIndex, setMobileIndex] = useState(0);
   const mobilePhoto = GALLERY[mobileIndex];
 
@@ -103,20 +95,14 @@ export function MasterSection() {
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#090709] via-[#090709]/80 to-transparent" />
       <div className="pointer-events-none absolute -top-32 left-0 hidden h-[32rem] w-[62%] bg-[radial-gradient(ellipse_at_0%_0%,rgba(196,20,98,0.2)_0%,rgba(122,18,62,0.28)_28%,transparent_58%)] lg:block" />
-      <div className="pointer-events-none absolute right-[-12%] top-[48%] h-96 w-80 rounded-full bg-[radial-gradient(circle,rgba(196,20,98,0.18)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)] blur-2xl md:top-[50%]" />
-      <div className="pointer-events-none absolute bottom-[-8%] left-[-12%] h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(196,20,98,0.18)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)] blur-2xl" />
+      <div className="glow-wash pointer-events-none absolute right-[-22%] top-[40%] h-[40rem] w-[34rem] md:top-[42%]" />
+      <div className="glow-wash pointer-events-none absolute bottom-[-20%] left-[-22%] h-[40rem] w-[40rem]" />
 
       <BrandWatermark className="left-[-3%] top-[5%] hidden text-[28vw] md:left-0 md:text-[11rem] lg:block lg:text-[14rem]" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-8">
-        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-8 xl:gap-4">
-          <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="order-2 flex flex-col justify-center gap-6 text-center lg:order-1 lg:text-left"
-          >
+        <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-8 xl:gap-4">
+          <div className="order-2 flex flex-col justify-center gap-6 text-center lg:order-1 lg:text-left">
             <div>
               <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow lg:justify-start sm:text-[11px]">
                 <span className="hidden h-px w-8 bg-accent-yellow/40 lg:block" />
@@ -187,27 +173,20 @@ export function MasterSection() {
                 @maryfoxtattooo
               </a>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.06 }}
-            className="relative order-1 lg:order-2"
-          >
-            <div className="relative mx-auto max-w-sm py-16 lg:hidden">
-              <div className="pointer-events-none absolute left-[-15%] top-[1%] z-0 h-64 w-72 rounded-[70%] bg-[radial-gradient(ellipse_at_center,rgba(242,27,131,0.4)_0%,rgba(196,20,98,0.3)_36%,rgba(122,18,62,0.2)_58%,transparent_85%)] blur-2xl" />
+          <div className="relative order-1 lg:order-2">
+            <div className="relative mx-auto max-w-sm pt-16 pb-3 lg:hidden">
+              <div className="glow-wash-soft pointer-events-none absolute left-[-48%] top-[-22%] z-0 h-[26rem] w-[30rem]" />
               <BrandWatermark className="left-[-2%] top-0 text-[17vw] opacity-75" />
-              <div className="pointer-events-none absolute bottom-[2%] right-[-12%] z-0 h-64 w-72 rounded-[70%] bg-[radial-gradient(ellipse_at_center,rgba(242,27,131,0.55)_0%,rgba(196,20,98,0.42)_36%,rgba(122,18,62,0.28)_58%,transparent_85%)] blur-2xl" />
-              <BrandWatermark className="bottom-[-3%] right-[-2%] text-[22vw]" />
+              <div className="glow-wash-hot pointer-events-none absolute bottom-[-28%] right-[-46%] z-0 h-[26rem] w-[30rem]" />
+              <BrandWatermark className="bottom-[-4.25rem] right-[-2%] text-[22vw]" />
               <div className="relative z-[1]">
                 <PhotoFrame
                   src={mobilePhoto.src}
                   alt={mobilePhoto.alt}
                   sizes="(max-width: 1024px) 90vw, 420px"
                   priority={mobileIndex === 0}
-                  enter={!prefersReducedMotion}
                   className="aspect-[4/5] w-full"
                 />
                 <button
@@ -260,16 +239,10 @@ export function MasterSection() {
                 />
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        <motion.div
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "120px" }}
-          transition={{ duration: 0.55, delay: 0.08 }}
-          className="mt-8 grid gap-3 md:mt-8 md:grid-cols-3 md:gap-4 lg:mt-6 lg:gap-5"
-        >
+        <div className="mt-8 grid gap-3 md:mt-8 md:grid-cols-3 md:gap-4 lg:mt-6 lg:gap-5">
           {MARY_FOX.highlights.map((item) => (
             <a
               key={item.id}
@@ -324,7 +297,7 @@ export function MasterSection() {
               </span>
             </a>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
