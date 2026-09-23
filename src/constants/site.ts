@@ -39,12 +39,13 @@ export const HERO = {
   /** левая колонка : правая колонка */
   gridCols: "2fr 3fr",
   euphNadpis: { width: 1942, height: 809 },
-  final: { width: 1536, height: 1024 },
+  final: { width: 1254, height: 1254 },
 } as const;
 
 export const ASSETS = {
   euphNadpis: "/assets/euphoria/euph_nadpis.png",
   finalPhoto: "/assets/euphoria/final.png",
+  dimPhoto: "/assets/euphoria/dim.png",
   heroBg: "/assets/euphoria/hero-bg.png",
   logoEuphoria: "/assets/euphoria/logo-euphoria.png",
   euphoriaTitle: "/assets/euphoria/euphoria-title.png",
@@ -73,6 +74,12 @@ export const ASSETS = {
   studia8: "/assets/euphoria/studia8.jpg",
   course: "/assets/euphoria/course.jpg",
   team: "/assets/euphoria/team.jpg",
+  golova1: "/assets/euphoria/golova1.png",
+  golova3: "/assets/euphoria/golova3.png",
+  golova4: "/assets/euphoria/golova4.png",
+  golovapodpiska: "/assets/euphoria/golovapodpiska.png",
+  persey: "/assets/euphoria/persey.png",
+  gargonavrost: "/assets/euphoria/gargonavrost.png",
   tattoo1: "/assets/euphoria/tattoo1.jpg",
   tattoo2: "/assets/euphoria/tattoo2.jpg",
   tattoo3: "/assets/euphoria/tattoo3.jpg",
@@ -83,4 +90,6 @@ export const ASSETS = {
   tattoo8: "/assets/euphoria/tattoo8.jpg",
   tattoo9: "/assets/euphoria/tattoo9.jpg",
   tattoo10: "/assets/euphoria/tattoo10.jpg",
+  snake1: "/assets/euphoria/snake1.png",
+  snake2: "/assets/euphoria/snake2.png",
 } as const;

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { CONTACT, LAYOUT, ASSETS } from "@/constants/site";
+import { CONTACT, ASSETS } from "@/constants/site";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -25,15 +25,12 @@ export function EuphoriaHeader() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-        scrolled
-          ? "bg-black/85 backdrop-blur-xl border-b border-accent/20"
-          : "bg-transparent"
+        "fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/10 backdrop-blur-md transition-colors duration-500",
+        scrolled && "bg-black/20 backdrop-blur-lg"
       )}
     >
       <nav
-        className="mx-auto flex h-16 md:h-20 items-center justify-between px-6 md:px-8"
-        style={{ maxWidth: LAYOUT.siteWidth }}
+        className="mx-auto flex h-16 w-full max-w-[1920px] items-center justify-between px-5 md:h-20 md:px-10 lg:px-16"
       >
         <Link href="/" className="group block leading-none">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -67,7 +64,7 @@ export function EuphoriaHeader() {
             href={CONTACT.telegram}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center rounded-full border border-accent/40 px-5 py-2 text-sm font-medium text-foreground hover:border-accent hover:shadow-glow-sm transition-all duration-300"
+            className="btn-cta inline-flex items-center rounded-full px-5 py-2 text-sm font-semibold tracking-[0.04em]"
           >
             Telegram
           </a>
@@ -87,7 +84,7 @@ export function EuphoriaHeader() {
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="md:hidden border-t border-accent/20 bg-black/95 backdrop-blur-xl px-6 py-6 space-y-4"
+          className="md:hidden space-y-4 border-t border-accent-gold/20 bg-background/95 px-6 py-6 backdrop-blur-xl"
         >
           {NAV.map((link) => (
             <a

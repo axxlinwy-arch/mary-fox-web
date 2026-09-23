@@ -21,7 +21,7 @@ export function HeroServices({ centered = false }: HeroServicesProps) {
         return (
           <div
             key={service}
-            className="flex items-center gap-1.5 rounded-md border border-accent/25 bg-black/55 px-2 py-1.5 sm:px-2.5 sm:py-2 backdrop-blur-sm"
+            className="flex items-center gap-1.5 rounded-md border border-accent-gold/25 bg-card px-2 py-1.5 shadow-volume sm:px-2.5 sm:py-2"
           >
             <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-accent-gold shrink-0" strokeWidth={1.5} />
             <span className="text-[7px] sm:text-[8px] md:text-[9px] font-medium uppercase tracking-wide text-foreground/90 leading-tight">

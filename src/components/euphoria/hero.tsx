@@ -1,102 +1,144 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ASSETS, CONTACT, HERO } from "@/constants/site";
-import { HeroStats } from "@/components/euphoria/hero-stats";
-import { BookButton } from "@/components/euphoria/book-button";
-import { HeroPhotoCarousel } from "@/components/euphoria/hero-photo-carousel";
-import { HeroAmbientEffects } from "@/components/euphoria/hero-ambient-effects";
+import type { CSSProperties } from "react";
+import { ArrowRight, ShieldCheck, Star, Users } from "lucide-react";
+import { HERO } from "@/constants/content";
+import { ASSETS, CONTACT } from "@/constants/site";
+import { CtaButton } from "@/components/euphoria/cta-button";
+import { HeroNavCard } from "@/components/euphoria/hero-nav-card";
 
-function HeroWidgets() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      className="relative z-10 flex w-full flex-col items-center justify-center"
-    >
-      <HeroStats centered />
+/** 3D space around the girl — independent drift, not an orbit. */
+const HERO_SPACE = [
+  { layer: "near", durationSec: 11, delaySec: 0 },
+  { layer: "far", durationSec: 15, delaySec: -4.5 },
+  { layer: "mid", durationSec: 13, delaySec: -7.2 },
+] as const;
 
-      <div className="mt-4 sm:mt-5 md:mt-6">
-        <BookButton />
-      </div>
-    </motion.div>
-  );
-}
+const CARD_IMAGES = {
+  tattoo1: ASSETS.tattoo1,
+  team: ASSETS.team,
+  delaettattomary2: ASSETS.delaettattomary2,
+} as const;
+
+const STAT_ICONS = [Users, Star, ShieldCheck] as const;
 
 export function EuphoriaHero() {
   return (
-    <section className="relative w-full overflow-hidden bg-black">
-      <div className="relative z-10">
-        <div className="h-16 shrink-0 md:h-20" aria-hidden />
+    <section className="relative flex h-dvh min-h-[640px] w-full flex-col overflow-hidden bg-[#090709] md:block">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={ASSETS.finalPhoto}
+        alt="EUPHORIA — Mary Fox"
+        width={1254}
+        height={1254}
+        decoding="async"
+        fetchPriority="high"
+        className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-[88%] w-full object-cover object-[40%_34%] md:inset-auto md:right-0 md:top-[48px] md:h-[118%] md:w-[70%] md:object-[68%_36%] lg:w-[64%] md:[mask-image:linear-gradient(90deg,transparent,black_16%,black)]"
+      />
+      <div className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-[#090709]/80 via-[#090709]/55 to-[#090709] md:hidden" />
 
-        <div
-          className="relative z-10 mx-auto w-full px-3 sm:px-4 md:px-5 pb-6 sm:pb-8"
-          style={{ maxWidth: HERO.maxWidth }}
-        >
-          <div className="relative overflow-visible rounded-none md:overflow-hidden">
-            <HeroAmbientEffects />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={ASSETS.dimPhoto}
+        alt=""
+        className="pointer-events-none absolute -bottom-[12%] -left-[10%] z-[2] hidden h-[92%] w-[58%] object-cover object-left-bottom mix-blend-screen brightness-125 saturate-150 contrast-125 md:block"
+      />
 
-            <div
-              className="relative z-[1] grid grid-cols-1 md:grid-rows-2 md:gap-0 md:h-[640px] lg:h-[700px] md:[grid-template-columns:var(--hero-cols)]"
-              style={{ ["--hero-cols" as string]: HERO.gridCols }}
-            >
-            {/* Левая колонка: на мобильном — та же 2-row сетка, что и на десктопе */}
-            <div className="order-1 grid min-h-0 grid-rows-[minmax(140px,auto)_auto] gap-0 md:contents md:h-auto">
-              <div className="relative z-20 flex h-full items-center justify-center overflow-hidden px-2 py-2 sm:py-3 md:col-start-1 md:row-start-1 md:overflow-visible md:p-0 md:py-0 md:pr-0">
-                <img
-                  src={ASSETS.logoEuphoria}
-                  alt="EUPHORIA — Minsk"
-                  width={220}
-                  height={88}
-                  decoding="async"
-                  fetchPriority="high"
-                  className="relative z-10 block h-auto w-full max-w-[72%] scale-[1.15] object-contain sm:scale-[1.2] md:scale-[1.25]"
-                />
-              </div>
+      <div className="relative z-10 flex w-full max-w-none flex-1 flex-col justify-end bg-transparent px-3 pb-3 pt-24 md:h-full md:max-w-[46%] md:flex-none md:justify-center md:bg-gradient-to-r md:from-[#090709] md:via-[#090709]/80 md:to-transparent md:px-10 md:pb-24 lg:max-w-[40%] lg:px-16 xl:px-20">
+        <p className="flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-white/45 md:text-[11px] md:tracking-[0.32em]">
+          <span className="hidden h-px w-8 shrink-0 bg-white/30 md:block" />
+          {HERO.kicker}
+          <span className="hidden h-px w-8 shrink-0 bg-white/30 md:block" />
+        </p>
+        <h1 className="font-serif relative z-[12] mt-5 flex w-full flex-col items-start text-left gap-0 text-[min(2.35rem,8.9vw)] font-semibold uppercase leading-none tracking-tight text-white md:text-4xl lg:text-[2.75rem] xl:text-[3.35rem]">
+          <span>{HERO.titleLead}</span>
+          <span className="overflow-visible whitespace-nowrap leading-[1.18] text-gradient-euphoria-50">
+            {HERO.titleGold}
+          </span>
+          <span>{HERO.titleEnd}</span>
+        </h1>
+        <p className="mt-5 max-w-md text-[15px] leading-relaxed text-white/70">
+          {HERO.description}
+        </p>
 
-              <div className="relative z-20 flex h-full items-center justify-center px-3 py-3 sm:p-5 sm:pt-2 md:col-start-1 md:row-start-2">
-                <HeroWidgets />
-              </div>
-            </div>
-
-            <div className="order-2 relative z-[1] mt-4 w-full overflow-visible sm:mt-6 md:order-none md:col-start-2 md:row-start-1 md:row-span-2 md:mt-0 md:h-full md:overflow-hidden">
-              <HeroPhotoCarousel />
-            </div>
-            </div>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="relative z-10 mt-4 flex flex-wrap gap-4 sm:gap-6"
+        <div className="mt-10 flex flex-nowrap items-center gap-3 md:mt-8 md:flex-wrap">
+          <CtaButton href={CONTACT.maryInstagram} className="h-11 min-w-0 flex-1 gap-1.5 px-3 py-0 md:h-12 md:flex-none md:gap-2 md:px-7">
+            <span className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.06em] md:text-xs md:tracking-[0.14em] lg:text-sm">
+              {HERO.ctaBook}
+            </span>
+            <ArrowRight className="h-4 w-4 shrink-0" strokeWidth={1.75} />
+          </CtaButton>
+          <a
+            href={CONTACT.telegram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-11 min-w-0 flex-1 items-center justify-center rounded-full border border-white/25 px-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-white transition-colors hover:border-accent hover:bg-accent/10 md:h-12 md:flex-none md:px-7 md:text-xs md:tracking-[0.14em] lg:text-sm"
           >
-            <a
-              href="/offer"
-              className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/60 hover:text-accent transition-colors"
-            >
-              Публичная оферта
-            </a>
-            <a
-              href={CONTACT.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-accent-gold hover:opacity-80"
-            >
-              {CONTACT.instagramHandle}
-            </a>
-            <a
-              href={CONTACT.maryInstagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-accent-gold hover:opacity-80"
-            >
-              {CONTACT.maryInstagramHandle}
-            </a>
-          </motion.div>
+            <span className="whitespace-nowrap">{HERO.ctaWorks}</span>
+          </a>
+        </div>
+
+        <div className="mt-8 flex w-full flex-wrap items-center justify-center gap-x-6 gap-y-4 text-[#E8DCC4] md:mt-10 md:w-auto md:flex-nowrap md:justify-start md:gap-0">
+          {HERO.stats.map((stat, i) => {
+            const Icon = STAT_ICONS[i];
+            return (
+              <div
+                key={stat.label}
+                className={`flex items-center${i === 2 ? " max-md:basis-full max-md:justify-center" : ""}`}
+              >
+                {i > 0 ? (
+                  <span className="hidden h-9 w-px bg-[#E8DCC4]/25 md:mx-5 md:block" />
+                ) : null}
+                <div className="flex items-center gap-2.5">
+                  <Icon
+                    className="h-[1.35rem] w-[1.35rem] text-[#E8DCC4]"
+                    strokeWidth={1.5}
+                  />
+                  <div>
+                    <p className="text-[15px] font-medium leading-none tracking-wide text-[#E8DCC4] md:text-base">
+                      {stat.value}
+                    </p>
+                    <p className="mt-1 text-[9px] uppercase tracking-[0.16em] text-[#E8DCC4]/70 md:text-[10px]">
+                      {stat.label}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
+
+      <div className="hero-space">
+        {HERO.cards.map((card, index) => {
+          const space = HERO_SPACE[index];
+          return (
+            <div
+              key={card.href}
+              className={`hero-space__card hero-space__card--${space.layer}`}
+              style={
+                {
+                  "--float-duration": `${space.durationSec}s`,
+                  "--float-delay": `${space.delaySec}s`,
+                } as CSSProperties
+              }
+            >
+              <div className="hero-space__pose">
+                <HeroNavCard
+                  href={card.href}
+                  title={card.title}
+                  src={CARD_IMAGES[card.imageKey]}
+                  disableTilt
+                  glossy
+                  className="hero-space__face"
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[8] h-28 bg-gradient-to-t from-[#090709] to-transparent" />
     </section>
   );
 }

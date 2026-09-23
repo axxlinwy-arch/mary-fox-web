@@ -15,9 +15,10 @@ export function EducationSection() {
   return (
     <section
       id={EDUCATION.id}
-      className="relative scroll-mt-20 overflow-hidden py-20 md:py-28"
+      className="relative scroll-mt-20 overflow-hidden bg-[#090709] py-20 md:py-28"
     >
-      <div className="pointer-events-none absolute inset-0 bg-gradient-radial-pink opacity-20" />
+      <div className="pointer-events-none absolute right-[-12%] top-[18%] h-96 w-80 rounded-full bg-[radial-gradient(circle,rgba(196,20,98,0.18)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)] blur-2xl" />
+      <div className="pointer-events-none absolute bottom-[-8%] left-[-12%] h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(196,20,98,0.18)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)] blur-2xl" />
 
       <div className="relative mx-auto w-full max-w-[58rem] px-6 md:px-8">
         <motion.header
@@ -27,13 +28,18 @@ export function EducationSection() {
           transition={{ duration: 0.55, ease: "easeOut" }}
           className="mx-auto max-w-xl text-center"
         >
-          <p className="mb-4 text-xs uppercase tracking-[0.35em] text-accent">
+          <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
+            <span className="h-px w-8 bg-accent-yellow/40" />
             {EDUCATION.label}
+            <span className="h-px w-8 bg-accent-yellow/40" />
           </p>
-          <h2 className="font-display text-4xl leading-none text-gradient-euphoria md:text-6xl">
-            {EDUCATION.title}
+          <h2 className="font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-[#F1ECE5] sm:text-4xl lg:text-[2.6rem]">
+            {EDUCATION.title.slice(0, EDUCATION.title.lastIndexOf(" ") + 1)}
+            <span className="text-gradient-euphoria">
+              {EDUCATION.title.slice(EDUCATION.title.lastIndexOf(" ") + 1)}
+            </span>
           </h2>
-          <p className="mt-5 text-lg leading-relaxed text-secondary-foreground">
+          <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[#F1ECE5]/48 sm:text-[15px]">
             {EDUCATION.text}
           </p>
         </motion.header>
@@ -52,8 +58,7 @@ export function EducationSection() {
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ duration: 0.45, delay: 0.05 * index, ease: "easeOut" }}
                 className={cn(
-                  "overflow-hidden rounded-2xl bg-black/45",
-                  secret ? "neon-border-gold" : "neon-border"
+                  secret ? "neon-border-gold rounded-2xl bg-card" : "surface-card rounded-2xl"
                 )}
               >
                 <button
@@ -64,26 +69,26 @@ export function EducationSection() {
                 >
                   <span
                     className={cn(
-                      "font-display text-xl leading-none sm:text-2xl",
-                      secret ? "text-accent-gold/70" : "text-accent/70"
+                      "font-serif text-xl leading-none sm:text-2xl",
+                      secret ? "text-accent-yellow/70" : "text-champagne/70"
                     )}
                   >
                     {secret ? "??" : n}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block font-display text-2xl leading-none text-gradient-euphoria sm:text-3xl">
+                    <span className="block font-serif text-2xl font-semibold leading-none text-[#F1ECE5] sm:text-3xl">
                       {item.title}
                     </span>
                     <span className="mt-2 flex flex-wrap gap-1.5">
                       {secret ? (
-                        <span className="rounded-full border border-accent-gold/40 bg-accent-gold/10 px-2.5 py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent-gold">
+                        <span className="rounded-full border border-accent-yellow/40 bg-accent-yellow/10 px-2.5 py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent-yellow">
                           Секретно · скоро
                         </span>
                       ) : (
                         item.formats.map((format) => (
                           <span
                             key={format}
-                            className="rounded-full border border-accent/25 bg-black/40 px-2.5 py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent"
+                            className="rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent"
                           >
                             {format}
                           </span>
@@ -93,7 +98,7 @@ export function EducationSection() {
                   </span>
                   {secret ? (
                     <Lock
-                      className="h-4 w-4 shrink-0 text-accent-gold"
+                      className="h-4 w-4 shrink-0 text-accent-yellow"
                       strokeWidth={1.5}
                     />
                   ) : (
@@ -126,8 +131,8 @@ export function EducationSection() {
                       {secret ? (
                         <SecretBody text={item.intro} />
                       ) : (
-                        <div className="border-t border-white/10 px-4 pb-5 pt-4 sm:px-6 sm:pb-6">
-                          <p className="text-sm leading-relaxed text-white/70">
+                        <div className="border-t border-[rgba(180,35,100,0.22)] px-4 pb-5 pt-4 sm:px-6 sm:pb-6">
+                          <p className="text-sm leading-relaxed text-[#F1ECE5]/68">
                             {item.intro}
                           </p>
                           {item.programs.length > 0 ? (
@@ -142,12 +147,12 @@ export function EducationSection() {
                               {item.programs.map((program) => (
                                 <li
                                   key={program.title}
-                                  className="rounded-xl border border-white/10 bg-black/35 p-4"
+                                  className="rounded-xl border border-[rgba(180,35,100,0.38)] bg-[#110C11] p-4"
                                 >
-                                  <p className="text-xs uppercase tracking-[0.2em] text-accent-gold">
+                                  <p className="text-xs uppercase tracking-[0.2em] text-accent-yellow">
                                     {program.title}
                                   </p>
-                                  <p className="mt-2 text-sm leading-relaxed text-white/70">
+                                  <p className="mt-2 text-sm leading-relaxed text-[#F1ECE5]/68">
                                     {program.text}
                                   </p>
                                 </li>
@@ -170,7 +175,7 @@ export function EducationSection() {
 
 function SecretBody({ text }: { text: string }) {
   return (
-    <div className="relative border-t border-accent-gold/20 px-4 pb-6 pt-5 sm:px-6">
+    <div className="relative border-t border-[rgba(180,35,100,0.22)] px-4 pb-6 pt-5 sm:px-6">
       <div
         className="select-none space-y-2 blur-[3px]"
         aria-hidden
@@ -185,7 +190,7 @@ function SecretBody({ text }: { text: string }) {
         </div>
       </div>
       <div className="absolute inset-x-4 bottom-6 top-5 flex items-center justify-center sm:inset-x-6">
-        <p className="max-w-sm text-center text-sm leading-relaxed text-accent-gold">
+        <p className="max-w-sm text-center text-sm leading-relaxed text-champagne">
           {text}
         </p>
       </div>

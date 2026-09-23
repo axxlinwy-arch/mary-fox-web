@@ -48,7 +48,7 @@ function getSlotPhotoIndex(slotIdx: number, activeIndex: number) {
 }
 
 const arrowClass =
-  "absolute top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-accent/30 bg-black/70 text-accent backdrop-blur-sm transition-colors hover:border-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70";
+  "absolute top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(180,35,100,0.38)] text-champagne/80 transition-colors hover:border-[rgba(180,35,100,0.55)] hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70";
 
 export function StudioSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -107,10 +107,8 @@ export function StudioSection() {
     <section
       id={STUDIO.id}
       ref={sectionRef}
-      className="relative scroll-mt-20 py-20 md:py-28"
+      className="relative scroll-mt-20 bg-[#090709] py-20 md:py-28"
     >
-      <div className="pointer-events-none absolute inset-0 bg-gradient-radial-pink opacity-20" />
-
       <div className="relative mx-auto w-full px-6 md:px-8">
         <motion.header
           initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
@@ -119,13 +117,19 @@ export function StudioSection() {
           transition={{ duration: 0.55, ease: "easeOut" }}
           className="mx-auto max-w-xl text-center"
         >
-          <p className="mb-4 text-xs uppercase tracking-[0.35em] text-accent">
+          <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
+            <span className="h-px w-8 bg-accent-yellow/40" />
             {STUDIO.label}
+            <span className="h-px w-8 bg-accent-yellow/40" />
           </p>
-          <h2 className="font-display text-4xl leading-none text-gradient-euphoria md:text-6xl xl:text-6xl">
-            {STUDIO.title}
+          <h2 className="font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
+            {STUDIO.titleLine1}
+            <br />
+            <span className="text-gradient-euphoria">{STUDIO.titleLine2}</span>
+            <br />
+            {STUDIO.titleLine3}
           </h2>
-          <p className="mt-5 text-lg leading-relaxed text-secondary-foreground">
+          <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[#F1ECE5]/48 sm:text-[15px]">
             {STUDIO.text}
           </p>
         </motion.header>
@@ -177,7 +181,7 @@ export function StudioSection() {
                       aria-label={`Показать фото ${photoIndex + 1}`}
                       onClick={() => selectPhoto(photoIndex)}
                       style={{ rotate: slot.rotate }}
-                      className="relative h-full w-full cursor-pointer overflow-hidden rounded-xl neon-border bg-black/50 shadow-[0_8px_24px_rgba(0,0,0,0.4)] transition-[transform,box-shadow] duration-300 hover:z-30 hover:scale-105 hover:shadow-[0_0_0_1px_rgba(253,184,19,0.5),0_10px_28px_rgba(255,20,147,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
+                      className="relative h-full w-full cursor-pointer overflow-hidden rounded-xl neon-border bg-card shadow-volume transition-[transform,box-shadow] duration-300 hover:z-30 hover:scale-105 hover:shadow-glow-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-gold/60"
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -351,7 +355,7 @@ function MobilePeekCarousel({
                   opacity: isCenter ? 1 : 0.42,
                 }}
                 transition={slideMotion}
-                className="relative shrink-0 rounded-2xl neon-border bg-black/40"
+                className="relative shrink-0 rounded-2xl neon-border bg-card"
                 style={{ width: slideW || "78%" }}
               >
                 <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl">
@@ -374,7 +378,7 @@ function MobilePeekCarousel({
                     animate={{ opacity: isCenter ? 1 : 0 }}
                     transition={slideMotion}
                   >
-                    <span className="inline-block rounded-full border border-accent-gold/30 bg-black/60 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-accent-gold backdrop-blur-sm">
+                    <span className="inline-block rounded-full border border-accent-yellow/35 bg-black/60 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-accent-yellow backdrop-blur-sm">
                       {STUDIO.label}
                     </span>
                   </motion.div>
@@ -428,7 +432,7 @@ function MainFrame({
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
       <div className="pointer-events-none absolute bottom-4 left-4 right-4">
-        <span className="inline-block rounded-full border border-accent-gold/30 bg-black/60 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-accent-gold backdrop-blur-sm">
+        <span className="inline-block rounded-full border border-accent-yellow/35 bg-black/60 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-accent-yellow backdrop-blur-sm">
           {STUDIO.label}
         </span>
       </div>
@@ -459,8 +463,8 @@ function Dots({
           className={cn(
             "h-2 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70",
             index === activeIndex
-              ? "w-6 bg-accent-gold"
-              : "w-2 bg-white/25 hover:bg-white/45"
+              ? "w-6 bg-accent"
+              : "w-2 bg-[#F1ECE5]/25 hover:bg-[#F1ECE5]/40"
           )}
         />
       ))}

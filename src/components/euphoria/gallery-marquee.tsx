@@ -61,7 +61,7 @@ function GalleryCard({
         if (dragGuardRef.current) return;
         onOpen();
       }}
-      className="group relative h-56 w-40 shrink-0 cursor-pointer overflow-hidden rounded-xl neon-border transition-transform duration-300 ease-out hover:-translate-y-2 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 active:scale-[0.98] md:h-72 md:w-52"
+      className="hero-space-card-face group relative h-56 w-40 shrink-0 cursor-pointer overflow-hidden rounded-[0.9rem] transition-transform duration-300 ease-out hover:-translate-y-2 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 active:scale-[0.98] md:h-72 md:w-52"
       style={{ touchAction: "pan-x" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -96,7 +96,7 @@ function GalleryLightbox({
       aria-label={alt}
     >
       <div
-        className="relative aspect-[4/5] w-full max-w-lg overflow-hidden rounded-2xl neon-border"
+        className="hero-space-card-face relative aspect-[4/5] w-full max-w-lg overflow-hidden rounded-[0.9rem]"
         onClick={(event) => event.stopPropagation()}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -255,19 +255,24 @@ export function GalleryMarquee() {
   const selectedItem = GALLERY.find((item) => item.imageKey === selectedKey);
 
   return (
-    <section className="overflow-hidden border-y border-accent/10 py-16 md:py-20">
-      <div className="mx-auto mb-8 max-w-7xl px-6 text-center md:px-8">
-        <p className="mb-2 text-xs uppercase tracking-[0.35em] text-accent-gold">
+    <section
+      id="gallery"
+      className="relative scroll-mt-20 overflow-hidden bg-[radial-gradient(ellipse_at_85%_10%,rgba(122,18,62,0.14),transparent_52%),radial-gradient(ellipse_at_10%_90%,rgba(122,18,62,0.12),transparent_48%),#090709] pb-12 pt-6 md:pb-14"
+    >
+      <div className="relative z-10 mx-auto mb-8 max-w-7xl px-6 text-center md:px-8">
+        <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
+          <span className="h-px w-8 bg-accent-yellow/40" />
           By Mary Fox
+          <span className="h-px w-8 bg-accent-yellow/40" />
         </p>
-        <h2 className="font-display text-4xl text-gradient-euphoria md:text-5xl">
-          Живое искусство
+        <h2 className="font-serif text-[2rem] font-semibold leading-[1.12] tracking-tight sm:text-4xl lg:text-[2.6rem]">
+          <span className="text-gradient-euphoria">Живое искусство</span>
         </h2>
       </div>
 
-      <div className="relative select-none">
-        <div className="pointer-events-none absolute -top-12 bottom-0 left-0 z-10 w-16 bg-gradient-to-r from-black to-transparent md:-top-16 md:w-20" />
-        <div className="pointer-events-none absolute -top-12 bottom-0 right-0 z-10 w-16 bg-gradient-to-l from-black to-transparent md:-top-16 md:w-20" />
+      <div className="relative z-10 select-none">
+        <div className="pointer-events-none absolute -top-12 bottom-0 left-0 z-10 w-16 bg-gradient-to-r from-[#090709] to-transparent md:-top-16 md:w-20" />
+        <div className="pointer-events-none absolute -top-12 bottom-0 right-0 z-10 w-16 bg-gradient-to-l from-[#090709] to-transparent md:-top-16 md:w-20" />
 
         <MarqueeRow
           direction={-1}

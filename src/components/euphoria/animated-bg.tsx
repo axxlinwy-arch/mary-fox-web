@@ -21,7 +21,7 @@ export function AnimatedHeroBg() {
             width: wave.w,
             height: wave.h,
             background:
-              "radial-gradient(circle, rgba(255,20,147,0.45) 0%, rgba(230,0,126,0.2) 40%, transparent 70%)",
+              "radial-gradient(circle, rgba(122,18,62,0.35) 0%, rgba(196,20,98,0.16) 40%, transparent 70%)",
           }}
           animate={{
             x: [0, 40, -30, 20, 0],
@@ -64,13 +64,13 @@ export function AnimatedHeroBg() {
         />
         <defs>
           <linearGradient id="wavePink" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#ff1493" stopOpacity="0.15" />
-            <stop offset="50%" stopColor="#ff1493" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#e6007e" stopOpacity="0.1" />
+            <stop offset="0%" stopColor="#f21b83" stopOpacity="0.12" />
+            <stop offset="50%" stopColor="#c41462" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#7a123e" stopOpacity="0.1" />
           </linearGradient>
           <linearGradient id="wavePink2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#ff4fa8" stopOpacity="0.1" />
-            <stop offset="100%" stopColor="#ff1493" stopOpacity="0.25" />
+            <stop offset="0%" stopColor="#c41462" stopOpacity="0.1" />
+            <stop offset="100%" stopColor="#f21b83" stopOpacity="0.2" />
           </linearGradient>
         </defs>
       </svg>

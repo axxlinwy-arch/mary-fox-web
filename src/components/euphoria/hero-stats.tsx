@@ -57,7 +57,7 @@ function StatItem({
     >
       <div className="relative mb-1.5 md:mb-2">
         <div className="absolute inset-0 rounded-full bg-accent/20 blur-md" />
-        <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-accent-gold/50 bg-black/50 shadow-[0_0_20px_rgba(253,184,19,0.15)] sm:h-[4.25rem] sm:w-[4.25rem] md:h-16 md:w-16">
+        <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-accent-gold/50 bg-card shadow-[0_0_20px_rgba(253,184,19,0.2),0_0_28px_rgba(255,20,147,0.12)] sm:h-[4.25rem] sm:w-[4.25rem] md:h-16 md:w-16">
           <Icon className="h-5 w-5 text-accent-gold" strokeWidth={1.5} />
         </div>
       </div>

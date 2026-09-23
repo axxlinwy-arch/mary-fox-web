@@ -24,7 +24,7 @@ export function EuphoriaLogo({
   return (
     <div
       className={cn(
-        "relative shrink-0 drop-shadow-[0_0_16px_rgba(255,20,147,0.4)]",
+        "relative shrink-0 drop-shadow-[0_0_16px_rgba(242,27,131,0.32)]",
         className
       )}
       style={{ height: s.height, width: s.width }}

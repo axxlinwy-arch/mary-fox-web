@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Bebas_Neue } from "next/font/google";
+import { Inter, Bebas_Neue, Playfair_Display } from "next/font/google";
 import { EuphoriaHeader } from "@/components/euphoria/header";
 import { EuphoriaFooter } from "@/components/euphoria/footer";
 import { SiteShell } from "@/components/euphoria/site-shell";
@@ -15,6 +15,11 @@ const bebas = Bebas_Neue({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-bebas",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-playfair",
 });
 
 export const viewport: Viewport = {
@@ -82,8 +87,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${inter.variable} ${bebas.variable}`}>
-      <body className="min-h-screen bg-black text-white touch-manipulation">
+    <html lang="ru" className={`${inter.variable} ${bebas.variable} ${playfair.variable}`}>
+      <body className="min-h-screen bg-background text-foreground touch-manipulation">
         <SiteShell>
           <EuphoriaHeader />
           <main>{children}</main>

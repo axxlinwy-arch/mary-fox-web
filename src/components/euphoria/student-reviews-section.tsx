@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { EDUCATION, STUDENT_REVIEWS } from "@/constants/content";
 import { ASSETS, CONTACT } from "@/constants/site";
+import { CtaButton } from "@/components/euphoria/cta-button";
 import { cn } from "@/lib/utils";
 
 function useVisibleCount() {
@@ -37,8 +38,8 @@ function ReviewCard({ name, text }: { name: string; text: string }) {
   const long = text.length > 140;
 
   return (
-    <article className="flex h-full flex-col rounded-xl border border-accent/20 bg-black/50 p-4 neon-border sm:p-5">
-      <p className="text-left text-sm font-medium tracking-wide text-foreground">
+    <article className="review-glow-card flex h-full flex-col rounded-2xl px-5 py-5 sm:px-6 sm:py-6">
+      <p className="text-left text-sm font-medium tracking-wide text-[#F1ECE5]">
         {name}
       </p>
       <div className="mt-1.5 flex gap-0.5" aria-label="5 из 5">
@@ -52,7 +53,7 @@ function ReviewCard({ name, text }: { name: string; text: string }) {
       </div>
       <p
         className={cn(
-          "mt-3 text-left text-sm leading-relaxed text-white/75",
+          "mt-3 text-left text-sm leading-relaxed text-[#F1ECE5]/68",
           !expanded && long && "line-clamp-4"
         )}
       >
@@ -94,11 +95,12 @@ export function StudentReviewsSection() {
   return (
     <section
       id={STUDENT_REVIEWS.id}
-      className="relative scroll-mt-20 overflow-hidden py-20 md:py-28"
+      className="relative scroll-mt-20 overflow-hidden bg-[#090709] py-20 md:py-28"
     >
-      <div className="pointer-events-none absolute inset-0 bg-gradient-radial-gold opacity-20" />
+      <div className="pointer-events-none absolute right-[-12%] top-[18%] h-96 w-80 rounded-full bg-[radial-gradient(circle,rgba(196,20,98,0.18)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)] blur-2xl" />
+      <div className="pointer-events-none absolute bottom-[-8%] left-[-12%] h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(196,20,98,0.18)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)] blur-2xl" />
 
-      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 md:px-8">
+      <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 md:px-8">
         <motion.header
           initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -106,13 +108,18 @@ export function StudentReviewsSection() {
           transition={{ duration: 0.55, ease: "easeOut" }}
           className="mb-8 text-center md:mb-10"
         >
-          <h2 className="font-display text-4xl leading-none text-gradient-euphoria md:text-5xl">
-            {STUDENT_REVIEWS.title}
+          <p className="mb-5 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
+            <span className="h-px w-8 bg-accent-yellow/40" />
+            {STUDENT_REVIEWS.label}
+            <span className="h-px w-8 bg-accent-yellow/40" />
+          </p>
+          <h2 className="font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight sm:text-4xl lg:text-[2.6rem]">
+            <span className="text-gradient-euphoria">{STUDENT_REVIEWS.title}</span>
           </h2>
         </motion.header>
 
         <div className="relative">
-          <div className="overflow-hidden">
+          <div className="overflow-hidden py-5">
             <div
               className="flex transition-transform duration-500 ease-out"
               style={{
@@ -135,7 +142,7 @@ export function StudentReviewsSection() {
             type="button"
             onClick={goPrev}
             aria-label="Предыдущие отзывы"
-            className="absolute -left-1 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-accent/30 bg-black/75 text-accent backdrop-blur-sm transition-colors hover:border-accent/60 sm:-left-3 md:-left-5"
+            className="absolute -left-1 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(180,35,100,0.38)] text-champagne/80 transition-colors hover:border-[rgba(180,35,100,0.55)] hover:text-champagne sm:-left-3 md:-left-5"
           >
             <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
           </button>
@@ -143,7 +150,7 @@ export function StudentReviewsSection() {
             type="button"
             onClick={goNext}
             aria-label="Следующие отзывы"
-            className="absolute -right-1 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-accent/30 bg-black/75 text-accent backdrop-blur-sm transition-colors hover:border-accent/60 sm:-right-3 md:-right-5"
+            className="absolute -right-1 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(180,35,100,0.38)] text-champagne/80 transition-colors hover:border-[rgba(180,35,100,0.55)] hover:text-champagne sm:-right-3 md:-right-5"
           >
             <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
           </button>
@@ -158,7 +165,7 @@ export function StudentReviewsSection() {
               onClick={() => setIndex(i)}
               className={cn(
                 "h-1.5 rounded-full transition-all",
-                i === index ? "w-5 bg-accent-gold" : "w-1.5 bg-white/25 hover:bg-white/40"
+                i === index ? "w-5 bg-accent" : "w-1.5 bg-[#F1ECE5]/25 hover:bg-[#F1ECE5]/40"
               )}
             />
           ))}
@@ -181,23 +188,14 @@ export function StudentReviewsSection() {
         </motion.figure>
 
         <div className="mt-10 flex flex-col items-center text-center md:mt-12">
-          <p className="text-sm uppercase tracking-[0.18em] text-white/80 sm:text-[15px] sm:tracking-[0.22em]">
-            <span className="text-gradient-euphoria">{EDUCATION.ctaNote}</span>
+          <p className="inline-flex max-w-md items-center justify-center text-sm uppercase tracking-[0.18em] text-champagne sm:text-[15px] sm:tracking-[0.22em]">
+            {EDUCATION.ctaNote}
           </p>
-          <a
-            href={CONTACT.maryInstagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-5 inline-flex items-center justify-center rounded-lg border-2 border-accent-gold/80 bg-black/65 px-8 py-3.5 backdrop-blur-sm transition-all duration-300 hover:border-accent-gold hover:bg-black/80"
-            style={{
-              boxShadow:
-                "0 0 20px rgba(253,184,19,0.45), 0 0 40px rgba(253,184,19,0.2), inset 0 0 10px rgba(253,184,19,0.06)",
-            }}
-          >
-            <span className="text-sm font-black uppercase leading-none tracking-[0.12em] text-accent-gold sm:text-base">
+          <CtaButton href={CONTACT.maryInstagram} className="mt-5">
+            <span className="text-sm font-semibold uppercase tracking-[0.08em]">
               {EDUCATION.cta}
             </span>
-          </a>
+          </CtaButton>
         </div>
       </div>
     </section>

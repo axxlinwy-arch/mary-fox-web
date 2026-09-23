@@ -16,7 +16,7 @@ export function EuphoriaOffer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7 }}
-          className="rounded-2xl bg-card/80 backdrop-blur-sm neon-border p-8 md:p-12"
+          className="surface-card rounded-2xl p-8 md:p-12"
         >
           <div className="flex items-start gap-4 mb-6">
             <div className="shrink-0 p-3 rounded-xl bg-accent/10 neon-border-gold">
@@ -36,7 +36,7 @@ export function EuphoriaOffer() {
             {OFFER.description}
           </p>
 
-          <div className="rounded-xl border border-dashed border-accent/30 bg-black/40 p-10 md:p-14 text-center">
+          <div className="rounded-xl border border-dashed border-accent-gold/30 bg-background/70 p-10 text-center md:p-14">
             <FileText className="w-12 h-12 text-accent/40 mx-auto mb-4" />
             <p className="text-foreground/80 mb-2">{OFFER.placeholder}</p>
             <p className="text-xs text-secondary-foreground">{OFFER.note}</p>
