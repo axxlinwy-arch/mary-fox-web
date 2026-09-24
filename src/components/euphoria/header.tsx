@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { CONTACT, ASSETS } from "@/constants/site";
-import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/offer", label: "Оферта" },
@@ -13,24 +12,12 @@ const NAV = [
 ] as const;
 
 export function EuphoriaHeader() {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#090709]/88 transition-colors duration-500",
-        scrolled && "bg-[#090709]/95"
-      )}
-    >
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#090709]">
       <nav
-        className="mx-auto flex h-16 w-full max-w-[1920px] items-center justify-between px-5 md:h-20 md:px-10 lg:px-16"
+        className="mx-auto flex h-16 w-full max-w-[1920px] items-center justify-between px-5 xl:h-20 xl:px-16"
       >
         <Link href="/" className="group block leading-none">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -38,11 +25,11 @@ export function EuphoriaHeader() {
             src={ASSETS.euphNadpis}
             alt="EUPHORIA Tattoo Studio"
             decoding="async"
-            className="h-7 w-auto object-contain object-left transition-opacity duration-300 group-hover:opacity-90 md:h-8"
+            className="h-7 w-auto object-contain object-left transition-opacity duration-300 group-hover:opacity-90 xl:h-8"
           />
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden xl:flex items-center gap-8">
           {NAV.map((link) => (
             <a
               key={link.href}
@@ -72,7 +59,7 @@ export function EuphoriaHeader() {
 
         <button
           type="button"
-          className="md:hidden p-2 text-foreground"
+          className="xl:hidden p-2 text-foreground"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Меню"
         >
@@ -84,7 +71,7 @@ export function EuphoriaHeader() {
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="md:hidden space-y-4 border-t border-accent-gold/20 bg-[#090709] px-6 py-6"
+          className="xl:hidden space-y-4 border-t border-accent-gold/20 bg-[#090709] px-6 py-6"
         >
           {NAV.map((link) => (
             <a

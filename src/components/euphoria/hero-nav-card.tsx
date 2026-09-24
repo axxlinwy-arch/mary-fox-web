@@ -38,12 +38,20 @@ export function HeroNavCard({
       href={href}
       onMouseMove={onMove}
       onMouseLeave={() => setTilt({ x: 0, y: 0, hover: false })}
-      className={cn("block", className)}
+      className={cn("hero-nav-card block", className)}
       style={disableTilt ? undefined : { perspective: "900px" }}
     >
+      <span className="hero-nav-card__chip md:hidden">
+        <span className="hero-nav-card__thumb">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={src} alt="" className="h-full w-full object-cover object-center" />
+        </span>
+        <span className="hero-nav-card__label">{title}</span>
+        <ArrowUpRight className="hero-nav-card__arrow" strokeWidth={1.75} aria-hidden />
+      </span>
       <span
         className={cn(
-          "relative block aspect-square w-full overflow-hidden rounded-[0.9rem] bg-black/40",
+          "hero-nav-card__tile relative block aspect-square w-full overflow-hidden rounded-[0.9rem] bg-black/40 max-md:hidden",
           glossy
             ? "hero-space-card-face"
             : "border border-accent/60 shadow-[0_18px_36px_rgba(0,0,0,0.55)]"

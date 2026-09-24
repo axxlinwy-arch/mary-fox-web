@@ -24,7 +24,7 @@ const STAT_ICONS = [Users, Star, ShieldCheck] as const;
 
 export function EuphoriaHero() {
   return (
-    <section className="relative flex h-dvh min-h-[640px] w-full flex-col overflow-hidden bg-[#090709] md:block">
+    <section className="hero relative flex h-auto min-h-[100svh] w-full flex-col overflow-x-hidden bg-[#090709] md:block md:h-dvh md:min-h-[640px] md:overflow-hidden">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={ASSETS.finalPhoto}
@@ -33,35 +33,37 @@ export function EuphoriaHero() {
         height={1254}
         decoding="async"
         fetchPriority="high"
-        className="pointer-events-none absolute top-0 right-[-8%] z-[1] h-[78%] w-[116%] max-w-none object-cover object-[30%_40%] md:inset-auto md:right-0 md:top-[48px] md:h-[118%] md:w-[70%] md:object-[68%_36%] lg:w-[64%] md:[mask-image:linear-gradient(90deg,transparent,black_16%,black)]"
+        className="hero__photo pointer-events-none relative z-[1] mx-auto aspect-square w-[min(74vw,19.5rem)] max-w-none object-cover object-[center_32%] md:absolute md:inset-auto md:right-0 md:top-[48px] md:mx-0 md:aspect-auto md:h-[118%] md:w-[70%] md:object-[68%_36%] lg:w-[64%] md:[mask-image:linear-gradient(90deg,transparent,black_16%,black)]"
       />
-      <div className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-[#090709]/80 via-[#090709]/55 to-[#090709] md:hidden" />
+      <div className="hero__wash pointer-events-none absolute inset-x-0 top-0 z-0 h-[68%] bg-[radial-gradient(ellipse_at_50%_40%,rgba(242,27,131,0.08)_0%,rgba(122,18,62,0.045)_48%,transparent_74%)] md:hidden" />
 
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={ASSETS.dimPhoto}
         alt=""
-        className="pointer-events-none absolute -bottom-[12%] -left-[10%] z-[2] hidden h-[92%] w-[58%] object-cover object-left-bottom mix-blend-screen brightness-125 saturate-150 contrast-125 md:block"
+        className="pointer-events-none absolute -bottom-[12%] -left-[10%] z-[2] hidden h-[92%] w-[58%] object-cover object-left-bottom mix-blend-screen brightness-125 saturate-150 contrast-125 xl:block"
       />
 
-      <div className="relative z-10 flex w-full max-w-none flex-1 flex-col justify-end bg-transparent px-3 pb-3 pt-24 md:h-full md:max-w-[46%] md:flex-none md:justify-center md:bg-gradient-to-r md:from-[#090709] md:via-[#090709]/80 md:to-transparent md:px-10 md:pb-24 lg:max-w-[40%] lg:px-16 xl:px-20">
-        <p className="flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-white/45 md:text-[11px] md:tracking-[0.32em]">
-          <span className="hidden h-px w-8 shrink-0 bg-white/30 md:block" />
-          {HERO.kicker}
-          <span className="hidden h-px w-8 shrink-0 bg-white/30 md:block" />
+      <div className="hero__copy relative z-10 flex w-full max-w-none flex-1 flex-col justify-end bg-transparent px-3 pb-3 pt-24 md:h-full md:max-w-[46%] md:flex-none md:justify-center md:bg-gradient-to-r md:from-[#090709] md:via-[#090709]/80 md:to-transparent md:px-10 md:pb-24 lg:max-w-[40%] lg:px-16 xl:px-20">
+        <p className="hero__kicker flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-white/45 md:text-[11px] md:tracking-[0.32em]">
+          <span className="hidden h-px w-8 shrink-0 bg-white/30 xl:block" />
+          <span className="hidden xl:inline">{HERO.kicker}</span>
+          <span className="hero__brand font-display xl:hidden">EUPHORIA</span>
+          <span className="hero__kicker-rest xl:hidden">Tattoo Studio / Минск</span>
+          <span className="hidden h-px w-8 shrink-0 bg-white/30 xl:block" />
         </p>
-        <h1 className="font-serif relative z-[12] mt-5 flex w-full flex-col items-start text-left gap-0 text-[min(2.35rem,8.9vw)] font-semibold uppercase leading-none tracking-tight text-white md:text-4xl lg:text-[2.75rem] xl:text-[3.35rem]">
+        <h1 className="hero__title font-serif relative z-[12] mt-5 flex w-full flex-col items-start text-left gap-0 text-[min(2.35rem,8.9vw)] font-semibold uppercase leading-none tracking-tight text-white md:text-4xl lg:text-[2.75rem] xl:text-[3.35rem]">
           <span>{HERO.titleLead}</span>
-          <span className="overflow-visible whitespace-nowrap leading-[1.18] text-gradient-euphoria-50">
+          <span className="hero__gold overflow-visible whitespace-nowrap leading-[1.18] text-gradient-euphoria-50">
             {HERO.titleGold}
           </span>
           <span>{HERO.titleEnd}</span>
         </h1>
-        <p className="mt-5 max-w-md text-[15px] leading-relaxed text-white/70">
+        <p className="hero__lead mt-5 max-w-md text-[15px] leading-relaxed text-white/70">
           {HERO.description}
         </p>
 
-        <div className="mt-10 flex flex-nowrap items-center gap-3 md:mt-8 md:flex-wrap">
+        <div className="hero__actions mt-10 flex flex-nowrap items-center gap-3 md:mt-8 md:flex-wrap">
           <CtaButton href={CONTACT.maryInstagram} className="h-11 min-w-0 flex-1 gap-1.5 px-3 py-0 md:h-12 md:flex-none md:gap-2 md:px-7">
             <span className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.06em] md:text-xs md:tracking-[0.14em] lg:text-sm">
               {HERO.ctaBook}
@@ -78,16 +80,13 @@ export function EuphoriaHero() {
           </a>
         </div>
 
-        <div className="mt-8 flex w-full flex-wrap items-center justify-center gap-x-6 gap-y-4 text-[#E8DCC4] md:mt-10 md:w-auto md:flex-nowrap md:justify-start md:gap-0">
+        <div className="hero__stats mt-8 flex w-full flex-nowrap items-center justify-center gap-0 text-[#E8DCC4] md:mt-10 md:w-auto md:justify-start">
           {HERO.stats.map((stat, i) => {
             const Icon = STAT_ICONS[i];
             return (
-              <div
-                key={stat.label}
-                className={`flex items-center${i === 2 ? " max-md:basis-full max-md:justify-center" : ""}`}
-              >
+              <div key={stat.label} className="hero__stat flex min-w-0 items-center">
                 {i > 0 ? (
-                  <span className="hidden h-9 w-px bg-[#E8DCC4]/25 md:mx-5 md:block" />
+                  <span className="mx-2 block h-7 w-px shrink-0 bg-[#E8DCC4]/25 md:mx-5 md:h-9" />
                 ) : null}
                 <div className="flex items-center gap-2.5">
                   <Icon

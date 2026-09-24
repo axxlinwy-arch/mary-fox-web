@@ -91,7 +91,7 @@ export function MasterSection() {
   return (
     <section
       id={MARY_FOX.id}
-      className="relative scroll-mt-20 overflow-hidden bg-[#090709] pb-12 pt-2 md:pb-14 md:-mt-6 md:pt-0"
+      className="relative scroll-mt-20 overflow-hidden bg-[#090709] pb-12 pt-8 md:pb-14 md:-mt-6 md:pt-0"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#090709] via-[#090709]/80 to-transparent" />
       <div className="pointer-events-none absolute -top-32 left-0 hidden h-[32rem] w-[62%] bg-[radial-gradient(ellipse_at_0%_0%,rgba(196,20,98,0.2)_0%,rgba(122,18,62,0.28)_28%,transparent_58%)] lg:block" />
