@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Star, Users } from "lucide-react";
 import { MARY_FOX } from "@/constants/content";
 import { ASSETS, CONTACT } from "@/constants/site";
 import { cn } from "@/lib/utils";
@@ -17,12 +17,12 @@ const SIDE_SHOTS = [
   {
     src: ASSETS.delaettattomary,
     alt: "Работа Mary Fox — cover up",
-    className: "left-[-6%] top-[8%] w-[13rem] -rotate-[8deg] xl:left-[-8%] xl:w-[14.5rem]",
+    className: "left-[-2%] top-[8%] w-[11.5rem] lg:left-0 lg:w-[11rem] xl:left-[-8%] xl:w-[14.5rem]",
   },
   {
     src: ASSETS.delaettattomary2,
     alt: "Работа Mary Fox",
-    className: "right-[-6%] bottom-[10%] w-[13rem] rotate-[7deg] xl:right-[-8%] xl:w-[14.5rem]",
+    className: "bottom-[10%] right-[-2%] w-[11rem] rotate-[7deg] lg:right-0 lg:w-[10.5rem] xl:right-[-8%] xl:w-[14.5rem]",
   },
 ] as const;
 
@@ -30,7 +30,7 @@ const HIGHLIGHT_BUST: Record<
   (typeof MARY_FOX.highlights)[number]["id"],
   { src: string; className?: string }
 > = {
-  styles: { src: ASSETS.golova1, className: "translate-y-2" },
+  styles: { src: ASSETS.golova1, className: "origin-bottom-right translate-y-4 scale-[1.06]" },
   education: { src: ASSETS.golova3 },
   coworking: { src: ASSETS.golova4 },
 };
@@ -38,10 +38,10 @@ const HIGHLIGHT_BUST: Record<
 function BrandWatermark({ className }: { className?: string }) {
   return (
     <div aria-hidden className={cn("pointer-events-none absolute z-[1] select-none", className)}>
-      <p className="font-display leading-[0.76] tracking-tight text-[#F1ECE5]/[0.16] lg:text-[#F1ECE5]/[0.11]">
+      <p className="font-display leading-[0.76] tracking-tight text-[#F1ECE5]/[0.12] lg:text-[#F1ECE5]/[0.09]">
         MARY
       </p>
-      <p className="pl-[0.34em] font-display text-[0.82em] leading-[0.76] tracking-tight text-[#F1ECE5]/[0.1] lg:text-[#F1ECE5]/[0.07]">
+      <p className="pl-[0.34em] font-display text-[0.82em] leading-[0.76] tracking-tight text-[#F1ECE5]/[0.08] lg:text-[#F1ECE5]/[0.06]">
         FOX
       </p>
     </div>
@@ -62,7 +62,7 @@ function PhotoFrame({
   className?: string;
 }) {
   return (
-    <div className={cn("hero-space-card-face relative overflow-hidden rounded-[0.9rem]", className)}>
+    <div className={cn("hero-space-card-face gallery-marquee-card relative overflow-hidden rounded-[0.9rem]", className)}>
       <Image
         src={src}
         alt={alt}
@@ -71,13 +71,13 @@ function PhotoFrame({
         sizes={sizes}
         priority={priority}
       />
-      <span className="hero-space-card-sheen" aria-hidden />
     </div>
   );
 }
 
 export function MasterSection() {
   const [mobileIndex, setMobileIndex] = useState(0);
+  const highlightsRef = useRef<HTMLDivElement>(null);
   const mobilePhoto = GALLERY[mobileIndex];
 
   const goPrev = useCallback(() => {
@@ -88,106 +88,131 @@ export function MasterSection() {
     setMobileIndex((i) => (i + 1) % GALLERY.length);
   }, []);
 
+  useEffect(() => {
+    const root = highlightsRef.current;
+    if (!root) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const nodes = root.querySelectorAll(".master-reveal, .master-highlight");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-shown");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.18 }
+    );
+    nodes.forEach((node) => observer.observe(node));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section
       id={MARY_FOX.id}
+      ref={highlightsRef}
       className="relative scroll-mt-20 overflow-hidden bg-[#090709] pb-12 pt-8 md:pb-14 md:-mt-6 md:pt-0"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#090709] via-[#090709]/80 to-transparent" />
-      <div className="pointer-events-none absolute -top-32 left-0 hidden h-[32rem] w-[62%] bg-[radial-gradient(ellipse_at_0%_0%,rgba(196,20,98,0.2)_0%,rgba(122,18,62,0.28)_28%,transparent_58%)] lg:block" />
-      <div className="glow-wash pointer-events-none absolute right-[-22%] top-[40%] h-[40rem] w-[34rem] md:top-[42%]" />
-      <div className="glow-wash pointer-events-none absolute bottom-[-20%] left-[-22%] h-[40rem] w-[40rem]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-40 bg-gradient-to-b from-[#090709] via-[#090709]/80 to-transparent" />
+      <div className="pointer-events-none absolute -left-24 -top-16 z-0 h-[28rem] w-[46rem] bg-[radial-gradient(ellipse_at_0%_0%,rgba(242,27,131,0.28)_0%,rgba(196,20,98,0.12)_28%,transparent_68%)]" />
 
-      <BrandWatermark className="left-[-3%] top-[5%] hidden text-[28vw] md:left-0 md:text-[11rem] lg:block lg:text-[14rem]" />
+      <BrandWatermark className="left-[-3%] top-[6%] z-0 hidden text-[28vw] md:left-0 md:text-[11rem] lg:block lg:text-[13rem]" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-8">
-        <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-8 xl:gap-4">
-          <div className="order-2 flex flex-col justify-center gap-6 text-center lg:order-1 lg:text-left">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-12 xl:gap-16">
+          <div className="master-reveal relative z-20 order-1 mx-auto flex w-full max-w-[28rem] flex-col items-center justify-center text-center md:max-w-[34rem] lg:mx-0 lg:max-w-[28rem] lg:items-start lg:text-left">
             <div>
-              <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow lg:justify-start sm:text-[11px]">
-                <span className="hidden h-px w-8 bg-accent-yellow/40 lg:block" />
+              <p className="mb-3 flex items-center justify-center gap-3 text-[11px] uppercase tracking-[0.32em] text-accent-yellow md:text-xs lg:justify-start">
+                <span className="h-px w-8 bg-accent-yellow/40" />
                 {MARY_FOX.label}
-                <span className="hidden h-px w-8 bg-accent-yellow/40 lg:block" />
+                <span className="h-px w-8 bg-accent-yellow/40" />
               </p>
-              <h2 className="font-serif text-[2rem] font-semibold leading-[1.12] tracking-tight text-[#F1ECE5] sm:text-4xl lg:text-[2.6rem]">
-                {MARY_FOX.titleLead}{" "}
-                <span className="text-gradient-euphoria">{MARY_FOX.titleGold}</span>{" "}
-                {MARY_FOX.titleEnd}
+              <h2 className="flex flex-col items-center gap-0 font-serif text-[1.85rem] font-semibold leading-[0.92] tracking-tight text-[#F1ECE5] md:text-[2.15rem] lg:items-start lg:text-[2.55rem] xl:text-[2.9rem]">
+                <span>{MARY_FOX.titleLead}</span>
+                <span
+                  className="w-max max-w-full overflow-visible whitespace-nowrap text-gradient-euphoria-50"
+                  style={{ lineHeight: 0.98, padding: "0.02em 0" }}
+                >
+                  {MARY_FOX.titleGold}
+                </span>
+                <span>{MARY_FOX.titleEnd}</span>
               </h2>
             </div>
 
-            <ul className="mx-auto grid max-w-xl gap-2 lg:mx-0">
-              {MARY_FOX.roles.map((role) => (
-                <li
-                  key={role}
-                  className="flex items-start gap-3 text-left text-[15px] leading-relaxed text-[#F1ECE5]/68"
-                >
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
-                  <span>{role}</span>
-                </li>
-              ))}
-            </ul>
+            <p className="mt-5 max-w-[26rem] text-[14px] leading-relaxed text-white/70 md:mt-6 md:text-[15px]">
+              {MARY_FOX.roles
+                .map((role, i) => (i === 0 ? role : role.charAt(0).toLowerCase() + role.slice(1)))
+                .join(", ")}
+              .
+            </p>
 
-            <div className="flex flex-wrap items-center justify-center text-champagne lg:justify-start">
-              {MARY_FOX.stats.map((stat, i) => (
-                <div key={stat.label} className="flex items-center">
-                  {i > 0 ? <span className="mx-4 h-8 w-px bg-champagne/25" /> : null}
-                  <div>
-                    <p className="text-[15px] font-medium leading-none">{stat.value}</p>
-                    <p className="mt-1 text-[9px] uppercase tracking-[0.16em] text-champagne/70">
-                      {stat.label}
-                    </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center text-[#E8DCC4] lg:justify-start">
+              {MARY_FOX.stats.map((stat, i) => {
+                const Icon = i === 0 ? Star : Users;
+                return (
+                  <div key={stat.label} className="flex items-center">
+                    {i > 0 ? <span className="mx-4 h-9 w-px shrink-0 bg-[#E8DCC4]/25 sm:mx-5" /> : null}
+                    <div className="flex items-center gap-2.5">
+                      <Icon className="h-5 w-5 shrink-0 text-[#E8DCC4] md:h-6 md:w-6 lg:h-[1.35rem] lg:w-[1.35rem]" strokeWidth={1.5} />
+                      <div>
+                        <p className="font-serif text-[1.35rem] font-semibold leading-none tracking-tight md:text-[1.6rem] lg:text-[1.9rem]">
+                          {stat.value}
+                        </p>
+                        <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[#E8DCC4]/70 sm:text-[11px]">
+                          {stat.label}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            <div className="flex flex-wrap justify-center gap-2 lg:justify-start">
+            <div className="mt-6 flex max-w-[26rem] flex-wrap justify-center gap-2 md:max-w-none lg:max-w-[26rem] lg:justify-start">
               {MARY_FOX.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-accent/40 bg-accent/10 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.16em] text-accent"
+                  className="rounded-full border border-[#C41462] bg-[rgba(62,18,40,0.55)] px-3 py-1 text-[11px] uppercase tracking-[0.12em] text-[#F1ECE5]/82 transition-colors duration-200 hover:border-[#F21B83] hover:text-[#F1ECE5] sm:text-xs"
                 >
                   {tag}
                 </span>
               ))}
             </div>
 
-            <div className="flex flex-col items-center gap-2 sm:flex-row sm:flex-wrap sm:gap-x-6 lg:items-start">
+            <div className="mt-6 flex flex-row flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[13px] text-white/70 md:gap-x-6 md:text-[15px] lg:justify-start">
               <a
                 href={CONTACT.maryInstagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-champagne transition-opacity hover:opacity-80"
+                className="transition-colors duration-200 hover:text-white"
               >
-                <span className="text-[#F1ECE5]/38">Instagram </span>
-                {CONTACT.maryInstagramHandle}
+                Instagram {CONTACT.maryInstagramHandle}
               </a>
               <a
                 href={CONTACT.telegram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-champagne transition-opacity hover:opacity-80"
+                className="transition-colors duration-200 hover:text-white"
               >
-                <span className="text-[#F1ECE5]/38">Telegram </span>
-                @maryfoxtattooo
+                Telegram @maryfoxtattooo
               </a>
             </div>
           </div>
 
-          <div className="relative order-1 lg:order-2">
-            <div className="relative mx-auto max-w-sm pt-16 pb-3 lg:hidden">
-              <div className="glow-wash-soft pointer-events-none absolute left-[-48%] top-[-22%] z-0 h-[26rem] w-[30rem]" />
-              <BrandWatermark className="left-[-2%] top-0 text-[17vw] opacity-75" />
+          <div className="master-reveal master-reveal-late relative z-10 order-2">
+            <div className="relative mx-auto max-w-sm pt-6 pb-3 md:max-w-[34rem] lg:hidden">
+              <div className="glow-wash-soft pointer-events-none absolute left-[-72%] top-[-46%] z-0 h-[36rem] w-[42rem] md:left-[-48%] md:h-[32rem] md:w-[36rem]" />
               <div className="glow-wash-hot pointer-events-none absolute bottom-[-28%] right-[-46%] z-0 h-[26rem] w-[30rem]" />
-              <BrandWatermark className="bottom-[-4.25rem] right-[-2%] text-[22vw]" />
+              <BrandWatermark className="bottom-[-4.25rem] right-[-2%] text-[22vw] md:text-[5.5rem]" />
               <div className="relative z-[1]">
+                <BrandWatermark className="left-[-2%] top-0 z-0 -translate-y-[1.07em] text-[24vw] md:text-[6.25rem]" />
                 <PhotoFrame
                   src={mobilePhoto.src}
                   alt={mobilePhoto.alt}
                   sizes="(max-width: 1024px) 90vw, 420px"
                   priority={mobileIndex === 0}
-                  className="aspect-[4/5] w-full"
+                  className="relative z-[1] aspect-[4/5] w-full"
                 />
                 <button
                   type="button"
@@ -208,7 +233,8 @@ export function MasterSection() {
               </div>
             </div>
 
-            <div className="relative mx-auto hidden min-h-[38rem] w-full max-w-[36rem] lg:block xl:min-h-[42rem] xl:max-w-[40rem]">
+            <div className="relative mx-auto hidden min-h-[34rem] w-full max-w-[32rem] lg:block xl:min-h-[42rem] xl:max-w-[40rem]">
+              <div className="glow-wash pointer-events-none absolute left-1/2 top-1/2 z-0 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2" />
               <div className="pointer-events-none absolute right-[-14%] top-[12%] z-0 text-[10rem] xl:text-[10rem]">
                 <div className="absolute -left-[2.8em] -top-[0.5em] h-[1.8em] w-[2.8em] rounded-[30%] bg-[radial-gradient(ellipse_at_center,rgba(196,20,98,0.16)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)]" />
               </div>
@@ -242,61 +268,54 @@ export function MasterSection() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-3 md:mt-8 md:grid-cols-3 md:gap-4 lg:mt-6 lg:gap-5">
-          {MARY_FOX.highlights.map((item) => (
+        <div ref={highlightsRef} className="mt-12 grid border-t border-[#F1ECE5]/10 md:mt-14 lg:mt-8 lg:grid-cols-3">
+          {MARY_FOX.highlights.map((item) => {
+            const bustOnLeft = item.id === "education";
+            return (
             <a
               key={item.id}
               href={item.href}
-              className="group relative min-h-[10.5rem] overflow-hidden rounded-[1.7rem] border border-[rgba(180,35,100,0.38)] bg-[#110C11] p-4 shadow-[0_0_28px_rgba(220,20,100,0.12)] transition-colors hover:border-[rgba(180,35,100,0.55)] md:min-h-[14.5rem] md:p-7 md:pr-16"
+              className="master-highlight group relative block min-h-[12.5rem] overflow-visible border-b border-[#F1ECE5]/10 py-7 transition-colors duration-200 hover:bg-white/[0.025] md:min-h-[14rem] md:px-8 md:py-8 lg:min-h-[15rem] lg:overflow-hidden lg:border-b-0 lg:border-l lg:border-[#F1ECE5]/10 lg:px-7 lg:first:border-l-0"
             >
-              <div className="pointer-events-none absolute inset-y-0 right-0 w-[46%] bg-[radial-gradient(ellipse_at_90%_50%,rgba(122,18,62,0.12),transparent_74%)]" />
               <div
-                className="pointer-events-none absolute inset-y-0 right-0 w-[48%] overflow-hidden md:w-[46%]"
-                style={{
-                  WebkitMaskImage:
-                    "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.12) 28%, rgba(0,0,0,0.4) 48%, rgba(0,0,0,0.82) 72%, black 100%)",
-                  maskImage:
-                    "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.12) 28%, rgba(0,0,0,0.4) 48%, rgba(0,0,0,0.82) 72%, black 100%)",
-                }}
+                className={cn(
+                  "master-highlight-bust pointer-events-none absolute inset-y-0 w-[58%] sm:w-[52%] lg:left-auto lg:-right-[10%] lg:w-[58%]",
+                  bustOnLeft ? "from-left -left-[12%] sm:-left-[8%]" : "from-right -right-[12%] sm:-right-[8%]"
+                )}
               >
+                <div
+                  className={cn(
+                    "absolute inset-0",
+                    bustOnLeft
+                      ? "bg-[radial-gradient(ellipse_at_20%_70%,rgba(196,20,98,0.14),transparent_72%)] lg:bg-[radial-gradient(ellipse_at_80%_70%,rgba(196,20,98,0.14),transparent_72%)]"
+                      : "bg-[radial-gradient(ellipse_at_80%_70%,rgba(196,20,98,0.14),transparent_72%)]"
+                  )}
+                />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={HIGHLIGHT_BUST[item.id].src}
                   alt=""
                   className={cn(
-                    "master-bust absolute -right-[10%] bottom-[-4%] h-[112%] w-auto max-w-none object-cover object-[70%_12%] md:-right-[18%]",
+                    "master-bust absolute bottom-0 h-full w-auto max-w-none object-contain object-bottom lg:right-0",
+                    bustOnLeft ? "master-bust-from-left left-0 lg:left-auto" : "right-0",
                     HIGHLIGHT_BUST[item.id].className
                   )}
                 />
               </div>
               <div
-                className="pointer-events-none absolute inset-0 hidden md:block"
-                style={{
-                  background:
-                    "linear-gradient(90deg, #110C11 0%, #110C11 30%, rgba(17,12,17,0.62) 46%, rgba(17,12,17,0.28) 60%, rgba(17,12,17,0.08) 74%, transparent 90%)",
-                }}
-              />
-              <div
-                className="pointer-events-none absolute inset-0 md:hidden"
-                style={{
-                  background:
-                    "linear-gradient(90deg, #110C11 0%, #110C11 42%, rgba(17,12,17,0.72) 62%, rgba(17,12,17,0.2) 82%, transparent 100%)",
-                }}
-              />
-
-              <div className="relative z-10 flex h-full max-w-[68%] flex-col md:max-w-[72%]">
-                <h3 className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-accent-yellow md:mb-3 md:text-[12px] md:tracking-[0.18em]">
+                className={cn(
+                  "master-highlight-copy relative z-10 max-w-[68%] lg:ml-0 lg:max-w-[66%] lg:pr-3 lg:text-left",
+                  bustOnLeft ? "from-right ml-auto pl-3" : "from-left pr-3"
+                )}
+              >
+                <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-[0.16em] text-accent-yellow transition-colors duration-200 group-hover:text-[#F1ECE5]">
                   {item.title}
                 </h3>
-                <p className="text-[13px] leading-snug text-[#F1ECE5]/68 md:text-[15px] md:leading-relaxed">
-                  {item.text}
-                </p>
+                <p className="text-[14px] leading-relaxed text-[#F1ECE5]/68 md:text-[15px]">{item.text}</p>
               </div>
-              <span className="absolute right-3.5 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-champagne text-[#090709] shadow-[0_0_18px_rgba(221,208,186,0.2)] transition-transform group-hover:translate-x-0.5 md:right-6 md:h-11 md:w-11">
-                <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" strokeWidth={1.75} />
-              </span>
             </a>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
