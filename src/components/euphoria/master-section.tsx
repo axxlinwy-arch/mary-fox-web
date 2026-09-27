@@ -1,17 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Star, Users } from "lucide-react";
 import { MARY_FOX } from "@/constants/content";
 import { ASSETS, CONTACT } from "@/constants/site";
 import { cn } from "@/lib/utils";
-
-const GALLERY = [
-  { src: ASSETS.mary, alt: "Mary Fox — EUPHORIA" },
-  { src: ASSETS.delaettattomary, alt: "Работа Mary Fox — cover up" },
-  { src: ASSETS.delaettattomary2, alt: "Работа Mary Fox" },
-] as const;
 
 const SIDE_SHOTS = [
   {
@@ -26,6 +20,15 @@ const SIDE_SHOTS = [
   },
 ] as const;
 
+const MOBILE_PHOTOS = [
+  { src: ASSETS.mary, alt: "Mary Fox — EUPHORIA" },
+  { src: ASSETS.delaettattomary2, alt: "Работа Mary Fox" },
+  { src: ASSETS.delaettattomary, alt: "Работа Mary Fox — cover up" },
+] as const;
+
+const photoArrowClass =
+  "absolute top-1/2 z-30 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(180,35,100,0.38)] bg-[#0C090B]/45 text-[#F1ECE5]/80 backdrop-blur-none transition-colors hover:border-[rgba(180,35,100,0.55)] hover:text-[#F1ECE5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70";
+
 const HIGHLIGHT_BUST: Record<
   (typeof MARY_FOX.highlights)[number]["id"],
   { src: string; className?: string }
@@ -35,13 +38,23 @@ const HIGHLIGHT_BUST: Record<
   coworking: { src: ASSETS.golova4 },
 };
 
-function BrandWatermark({ className }: { className?: string }) {
+function BrandWatermark({ className, dim }: { className?: string; dim?: boolean }) {
   return (
     <div aria-hidden className={cn("pointer-events-none absolute z-[1] select-none", className)}>
-      <p className="font-display leading-[0.76] tracking-tight text-[#F1ECE5]/[0.12] lg:text-[#F1ECE5]/[0.09]">
+      <p
+        className={cn(
+          "font-display leading-[0.76] tracking-tight",
+          dim ? "text-[#F1ECE5]/[0.055]" : "text-[#F1ECE5]/[0.12] lg:text-[#F1ECE5]/[0.09]"
+        )}
+      >
         MARY
       </p>
-      <p className="pl-[0.34em] font-display text-[0.82em] leading-[0.76] tracking-tight text-[#F1ECE5]/[0.08] lg:text-[#F1ECE5]/[0.06]">
+      <p
+        className={cn(
+          "pl-[0.34em] font-display text-[0.82em] leading-[0.76] tracking-tight",
+          dim ? "text-[#F1ECE5]/[0.04]" : "text-[#F1ECE5]/[0.08] lg:text-[#F1ECE5]/[0.06]"
+        )}
+      >
         FOX
       </p>
     </div>
@@ -54,12 +67,14 @@ function PhotoFrame({
   sizes,
   priority,
   className,
+  imageClassName,
 }: {
   src: string;
   alt: string;
   sizes: string;
   priority?: boolean;
   className?: string;
+  imageClassName?: string;
 }) {
   return (
     <div className={cn("hero-space-card-face gallery-marquee-card relative overflow-hidden rounded-[0.9rem]", className)}>
@@ -67,7 +82,7 @@ function PhotoFrame({
         src={src}
         alt={alt}
         fill
-        className={cn("object-cover", src === ASSETS.mary && "object-top")}
+        className={cn("object-cover", imageClassName ?? (src === ASSETS.mary && "object-top"))}
         sizes={sizes}
         priority={priority}
       />
@@ -75,18 +90,74 @@ function PhotoFrame({
   );
 }
 
+function MobilePhotoCarousel() {
+  const [index, setIndex] = useState(0);
+  const total = MOBILE_PHOTOS.length;
+
+  return (
+    <div className="relative mx-auto w-full max-w-[34rem] lg:hidden">
+      <div className="glow-wash pointer-events-none absolute left-1/2 top-1/2 z-0 h-[18rem] w-[18rem] -translate-x-1/2 -translate-y-1/2" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-[2%] -top-[7%] z-[1] select-none text-right font-display text-[clamp(6rem,32vw,9rem)] leading-[0.76] tracking-tight blur-[1.5px]"
+      >
+        <p className="text-[#F1ECE5]/[0.09]">MARY</p>
+        <p className="pr-[0.12em] text-[0.8em] text-[#F1ECE5]/[0.06]">FOX</p>
+      </div>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-[7.5rem] -left-[1%] z-[1] select-none font-display text-[clamp(6.8rem,36vw,11rem)] leading-[0.76] tracking-tight blur-[1.5px]"
+      >
+        <div
+          aria-hidden
+          className="glow-wash pointer-events-none absolute -left-[0.4em] -top-[1.05em] -z-10 h-[2.15em] w-[2.7em] opacity-50"
+        />
+        <p className="text-[#F1ECE5]/[0.055]">MARY</p>
+        <p className="pl-[0.16em] text-[0.8em] text-[#F1ECE5]/[0.035]">FOX</p>
+      </div>
+      <div className="relative z-20 mx-auto w-[76%] pt-[10%]">
+        <div className="hero-space-card-face gallery-marquee-card relative overflow-hidden rounded-[0.9rem]">
+          <div
+            className="flex transition-transform duration-500 ease-out motion-reduce:transition-none"
+            style={{ transform: `translate3d(-${index * 100}%, 0, 0)` }}
+          >
+            {MOBILE_PHOTOS.map((photo, i) => (
+              <div key={photo.src} className="relative aspect-[3/4] w-full shrink-0" aria-hidden={i !== index}>
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  className={cn("object-cover", photo.src === ASSETS.mary && "object-top")}
+                  sizes="(max-width: 1024px) 76vw, 420px"
+                  priority={i === 0}
+                />
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setIndex((i) => (i - 1 + total) % total)}
+            aria-label="Предыдущее фото"
+            className={cn(photoArrowClass, "left-2")}
+          >
+            <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setIndex((i) => (i + 1) % total)}
+            aria-label="Следующее фото"
+            className={cn(photoArrowClass, "right-2")}
+          >
+            <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function MasterSection() {
-  const [mobileIndex, setMobileIndex] = useState(0);
   const highlightsRef = useRef<HTMLDivElement>(null);
-  const mobilePhoto = GALLERY[mobileIndex];
-
-  const goPrev = useCallback(() => {
-    setMobileIndex((i) => (i - 1 + GALLERY.length) % GALLERY.length);
-  }, []);
-
-  const goNext = useCallback(() => {
-    setMobileIndex((i) => (i + 1) % GALLERY.length);
-  }, []);
 
   useEffect(() => {
     const root = highlightsRef.current;
@@ -112,23 +183,22 @@ export function MasterSection() {
     <section
       id={MARY_FOX.id}
       ref={highlightsRef}
-      className="relative scroll-mt-20 overflow-hidden bg-[#090709] pb-12 pt-8 md:pb-14 md:-mt-6 md:pt-0"
+      className="relative scroll-mt-20 overflow-hidden bg-[#0C090B] pb-12 pt-12 md:pb-14 md:-mt-8 md:pt-0"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-40 bg-gradient-to-b from-[#090709] via-[#090709]/80 to-transparent" />
-      <div className="pointer-events-none absolute -left-24 -top-16 z-0 h-[28rem] w-[46rem] bg-[radial-gradient(ellipse_at_0%_0%,rgba(242,27,131,0.28)_0%,rgba(196,20,98,0.12)_28%,transparent_68%)]" />
+      <div className="pointer-events-none absolute -right-16 -top-24 z-0 h-[22rem] w-[34rem] bg-[radial-gradient(ellipse_at_100%_20%,rgba(196,20,98,0.24)_0%,rgba(122,18,62,0.1)_32%,transparent_70%)] lg:-left-16 lg:right-auto lg:h-[28rem] lg:w-[42rem] lg:bg-[radial-gradient(ellipse_at_0%_0%,rgba(242,27,131,0.2)_0%,rgba(196,20,98,0.08)_28%,transparent_68%)]" />
 
       <BrandWatermark className="left-[-3%] top-[6%] z-0 hidden text-[28vw] md:left-0 md:text-[11rem] lg:block lg:text-[13rem]" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-8">
-        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-12 xl:gap-16">
-          <div className="master-reveal relative z-20 order-1 mx-auto flex w-full max-w-[28rem] flex-col items-center justify-center text-center md:max-w-[34rem] lg:mx-0 lg:max-w-[28rem] lg:items-start lg:text-left">
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-12 xl:gap-16">
+          <div className="master-reveal relative z-20 order-2 mx-auto flex w-full max-w-[28rem] flex-col items-center justify-center text-center md:max-w-[34rem] lg:order-1 lg:mx-0 lg:max-w-[28rem] lg:items-start lg:text-left">
             <div>
-              <p className="mb-3 flex items-center justify-center gap-3 text-[11px] uppercase tracking-[0.32em] text-accent-yellow md:text-xs lg:justify-start">
-                <span className="h-px w-8 bg-accent-yellow/40" />
+              <p className="mb-[18px] flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.25em] text-accent-yellow lg:mb-3 lg:justify-start lg:gap-3 lg:text-xs lg:tracking-[0.32em]">
+                <span className="h-px w-6 bg-accent-yellow/40 lg:w-8" />
                 {MARY_FOX.label}
-                <span className="h-px w-8 bg-accent-yellow/40" />
+                <span className="h-px w-6 bg-accent-yellow/40 lg:w-8" />
               </p>
-              <h2 className="flex flex-col items-center gap-0 font-serif text-[1.85rem] font-semibold leading-[0.92] tracking-tight text-[#F1ECE5] md:text-[2.15rem] lg:items-start lg:text-[2.55rem] xl:text-[2.9rem]">
+              <h2 className="flex flex-col items-center gap-0 font-serif text-[clamp(1.7rem,8vw,2rem)] font-semibold leading-[1] tracking-tight text-[#F1ECE5] lg:items-start lg:text-[2.55rem] lg:leading-[0.92] xl:text-[2.9rem]">
                 <span>{MARY_FOX.titleLead}</span>
                 <span
                   className="w-max max-w-full overflow-visible whitespace-nowrap text-gradient-euphoria-50"
@@ -140,26 +210,26 @@ export function MasterSection() {
               </h2>
             </div>
 
-            <p className="mt-5 max-w-[26rem] text-[14px] leading-relaxed text-white/70 md:mt-6 md:text-[15px]">
+            <p className="mx-auto mt-6 max-w-[19rem] text-[13.5px] font-normal leading-[1.5] text-white/75 lg:mt-6 lg:max-w-[26rem] lg:text-[15px] lg:leading-[1.55] lg:text-white/70">
               {MARY_FOX.roles
                 .map((role, i) => (i === 0 ? role : role.charAt(0).toLowerCase() + role.slice(1)))
                 .join(", ")}
               .
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center justify-center text-[#E8DCC4] lg:justify-start">
+            <div className="mt-9 flex flex-wrap items-center justify-center text-[#E8DCC4] lg:mt-6 lg:justify-start">
               {MARY_FOX.stats.map((stat, i) => {
                 const Icon = i === 0 ? Star : Users;
                 return (
                   <div key={stat.label} className="flex items-center">
                     {i > 0 ? <span className="mx-4 h-9 w-px shrink-0 bg-[#E8DCC4]/25 sm:mx-5" /> : null}
                     <div className="flex items-center gap-2.5">
-                      <Icon className="h-5 w-5 shrink-0 text-[#E8DCC4] md:h-6 md:w-6 lg:h-[1.35rem] lg:w-[1.35rem]" strokeWidth={1.5} />
+                      <Icon className="h-3.5 w-3.5 shrink-0 text-[#E8DCC4] lg:h-[1.35rem] lg:w-[1.35rem]" strokeWidth={1.5} />
                       <div>
-                        <p className="font-serif text-[1.35rem] font-semibold leading-none tracking-tight md:text-[1.6rem] lg:text-[1.9rem]">
+                        <p className="font-serif text-[1.875rem] font-semibold leading-none tracking-tight lg:text-[1.9rem]">
                           {stat.value}
                         </p>
-                        <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[#E8DCC4]/70 sm:text-[11px]">
+                        <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[#E8DCC4]/70 lg:text-[11px]">
                           {stat.label}
                         </p>
                       </div>
@@ -169,77 +239,49 @@ export function MasterSection() {
               })}
             </div>
 
-            <div className="mt-6 flex max-w-[26rem] flex-wrap justify-center gap-2 md:max-w-none lg:max-w-[26rem] lg:justify-start">
+            <div className="mt-7 flex max-w-[26rem] flex-wrap justify-center gap-2 lg:mt-6 lg:justify-start">
               {MARY_FOX.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-[#C41462] bg-[rgba(62,18,40,0.55)] px-3 py-1 text-[11px] uppercase tracking-[0.12em] text-[#F1ECE5]/82 transition-colors duration-200 hover:border-[#F21B83] hover:text-[#F1ECE5] sm:text-xs"
+                  className="rounded-full border border-[#C41462] bg-[rgba(62,18,40,0.55)] px-2.5 py-[3px] text-[10px] uppercase tracking-[0.12em] text-[#F1ECE5]/82 transition-colors duration-200 hover:border-[#F21B83] hover:text-[#F1ECE5] lg:px-3 lg:py-1 lg:text-[11px]"
                 >
                   {tag}
                 </span>
               ))}
             </div>
 
-            <div className="mt-6 flex flex-row flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[13px] text-white/70 md:gap-x-6 md:text-[15px] lg:justify-start">
+            <div className="mt-[1.6rem] flex flex-row flex-wrap items-center justify-center gap-x-3.5 gap-y-1 text-[11px] text-white/45 lg:mt-6 lg:justify-start lg:gap-x-6 lg:text-[15px] lg:text-white/70">
               <a
                 href={CONTACT.maryInstagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors duration-200 hover:text-white"
+                className="group transition-colors duration-200 hover:text-white"
               >
-                Instagram {CONTACT.maryInstagramHandle}
+                Instagram
+                <span className="text-white/30 group-hover:text-white lg:text-white/70"> {CONTACT.maryInstagramHandle}</span>
               </a>
               <a
                 href={CONTACT.telegram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors duration-200 hover:text-white"
+                className="group transition-colors duration-200 hover:text-white"
               >
-                Telegram @maryfoxtattooo
+                Telegram
+                <span className="text-white/30 group-hover:text-white lg:text-white/70"> @maryfoxtattooo</span>
               </a>
             </div>
           </div>
 
-          <div className="master-reveal master-reveal-late relative z-10 order-2">
-            <div className="relative mx-auto max-w-sm pt-6 pb-3 md:max-w-[34rem] lg:hidden">
-              <div className="glow-wash-soft pointer-events-none absolute left-[-72%] top-[-46%] z-0 h-[36rem] w-[42rem] md:left-[-48%] md:h-[32rem] md:w-[36rem]" />
-              <div className="glow-wash-hot pointer-events-none absolute bottom-[-28%] right-[-46%] z-0 h-[26rem] w-[30rem]" />
-              <BrandWatermark className="bottom-[-4.25rem] right-[-2%] text-[22vw] md:text-[5.5rem]" />
-              <div className="relative z-[1]">
-                <BrandWatermark className="left-[-2%] top-0 z-0 -translate-y-[1.07em] text-[24vw] md:text-[6.25rem]" />
-                <PhotoFrame
-                  src={mobilePhoto.src}
-                  alt={mobilePhoto.alt}
-                  sizes="(max-width: 1024px) 90vw, 420px"
-                  priority={mobileIndex === 0}
-                  className="relative z-[1] aspect-[4/5] w-full"
-                />
-                <button
-                  type="button"
-                  onClick={goPrev}
-                  aria-label="Предыдущее фото"
-                  className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(180,35,100,0.38)] bg-black/40 text-champagne backdrop-blur-sm"
-                >
-                  <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
-                </button>
-                <button
-                  type="button"
-                  onClick={goNext}
-                  aria-label="Следующее фото"
-                  className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(180,35,100,0.38)] bg-black/40 text-champagne backdrop-blur-sm"
-                >
-                  <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
-                </button>
-              </div>
-            </div>
+          <div className="master-reveal master-reveal-late relative z-10 order-1 lg:order-2">
+            <MobilePhotoCarousel />
 
             <div className="relative mx-auto hidden min-h-[34rem] w-full max-w-[32rem] lg:block xl:min-h-[42rem] xl:max-w-[40rem]">
               <div className="glow-wash pointer-events-none absolute left-1/2 top-1/2 z-0 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2" />
               <div className="pointer-events-none absolute right-[-14%] top-[12%] z-0 text-[10rem] xl:text-[10rem]">
-                <div className="absolute -left-[2.8em] -top-[0.5em] h-[1.8em] w-[2.8em] rounded-[30%] bg-[radial-gradient(ellipse_at_center,rgba(196,20,98,0.16)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)]" />
+                <div className="absolute -left-[2.8em] -top-[0.5em] h-[1.8em] w-[2.8em] rounded-[30%] bg-[radial-gradient(ellipse_at_center,rgba(242,27,131,0.2)_0%,rgba(196,20,98,0.08)_28%,transparent_68%)]" />
               </div>
               <div className="pointer-events-none absolute bottom-[9%] left-[-9%] z-0 text-[7.25rem] xl:text-[8.25rem]">
-                <div className="absolute -right-[2.8em] -top-[2.1em] h-[2em] w-[2.8em] rounded-[30%] bg-[radial-gradient(ellipse_at_center,rgba(196,20,98,0.16)_0%,rgba(122,18,62,0.24)_40%,transparent_70%)]" />
+                <div className="absolute -right-[2.8em] -top-[2.1em] h-[2em] w-[2.8em] rounded-[30%] bg-[radial-gradient(ellipse_at_center,rgba(242,27,131,0.2)_0%,rgba(196,20,98,0.08)_28%,transparent_68%)]" />
               </div>
               <BrandWatermark className="right-[-14%] top-[12%] text-[10rem] xl:text-[10rem]" />
               <BrandWatermark className="bottom-[9%] left-[-9%] text-[7.25rem] xl:text-[8.25rem]" />
@@ -268,14 +310,14 @@ export function MasterSection() {
           </div>
         </div>
 
-        <div ref={highlightsRef} className="mt-12 grid border-t border-[#F1ECE5]/10 md:mt-14 lg:mt-8 lg:grid-cols-3">
+        <div className="mt-[4.8rem] grid border-t border-[#F1ECE5]/10 md:mt-20 lg:mt-16 lg:grid-cols-3">
           {MARY_FOX.highlights.map((item) => {
             const bustOnLeft = item.id === "education";
             return (
             <a
               key={item.id}
               href={item.href}
-              className="master-highlight group relative block min-h-[12.5rem] overflow-visible border-b border-[#F1ECE5]/10 py-7 transition-colors duration-200 hover:bg-white/[0.025] md:min-h-[14rem] md:px-8 md:py-8 lg:min-h-[15rem] lg:overflow-hidden lg:border-b-0 lg:border-l lg:border-[#F1ECE5]/10 lg:px-7 lg:first:border-l-0"
+              className="master-highlight group relative flex min-h-[12.5rem] items-center overflow-visible border-b border-[#F1ECE5]/10 py-8 [-webkit-tap-highlight-color:transparent] md:min-h-[14rem] md:px-8 md:py-9 lg:min-h-[15.5rem] lg:overflow-hidden lg:border-b-0 lg:border-l lg:border-[#F1ECE5]/10 lg:px-8 lg:py-10 lg:transition-colors lg:duration-200 lg:hover:bg-white/[0.02] lg:first:border-l-0"
             >
               <div
                 className={cn(
@@ -308,10 +350,10 @@ export function MasterSection() {
                   bustOnLeft ? "from-right ml-auto pl-3" : "from-left pr-3"
                 )}
               >
-                <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-[0.16em] text-accent-yellow transition-colors duration-200 group-hover:text-[#F1ECE5]">
+                <h3 className="mb-2.5 text-[12px] font-semibold uppercase leading-snug tracking-[0.14em] text-accent-yellow lg:mb-3 lg:transition-colors lg:duration-200 lg:group-hover:text-[#F1ECE5]">
                   {item.title}
                 </h3>
-                <p className="text-[14px] leading-relaxed text-[#F1ECE5]/68 md:text-[15px]">{item.text}</p>
+                <p className="text-[14px] leading-[1.55] text-[#F1ECE5]/72 md:text-[15px] md:leading-[1.6]">{item.text}</p>
               </div>
             </a>
             );
