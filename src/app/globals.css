@@ -101,30 +101,11 @@
       transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .btn-cta::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background: linear-gradient(
-      110deg,
-      transparent 25%,
-      rgba(255, 255, 255, 0.38) 50%,
-      transparent 75%
-    );
-    transform: translateX(-130%);
-    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
   .btn-cta:hover {
     background: #ffc94a;
     transform: translateY(-2px);
     box-shadow: none;
     filter: none;
-  }
-
-  .btn-cta:hover::after {
-    transform: translateX(130%);
   }
 
   .btn-cta:active {
@@ -210,7 +191,6 @@
 
   @media (prefers-reduced-motion: reduce) {
     .btn-cta,
-    .btn-cta::after,
     .media-zoom,
     .text-link-draw {
       transition: none;
@@ -1386,6 +1366,22 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .reviews-reveal:not(.is-shown) {
+    opacity: 0;
+  }
+
+  .reviews-reveal.is-shown {
+    animation: master-highlight-rise 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .reviews-reveal-delay.is-shown {
+    animation-delay: 0.08s;
+  }
+
+  .reviews-reveal-later.is-shown {
+    animation-delay: 0.16s;
+  }
+
   .master-reveal:not(.is-shown),
   .master-highlight:not(.is-shown) .master-highlight-bust,
   .master-highlight:not(.is-shown) .master-highlight-copy {

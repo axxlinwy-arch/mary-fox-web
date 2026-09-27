@@ -92,4 +92,6 @@ export const ASSETS = {
   tattoo10: "/assets/euphoria/tattoo10.jpg",
   snake1: "/assets/euphoria/snake1.png",
   snake2: "/assets/euphoria/snake2.png",
+  otzfon: "/assets/euphoria/otzfon.png",
+  otzfon6: "/assets/euphoria/otzfon6.png",
 } as const;

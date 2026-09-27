@@ -257,7 +257,7 @@ export function GalleryMarquee() {
   return (
     <section
       id="gallery"
-      className="relative scroll-mt-20 overflow-hidden bg-[radial-gradient(ellipse_at_85%_10%,rgba(122,18,62,0.14),transparent_52%),radial-gradient(ellipse_at_10%_90%,rgba(122,18,62,0.12),transparent_48%),#090709] pb-12 pt-6 md:pb-14"
+      className="relative scroll-mt-20 overflow-hidden bg-[radial-gradient(ellipse_at_85%_10%,rgba(122,18,62,0.14),transparent_52%),radial-gradient(ellipse_at_10%_90%,rgba(122,18,62,0.12),transparent_48%),#0C090B] pb-12 pt-6 md:pb-14"
     >
       <div className="relative z-10 mx-auto mb-8 max-w-7xl px-6 text-center md:px-8">
         <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
@@ -271,8 +271,8 @@ export function GalleryMarquee() {
       </div>
 
       <div className="relative z-10 select-none">
-        <div className="pointer-events-none absolute -top-12 bottom-0 left-0 z-10 w-16 bg-gradient-to-r from-[#090709] to-transparent md:-top-16 md:w-20" />
-        <div className="pointer-events-none absolute -top-12 bottom-0 right-0 z-10 w-16 bg-gradient-to-l from-[#090709] to-transparent md:-top-16 md:w-20" />
+        <div className="pointer-events-none absolute -top-12 bottom-0 left-0 z-10 w-16 bg-gradient-to-r from-[#0C090B] to-transparent md:-top-16 md:w-20" />
+        <div className="pointer-events-none absolute -top-12 bottom-0 right-0 z-10 w-16 bg-gradient-to-l from-[#0C090B] to-transparent md:-top-16 md:w-20" />
 
         <MarqueeRow
           direction={-1}
@@ -287,6 +287,11 @@ export function GalleryMarquee() {
           />
         </div>
       </div>
+
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-16 bg-gradient-to-b from-transparent to-[#0C090B]"
+      />
 
       {mounted &&
         selectedKey &&
