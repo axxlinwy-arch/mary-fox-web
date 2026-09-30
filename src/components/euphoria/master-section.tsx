@@ -164,7 +164,19 @@ export function MasterSection() {
     if (!root) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const nodes = root.querySelectorAll(".master-reveal, .master-highlight");
+    const cascadeObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-shown");
+          cascadeObserver.disconnect();
+        });
+      },
+      { threshold: 0.08 }
+    );
+    cascadeObserver.observe(root);
+
+    const nodes = root.querySelectorAll(".master-highlight");
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -176,14 +188,17 @@ export function MasterSection() {
       { threshold: 0.18 }
     );
     nodes.forEach((node) => observer.observe(node));
-    return () => observer.disconnect();
+    return () => {
+      cascadeObserver.disconnect();
+      observer.disconnect();
+    };
   }, []);
 
   return (
     <section
       id={MARY_FOX.id}
       ref={highlightsRef}
-      className="relative scroll-mt-20 overflow-hidden bg-[#0C090B] pb-12 pt-12 md:pb-14 md:-mt-8 md:pt-0"
+      className="cascade relative scroll-mt-20 overflow-hidden bg-[#0C090B] pb-12 pt-12 md:pb-14 md:-mt-8 md:pt-0"
     >
       <div className="pointer-events-none absolute -right-16 -top-24 z-0 h-[22rem] w-[34rem] bg-[radial-gradient(ellipse_at_100%_20%,rgba(196,20,98,0.24)_0%,rgba(122,18,62,0.1)_32%,transparent_70%)] lg:-left-16 lg:right-auto lg:h-[28rem] lg:w-[42rem] lg:bg-[radial-gradient(ellipse_at_0%_0%,rgba(242,27,131,0.2)_0%,rgba(196,20,98,0.08)_28%,transparent_68%)]" />
 
@@ -191,14 +206,14 @@ export function MasterSection() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-12 xl:gap-16">
-          <div className="master-reveal relative z-20 order-2 mx-auto flex w-full max-w-[28rem] flex-col items-center justify-center text-center md:max-w-[34rem] lg:order-1 lg:mx-0 lg:max-w-[28rem] lg:items-start lg:text-left">
+          <div className="relative z-20 order-2 mx-auto flex w-full max-w-[28rem] flex-col items-center justify-center text-center md:max-w-[34rem] lg:order-1 lg:mx-0 lg:max-w-[28rem] lg:items-start lg:text-left">
             <div>
-              <p className="mb-[18px] flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.25em] text-accent-yellow lg:mb-3 lg:justify-start lg:gap-3 lg:text-xs lg:tracking-[0.32em]">
+              <p className="cascade-item mb-[18px] flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.25em] text-accent-yellow lg:mb-3 lg:justify-start lg:gap-3 lg:text-xs lg:tracking-[0.32em]" style={{ animationDelay: "0.12s" }}>
                 <span className="h-px w-6 bg-accent-yellow/40 lg:w-8" />
                 {MARY_FOX.label}
                 <span className="h-px w-6 bg-accent-yellow/40 lg:w-8" />
               </p>
-              <h2 className="flex flex-col items-center gap-0 font-serif text-[clamp(1.7rem,8vw,2rem)] font-semibold leading-[1] tracking-tight text-[#F1ECE5] lg:items-start lg:text-[2.55rem] lg:leading-[0.92] xl:text-[2.9rem]">
+              <h2 className="cascade-item flex flex-col items-center gap-0 font-serif text-[clamp(1.7rem,8vw,2rem)] font-semibold leading-[1] tracking-tight text-[#F1ECE5] lg:items-start lg:text-[2.55rem] lg:leading-[0.92] xl:text-[2.9rem]" style={{ animationDelay: "0.24s" }}>
                 <span>{MARY_FOX.titleLead}</span>
                 <span
                   className="w-max max-w-full overflow-visible whitespace-nowrap text-gradient-euphoria-50"
@@ -210,14 +225,14 @@ export function MasterSection() {
               </h2>
             </div>
 
-            <p className="mx-auto mt-6 max-w-[19rem] text-[13.5px] font-normal leading-[1.5] text-white/75 lg:mt-6 lg:max-w-[26rem] lg:text-[15px] lg:leading-[1.55] lg:text-white/70">
+            <p className="cascade-item mx-auto mt-6 max-w-[19rem] text-[13.5px] font-normal leading-[1.5] text-white/75 lg:mt-6 lg:max-w-[26rem] lg:text-[15px] lg:leading-[1.55] lg:text-white/70" style={{ animationDelay: "0.36s" }}>
               {MARY_FOX.roles
                 .map((role, i) => (i === 0 ? role : role.charAt(0).toLowerCase() + role.slice(1)))
                 .join(", ")}
               .
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center justify-center text-[#E8DCC4] lg:mt-6 lg:justify-start">
+            <div className="cascade-item mt-9 flex flex-wrap items-center justify-center text-[#E8DCC4] lg:mt-6 lg:justify-start" style={{ animationDelay: "0.48s" }}>
               {MARY_FOX.stats.map((stat, i) => {
                 const Icon = i === 0 ? Star : Users;
                 return (
@@ -239,7 +254,7 @@ export function MasterSection() {
               })}
             </div>
 
-            <div className="mt-7 flex max-w-[26rem] flex-wrap justify-center gap-2 lg:mt-6 lg:justify-start">
+            <div className="cascade-item mt-7 flex max-w-[26rem] flex-wrap justify-center gap-2 lg:mt-6 lg:justify-start" style={{ animationDelay: "0.6s" }}>
               {MARY_FOX.tags.map((tag) => (
                 <span
                   key={tag}
@@ -250,7 +265,7 @@ export function MasterSection() {
               ))}
             </div>
 
-            <div className="mt-[1.6rem] flex flex-row flex-wrap items-center justify-center gap-x-3.5 gap-y-1 text-[11px] text-white/45 lg:mt-6 lg:justify-start lg:gap-x-6 lg:text-[15px] lg:text-white/70">
+            <div className="cascade-item mt-[1.6rem] flex flex-row flex-wrap items-center justify-center gap-x-3.5 gap-y-1 text-[11px] text-white/45 lg:mt-6 lg:justify-start lg:gap-x-6 lg:text-[15px] lg:text-white/70" style={{ animationDelay: "0.72s" }}>
               <a
                 href={CONTACT.maryInstagram}
                 target="_blank"
@@ -272,7 +287,7 @@ export function MasterSection() {
             </div>
           </div>
 
-          <div className="master-reveal master-reveal-late relative z-10 order-1 lg:order-2">
+          <div className="cascade-item relative z-10 order-1 lg:order-2" style={{ animationDelay: "0s" }}>
             <MobilePhotoCarousel />
 
             <div className="relative mx-auto hidden min-h-[34rem] w-full max-w-[32rem] lg:block xl:min-h-[42rem] xl:max-w-[40rem]">

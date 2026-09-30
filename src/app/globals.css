@@ -745,6 +745,17 @@
   }
 }
 
+@keyframes gallery-row-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--row-shift, 7%), 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 @keyframes hero-enter {
   from {
     opacity: 0;
@@ -1365,21 +1376,33 @@
   mask-composite: intersect;
 }
 
+.gallery-marquee {
+  background-color: #0c090b;
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  .reviews-reveal:not(.is-shown) {
+  .cascade:not(.is-shown) .cascade-item {
     opacity: 0;
   }
 
-  .reviews-reveal.is-shown {
-    animation: master-highlight-rise 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+  .cascade.is-shown .cascade-item {
+    animation-name: hero-enter;
+    animation-duration: 0.7s;
+    animation-timing-function: ease;
+    animation-fill-mode: both;
   }
 
-  .reviews-reveal-delay.is-shown {
-    animation-delay: 0.08s;
+  .gallery-marquee:not(.is-shown) .gallery-row-in {
+    opacity: 0;
   }
 
-  .reviews-reveal-later.is-shown {
-    animation-delay: 0.16s;
+  .gallery-marquee.is-shown .gallery-row-in {
+    animation: gallery-row-enter 1.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .gallery-marquee.is-shown .gallery-row-in--from-left {
+    --row-shift: -7%;
+    animation-delay: 0.22s;
   }
 
   .master-reveal:not(.is-shown),
@@ -1442,6 +1465,251 @@
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+  }
+}
+
+.studio-sat {
+  opacity: 0;
+  transform-origin: var(--origin, center);
+  transform: perspective(460px) translate3d(var(--ox), var(--oy), 0) rotateX(var(--rx)) rotateY(var(--ry)) rotate(var(--rot-from)) scale(0.95);
+}
+
+.studio-collage.is-shown .studio-sat {
+  opacity: 1;
+  transform: perspective(460px) rotateX(var(--rx)) rotateY(var(--ry)) rotate(var(--rot)) scale(1);
+  transition:
+    transform 820ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 700ms ease;
+  transition-delay: var(--d);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .studio-collage.is-shown .studio-sat:hover {
+    transform: perspective(460px) rotateX(var(--rx)) rotateY(var(--ry)) rotate(calc(var(--rot) + var(--tilt))) scale(1.03);
+    transition-delay: 0s;
+    transition-duration: 220ms;
+  }
+
+  .studio-collage.is-shown .studio-sat:hover .studio-card::after {
+    opacity: 1;
+  }
+}
+
+.studio-burst {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  z-index: 0;
+  width: 168%;
+  height: 78rem;
+  pointer-events: none;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.studio-burst::before,
+.studio-burst::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.studio-burst::before {
+  background: conic-gradient(
+    from 10deg at 50% 50%,
+    transparent 0deg,
+    rgba(242, 27, 131, 0.28) 0.6deg,
+    rgba(196, 20, 98, 0.1) 2.2deg,
+    transparent 4.8deg,
+    transparent 52deg,
+    rgba(242, 27, 131, 0.22) 52.8deg,
+    transparent 57deg,
+    transparent 108deg,
+    rgba(196, 20, 98, 0.24) 108.7deg,
+    transparent 113deg,
+    transparent 164deg,
+    rgba(242, 27, 131, 0.2) 164.6deg,
+    transparent 169deg,
+    transparent 218deg,
+    rgba(168, 22, 84, 0.22) 218.7deg,
+    transparent 223deg,
+    transparent 274deg,
+    rgba(242, 27, 131, 0.18) 274.6deg,
+    transparent 279deg,
+    transparent 322deg,
+    rgba(196, 20, 98, 0.16) 322.6deg,
+    transparent 327deg,
+    transparent 360deg
+  );
+  filter: blur(16px);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, transparent 0%, transparent 10%, #000 24%, rgba(0, 0, 0, 0.4) 40%, transparent 56%);
+  mask-image: radial-gradient(ellipse at 50% 50%, transparent 0%, transparent 10%, #000 24%, rgba(0, 0, 0, 0.4) 40%, transparent 56%);
+}
+
+.studio-burst::after {
+  background: conic-gradient(
+    from 6deg at 50% 50%,
+    transparent 0deg,
+    rgba(242, 27, 131, 0.16) 2deg,
+    rgba(196, 20, 98, 0.06) 6deg,
+    transparent 11deg,
+    transparent 50deg,
+    rgba(242, 27, 131, 0.14) 52deg,
+    transparent 60deg,
+    transparent 106deg,
+    rgba(196, 20, 98, 0.14) 108deg,
+    transparent 117deg,
+    transparent 162deg,
+    rgba(242, 27, 131, 0.12) 164deg,
+    transparent 173deg,
+    transparent 216deg,
+    rgba(168, 22, 84, 0.13) 218deg,
+    transparent 227deg,
+    transparent 272deg,
+    rgba(242, 27, 131, 0.11) 274deg,
+    transparent 283deg,
+    transparent 320deg,
+    rgba(196, 20, 98, 0.1) 322deg,
+    transparent 331deg,
+    transparent 360deg
+  );
+  filter: blur(28px);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, transparent 0%, transparent 8%, #000 20%, transparent 44%);
+  mask-image: radial-gradient(ellipse at 50% 50%, transparent 0%, transparent 8%, #000 20%, transparent 44%);
+}
+
+.studio-burst--mobile {
+  width: 170%;
+  height: 125%;
+  opacity: 0.62;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.studio-card {
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.46),
+    0 0 8px rgba(217, 47, 138, 0.16);
+}
+
+.studio-main-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  width: 172%;
+  height: 146%;
+  pointer-events: none;
+  transform: translate(-50%, -48%);
+  background: radial-gradient(
+    ellipse at 50% 48%,
+    rgba(242, 27, 131, 0.5) 0%,
+    rgba(242, 27, 131, 0.28) 24%,
+    rgba(196, 20, 98, 0.14) 44%,
+    rgba(122, 18, 62, 0.04) 60%,
+    transparent 74%
+  );
+}
+
+.studio-main-glow--mobile {
+  z-index: 16;
+  width: 118%;
+  height: 108%;
+  opacity: 0.85;
+  transform: translate(-50%, -50%);
+}
+
+.studio-card--main {
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.42),
+    0 0 14px rgba(242, 27, 131, 0.26),
+    0 0 32px rgba(196, 20, 98, 0.14);
+}
+
+.studio-card--main::after {
+  opacity: 1;
+  padding: 1.5px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 250, 252, 0.98) 0deg,
+    rgba(255, 186, 220, 0.86) 50deg,
+    rgba(255, 250, 252, 0.96) 100deg,
+    rgba(255, 170, 210, 0.82) 155deg,
+    rgba(255, 250, 252, 0.98) 210deg,
+    rgba(255, 186, 220, 0.84) 265deg,
+    rgba(255, 248, 252, 0.94) 320deg,
+    rgba(255, 250, 252, 0.98) 360deg
+  );
+}
+
+.studio-card--side {
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.42),
+    0 0 7px rgba(217, 47, 138, 0.14);
+}
+
+.studio-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  opacity: 0.92;
+  background: conic-gradient(
+    from var(--glint, 140deg),
+    rgba(255, 252, 254, 0.98) 0deg,
+    rgba(255, 210, 230, 0.78) 28deg,
+    rgba(255, 107, 189, 0.42) 62deg,
+    rgba(255, 236, 246, 0.7) 108deg,
+    rgba(196, 20, 98, 0.22) 150deg,
+    rgba(255, 248, 252, 0.88) 196deg,
+    rgba(255, 170, 210, 0.5) 236deg,
+    rgba(120, 28, 72, 0.16) 278deg,
+    rgba(255, 236, 246, 0.82) 322deg,
+    rgba(255, 252, 254, 0.98) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  transition: opacity 220ms ease;
+}
+
+@keyframes studio-photo-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.studio-photo-in {
+  animation: studio-photo-in 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-sat,
+  .studio-collage.is-shown .studio-sat,
+  .studio-collage.is-shown .studio-sat:hover {
+    opacity: 1;
+    transform: perspective(460px) rotateX(var(--rx)) rotateY(var(--ry)) rotate(var(--rot)) scale(1);
+    transition: none;
+  }
+
+  .studio-photo-in {
+    animation: none;
+  }
+
+  .studio-card::after {
+    transition: none;
   }
 }
 

@@ -172,18 +172,17 @@ export function TestimonialsSection() {
     if (!root) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const nodes = root.querySelectorAll(".reviews-reveal");
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           entry.target.classList.add("is-shown");
-          observer.unobserve(entry.target);
+          observer.disconnect();
         });
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.16 }
+      { threshold: 0.08 }
     );
-    nodes.forEach((node) => observer.observe(node));
+    observer.observe(root);
     return () => observer.disconnect();
   }, []);
 
@@ -221,7 +220,7 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section ref={sectionRef} className="relative scroll-mt-20 overflow-hidden bg-[#0C090B] pb-16 pt-16 md:pb-24 md:pt-20">
+    <section ref={sectionRef} className="cascade relative scroll-mt-20 overflow-hidden bg-[#0C090B] pb-16 pt-16 md:pb-24 md:pt-20">
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
         <div
           className="absolute inset-x-0 bottom-0 top-[26%] lg:hidden"
@@ -230,7 +229,7 @@ export function TestimonialsSection() {
             backgroundRepeat: "repeat-y",
             backgroundPosition: "center top",
             backgroundSize: "128% auto",
-            opacity: 0.16,
+            opacity: 0.28,
             maskImage: "linear-gradient(to bottom, transparent 0%, #000 14vw, #000 100%)",
             WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 14vw, #000 100%)",
           }}
@@ -250,11 +249,10 @@ export function TestimonialsSection() {
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center top",
             backgroundSize: "132vw auto",
-            maskImage: "linear-gradient(to bottom, transparent 0%, #000 8%, #000 40%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 8%, #000 40%, transparent 100%)",
+            maskImage: "linear-gradient(to bottom, #000 0%, #000 40%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, #000 0%, #000 40%, transparent 100%)",
           }}
         />
-        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#0C090B] to-transparent lg:hidden" />
         <Image
           src={ASSETS.otzfon}
           alt=""
@@ -263,7 +261,6 @@ export function TestimonialsSection() {
           className="hidden object-cover object-center opacity-60 saturate-[1.35] lg:block"
         />
         <div className="absolute inset-0 hidden bg-[#0C090B]/32 lg:block" />
-        <div className="absolute inset-x-0 top-0 hidden h-40 bg-gradient-to-b from-[#0C090B] to-transparent lg:block" />
         <div
           className="absolute inset-0 hidden lg:block"
           style={{
@@ -271,28 +268,30 @@ export function TestimonialsSection() {
               "linear-gradient(to right, rgba(12,9,11,0.5) 0%, transparent 16%), linear-gradient(to left, rgba(12,9,11,0.5) 0%, transparent 16%), linear-gradient(to top, rgba(12,9,11,0.55) 0%, transparent 26%)",
           }}
         />
+        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#0C090B] to-transparent lg:h-36" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-[#090709] lg:h-36" />
       </div>
 
       <div className="relative z-10">
-        <div className="reviews-reveal relative z-10 mx-auto mb-14 max-w-3xl px-6 text-center md:mb-14 lg:mb-10 md:px-8">
-          <p className="mb-5 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
+        <div className="relative z-10 mx-auto mb-14 max-w-3xl px-6 text-center md:mb-14 lg:mb-10 md:px-8">
+          <p className="cascade-item mb-5 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]" style={{ animationDelay: "0.12s" }}>
             <span className="h-px w-8 bg-accent-yellow/40" />
             {TESTIMONIALS_INTRO.label}
             <span className="h-px w-8 bg-accent-yellow/40" />
           </p>
-          <h2 className="font-serif text-[1.85rem] font-semibold leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-[2.6rem] lg:leading-[0.92]">
+          <h2 className="cascade-item font-serif text-[1.85rem] font-semibold leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-[2.6rem] lg:leading-[0.92]" style={{ animationDelay: "0.24s" }}>
             {TESTIMONIALS_INTRO.titleLine1}
             <br />
             <span className="text-gradient-euphoria" style={{ lineHeight: 0.98, padding: "0.02em 0" }}>{TESTIMONIALS_INTRO.titleLine2}</span>
             <br />
             {TESTIMONIALS_INTRO.titleLine3}
           </h2>
-          <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[#F1ECE5]/50 sm:text-[15px]">
+          <p className="cascade-item mx-auto mt-4 max-w-lg text-sm leading-relaxed text-white/70 sm:text-[15px]" style={{ animationDelay: "0.36s" }}>
             {TESTIMONIALS_INTRO.text}
           </p>
         </div>
 
-        <div className="reviews-reveal reviews-reveal-delay relative">
+        <div className="cascade-item relative" style={{ animationDelay: "0.48s" }}>
           <div
             className="reviews-stage relative z-[2] mx-auto w-full min-h-[9rem] touch-pan-y [--reviews-shift:96%] md:[--reviews-shift:96%] lg:min-h-[14.5rem] lg:[--reviews-shift:64%] xl:[--reviews-shift:60%]"
             style={{ height: stageH ? stageH + 36 : undefined }}
@@ -367,7 +366,7 @@ export function TestimonialsSection() {
           </button>
         </div>
 
-        <div className="reviews-reveal reviews-reveal-delay relative z-30 mt-4 flex justify-center gap-1.5">
+        <div className="cascade-item relative z-30 mt-4 flex justify-center gap-1.5" style={{ animationDelay: "0.6s" }}>
           {TESTIMONIALS.map((item, i) => (
             <button
               key={item.name}
@@ -382,17 +381,19 @@ export function TestimonialsSection() {
           ))}
         </div>
 
-        <div className="reviews-reveal reviews-reveal-later relative z-30 mt-10 flex flex-col items-center px-6 text-center">
-          <p className="flex max-w-sm items-center justify-center gap-3 text-center text-[11px] uppercase leading-relaxed tracking-[0.18em] text-[#F1ECE5]/55">
+        <div className="relative z-30 mt-10 flex flex-col items-center px-6 text-center">
+          <p className="cascade-item flex max-w-sm items-center justify-center gap-3 text-center text-[11px] uppercase leading-relaxed tracking-[0.18em] text-white" style={{ animationDelay: "0.72s" }}>
             <span className="h-px w-5 shrink-0 bg-[#F1ECE5]/25" />
             <span>Подарочный заживляющий набор в конце сеанса</span>
             <span className="h-px w-5 shrink-0 bg-[#F1ECE5]/25" />
           </p>
-          <CtaButton href={CONTACT.maryInstagram} className="mt-6 h-12 px-7">
+          <div className="cascade-item mt-6" style={{ animationDelay: "0.84s" }}>
+          <CtaButton href={CONTACT.maryInstagram} className="h-12 px-7">
             <span className="text-xs font-semibold uppercase tracking-[0.14em] sm:text-sm">
               Записаться к Mary
             </span>
           </CtaButton>
+          </div>
         </div>
       </div>
 

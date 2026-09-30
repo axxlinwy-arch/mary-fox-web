@@ -9,10 +9,11 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { createPortal } from "react-dom";
-import { motion, useAnimationFrame, useMotionValue } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { X } from "lucide-react";
 import { GALLERY } from "@/constants/content";
 import { ASSETS } from "@/constants/site";
+import { cn } from "@/lib/utils";
 
 const IMAGE_MAP = {
   tattoo1: ASSETS.tattoo1,
@@ -124,10 +125,12 @@ function GalleryLightbox({
 function MarqueeRow({
   direction,
   paused,
+  inView,
   onOpen,
 }: {
   direction: 1 | -1;
   paused: boolean;
+  inView: boolean;
   onOpen: (key: GalleryImageKey) => void;
 }) {
   const x = useMotionValue(0);
@@ -151,17 +154,27 @@ function MarqueeRow({
     return () => window.removeEventListener("resize", measureLoop);
   }, [measureLoop]);
 
-  useAnimationFrame((_time, delta) => {
-    if (!autoPlay || isDragging || paused) return;
-    const loop = loopWidthRef.current;
-    if (loop <= 0) return;
-    x.set(
-      wrapOffset(
-        x.get() + (direction * AUTO_SCROLL_PX_PER_SEC * delta) / 1000,
-        loop
-      )
-    );
-  });
+  useEffect(() => {
+    if (!inView || !autoPlay || isDragging || paused) return;
+    let frame = 0;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const delta = now - last;
+      last = now;
+      const loop = loopWidthRef.current;
+      if (loop > 0) {
+        x.set(
+          wrapOffset(
+            x.get() + (direction * AUTO_SCROLL_PX_PER_SEC * delta) / 1000,
+            loop
+          )
+        );
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [autoPlay, direction, inView, isDragging, paused, x]);
 
   const resumeAutoPlay = useCallback(() => {
     window.setTimeout(() => setAutoPlay(true), DRAG_RESUME_MS);
@@ -232,8 +245,42 @@ function MarqueeRow({
 }
 
 export function GalleryMarquee() {
+  const sectionRef = useRef<HTMLElement>(null);
   const [mounted, setMounted] = useState(false);
+  const [inView, setInView] = useState(false);
+  const [entered, setEntered] = useState(false);
   const [selectedKey, setSelectedKey] = useState<GalleryImageKey | null>(null);
+
+  useEffect(() => {
+    const root = sectionRef.current;
+    if (!root) return;
+
+    const visibility = new IntersectionObserver(
+      (entries) => {
+        setInView(entries.some((entry) => entry.isIntersecting));
+      },
+      { threshold: 0 }
+    );
+    visibility.observe(root);
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return () => visibility.disconnect();
+    }
+
+    const entrance = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        setEntered(true);
+        entrance.disconnect();
+      },
+      { threshold: 0.15 }
+    );
+    entrance.observe(root);
+    return () => {
+      visibility.disconnect();
+      entrance.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -257,7 +304,11 @@ export function GalleryMarquee() {
   return (
     <section
       id="gallery"
-      className="relative scroll-mt-20 overflow-hidden bg-[radial-gradient(ellipse_at_85%_10%,rgba(122,18,62,0.14),transparent_52%),radial-gradient(ellipse_at_10%_90%,rgba(122,18,62,0.12),transparent_48%),#0C090B] pb-12 pt-6 md:pb-14"
+      ref={sectionRef}
+      className={cn(
+        "gallery-marquee relative scroll-mt-20 overflow-hidden pb-28 pt-6 md:pb-36",
+        entered && "is-shown"
+      )}
     >
       <div className="relative z-10 mx-auto mb-8 max-w-7xl px-6 text-center md:px-8">
         <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
@@ -274,24 +325,23 @@ export function GalleryMarquee() {
         <div className="pointer-events-none absolute -top-12 bottom-0 left-0 z-10 w-16 bg-gradient-to-r from-[#0C090B] to-transparent md:-top-16 md:w-20" />
         <div className="pointer-events-none absolute -top-12 bottom-0 right-0 z-10 w-16 bg-gradient-to-l from-[#0C090B] to-transparent md:-top-16 md:w-20" />
 
-        <MarqueeRow
-          direction={-1}
-          paused={selectedKey !== null}
-          onOpen={setSelectedKey}
-        />
-        <div className="mt-6 md:mt-8">
+        <div className="gallery-row-in">
+          <MarqueeRow
+            direction={-1}
+            paused={selectedKey !== null}
+            inView={inView}
+            onOpen={setSelectedKey}
+          />
+        </div>
+        <div className="gallery-row-in gallery-row-in--from-left mt-6 md:mt-8">
           <MarqueeRow
             direction={1}
             paused={selectedKey !== null}
+            inView={inView}
             onOpen={setSelectedKey}
           />
         </div>
       </div>
-
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-16 bg-gradient-to-b from-transparent to-[#0C090B]"
-      />
 
       {mounted &&
         selectedKey &&
