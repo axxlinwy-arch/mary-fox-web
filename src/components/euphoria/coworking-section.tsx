@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Check, Sparkles } from "lucide-react";
 import { COWORKING } from "@/constants/content";
 import { ASSETS, CONTACT } from "@/constants/site";
@@ -41,9 +41,29 @@ export function CoworkingSection() {
   const active = COWORKING.tariffs.find((t) => t.id === activeId) ?? COWORKING.tariffs[1];
   const showExtras = active.id === "comfort";
   const sectionRef = useRef<HTMLElement>(null);
+  const [shown, setShown] = useState(false);
   const gorgonRef = useRef<HTMLImageElement>(null);
   const [statueSize, setStatueSize] = useState<{ w: number; h: number } | null>(null);
   const [perseyTop, setPerseyTop] = useState<number | null>(null);
+
+  useEffect(() => {
+    const root = sectionRef.current;
+    if (!root) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setShown(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        setShown(true);
+        observer.disconnect();
+      },
+      { threshold: 0.08 }
+    );
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, []);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -74,7 +94,10 @@ export function CoworkingSection() {
     <section
       ref={sectionRef}
       id={COWORKING.id}
-      className="relative scroll-mt-20 overflow-hidden bg-[#090709] py-20 md:py-28"
+      className={cn(
+        "cascade relative scroll-mt-20 overflow-hidden bg-[#090709] py-20 md:py-28",
+        shown && "is-shown"
+      )}
     >
       <div className="relative max-md:overflow-visible md:overflow-hidden">
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -93,29 +116,29 @@ export function CoworkingSection() {
 
       <div className="relative z-10 mx-auto w-full max-w-[58rem] px-6 md:px-8">
         <header className="mx-auto max-w-xl text-center">
-          <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
+          <p className="cascade-item mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]" style={{ animationDelay: "0.12s" }}>
             <span className="h-px w-8 bg-accent-yellow/40" />
             {COWORKING.label}
             <span className="h-px w-8 bg-accent-yellow/40" />
           </p>
-          <h2 className="font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
+          <h2 className="cascade-item font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]" style={{ animationDelay: "0.24s" }}>
             {COWORKING.titleLine1}
             <br />
             <span className="text-gradient-euphoria">{COWORKING.titleLine2}</span>
             <br />
             {COWORKING.titleLine3}
           </h2>
-          <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[#F1ECE5]/48 sm:text-[15px]">
+          <p className="cascade-item mx-auto mt-4 max-w-lg text-sm leading-relaxed text-white/70 sm:text-[15px]" style={{ animationDelay: "0.36s" }}>
             {COWORKING.text}
           </p>
         </header>
 
-        <div className="mt-10 grid grid-cols-3 gap-2 sm:gap-3 md:mt-12 md:gap-4">
+        <div className="cascade-item mt-10 grid grid-cols-3 gap-2 sm:gap-3 md:mt-12 md:gap-4" style={{ animationDelay: "0.48s" }}>
           {COWORKING.photos.map((photo, index) => (
             <figure
               key={photo.key}
               className={cn(
-                "group relative overflow-hidden rounded-xl neon-border",
+                "atmosphere-frame group relative overflow-hidden rounded-xl",
                 index === 1 ? "aspect-[3/4] sm:aspect-[4/5]" : "aspect-[3/4] translate-y-3 sm:translate-y-4"
               )}
             >
@@ -132,11 +155,11 @@ export function CoworkingSection() {
           ))}
         </div>
 
-        <div className="mt-12 md:mt-16">
+        <div className="cascade-item mt-12 md:mt-16" style={{ animationDelay: "0.6s" }}>
           <div
             role="tablist"
             aria-label="Тарифы коворкинга"
-            className="mx-auto grid max-w-lg grid-cols-3 gap-1 rounded-full border border-[rgba(180,35,100,0.38)] bg-[#110C11] p-1 shadow-volume"
+            className="atmosphere-pills mx-auto grid max-w-lg grid-cols-3 gap-1 rounded-full bg-[#110C11] p-1 shadow-volume"
           >
             {COWORKING.tariffs.map((tariff) => {
               const selected = tariff.id === activeId;
