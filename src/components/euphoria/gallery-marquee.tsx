@@ -316,14 +316,14 @@ export function GalleryMarquee() {
           By Mary Fox
           <span className="h-px w-8 bg-accent-yellow/40" />
         </p>
-        <h2 className="font-serif text-[2rem] font-semibold leading-[1.12] tracking-tight sm:text-4xl lg:text-[2.6rem]">
-          <span className="text-gradient-euphoria">Живое искусство</span>
+        <h2 className="whitespace-nowrap font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-gradient-euphoria-50 sm:text-4xl lg:text-[2.6rem]">
+          Живое искусство
         </h2>
       </div>
 
       <div className="relative z-10 select-none">
-        <div className="pointer-events-none absolute -top-12 bottom-0 left-0 z-10 w-16 bg-gradient-to-r from-[#0C090B] to-transparent md:-top-16 md:w-20" />
-        <div className="pointer-events-none absolute -top-12 bottom-0 right-0 z-10 w-16 bg-gradient-to-l from-[#0C090B] to-transparent md:-top-16 md:w-20" />
+        <div className="pointer-events-none absolute -top-12 bottom-0 left-0 z-10 w-16 bg-gradient-to-r from-[#090709] to-transparent md:-top-16 md:w-20" />
+        <div className="pointer-events-none absolute -top-12 bottom-0 right-0 z-10 w-16 bg-gradient-to-l from-[#090709] to-transparent md:-top-16 md:w-20" />
 
         <div className="gallery-row-in">
           <MarqueeRow

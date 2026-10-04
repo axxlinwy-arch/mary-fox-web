@@ -24,7 +24,7 @@ const STAT_ICONS = [Users, Star, ShieldCheck] as const;
 
 export function EuphoriaHero() {
   return (
-    <section className="hero relative flex h-auto min-h-[100svh] w-full flex-col overflow-x-hidden bg-[#0C090B] md:block md:h-dvh md:min-h-[640px] md:overflow-hidden xl:bg-[#090709]">
+    <section className="hero relative flex h-auto min-h-[100svh] w-full flex-col overflow-x-hidden bg-[#090709] md:block md:h-dvh md:min-h-[640px] md:overflow-hidden">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={ASSETS.finalPhoto}
@@ -44,7 +44,7 @@ export function EuphoriaHero() {
         className="pointer-events-none absolute -bottom-[12%] -left-[10%] z-[2] hidden h-[92%] w-[58%] object-cover object-left-bottom mix-blend-screen brightness-125 saturate-150 contrast-125 xl:block"
       />
 
-      <div className="hero__copy relative z-10 flex w-full max-w-none flex-1 flex-col justify-end bg-transparent px-3 pb-3 pt-24 md:h-full md:max-w-[46%] md:flex-none md:justify-center md:bg-gradient-to-r md:from-[#0C090B] md:via-[#0C090B]/80 md:to-transparent md:px-10 md:pb-24 lg:max-w-[40%] lg:px-16 xl:from-[#090709] xl:via-[#090709]/80 xl:px-20">
+      <div className="hero__copy relative z-10 flex w-full max-w-none flex-1 flex-col justify-end bg-transparent px-3 pb-3 pt-24 md:h-full md:max-w-[46%] md:flex-none md:justify-center md:bg-gradient-to-r md:from-[#090709] md:via-[#090709]/80 md:to-transparent md:px-10 md:pb-24 lg:max-w-[40%] lg:px-16 xl:px-20">
         <p className="hero__kicker flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-white/45 md:text-[11px] md:tracking-[0.32em]">
           <span className="hidden h-px w-8 shrink-0 bg-white/30 xl:block" />
           <span className="hidden xl:inline">{HERO.kicker}</span>
@@ -137,7 +137,7 @@ export function EuphoriaHero() {
         })}
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[8] h-36 bg-gradient-to-t from-[#0C090B] via-[#0C090B]/70 to-transparent md:h-28 xl:from-[#0C090B] xl:via-[#090709]/50 xl:to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[8] h-36 bg-gradient-to-t from-[#090709] via-[#090709]/70 to-transparent md:h-28 xl:via-[#090709]/50" />
     </section>
   );
 }

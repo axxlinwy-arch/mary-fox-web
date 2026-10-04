@@ -9,6 +9,18 @@ import { CtaButton } from "@/components/euphoria/cta-button";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
+function ReviewName({ name, className }: { name: string; className: string }) {
+  return (
+    <div className="gem-row justify-center">
+      <span aria-hidden className="gem-rule gem-rule--rev review-name-rule" />
+      <span aria-hidden className="gem" />
+      <p className={className}>{name}</p>
+      <span aria-hidden className="gem" />
+      <span aria-hidden className="gem-rule review-name-rule" />
+    </div>
+  );
+}
+
 export function TestimonialsSection() {
   const total = TESTIMONIALS.length;
   const [index, setIndex] = useState(0);
@@ -118,21 +130,27 @@ export function TestimonialsSection() {
       ref={sectionRef}
       className="cascade relative isolate flex scroll-mt-20 flex-col justify-center overflow-hidden bg-[#090709] px-5 pb-[9rem] pt-[7.5rem] md:min-h-[clamp(720px,48vw,900px)] md:px-0 md:py-16"
     >
-      <picture className="reviews-picture pointer-events-none absolute inset-0 -z-20">
-        <source media="(max-width: 767px)" srcSet="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-        <source media="(min-width: 768px)" srcSet={ASSETS.fonzmei} />
-        <img src={ASSETS.fonzmei} alt="" className="reviews-fon" />
-      </picture>
-      <div
-        aria-hidden
-        className="reviews-fon-mob reviews-fon-mob--top"
-        style={{ backgroundImage: `url(${ASSETS.fonzmeimob})` }}
-      />
-      <div
-        aria-hidden
-        className="reviews-fon-mob reviews-fon-mob--bottom"
-        style={{ backgroundImage: `url(${ASSETS.fonzmeimob})` }}
-      />
+      <div className="reviews-fon-stage" aria-hidden>
+        <div className="reviews-fon-frame reviews-picture">
+          <picture>
+            <source media="(max-width: 767px)" srcSet="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+            <source media="(min-width: 768px)" srcSet={ASSETS.fonzmei} />
+            <img src={ASSETS.fonzmei} alt="" className="reviews-fon" />
+          </picture>
+        </div>
+        <div className="reviews-fon-frame reviews-fon-mob reviews-fon-mob--top">
+          <div
+            className="reviews-fon-layer"
+            style={{ backgroundImage: `url(${ASSETS.fonzmeimob})` }}
+          />
+        </div>
+        <div className="reviews-fon-frame reviews-fon-mob reviews-fon-mob--bottom">
+          <div
+            className="reviews-fon-layer"
+            style={{ backgroundImage: `url(${ASSETS.fonzmeimob})` }}
+          />
+        </div>
+      </div>
 
       <div className="relative z-10 flex w-full flex-col items-center">
         <header className="relative mx-auto mb-9 max-w-xl text-center md:mb-10">
@@ -172,7 +190,7 @@ export function TestimonialsSection() {
             onTouchEnd={onTouchEnd}
           >
             <div key={index} className="review-enter">
-              <p className="reviews-name font-serif text-[15px] text-foreground">{review.name}</p>
+              <ReviewName name={review.name} className="reviews-name font-serif text-[15px] text-foreground" />
               <p className="mt-[0.4rem] text-[12px] tracking-[0.2em] text-[#f5b51b] md:mt-1" aria-label="Оценка 5 из 5">
                 ★★★★★
               </p>
@@ -190,7 +208,11 @@ export function TestimonialsSection() {
                     onClick={() => setDialogOpen(true)}
                     className="review-read-more font-sans"
                   >
+                    <span aria-hidden className="gem-rule gem-rule--rev review-more-rule" />
+                    <span aria-hidden className="gem review-more-gem" />
                     Читать полностью
+                    <span aria-hidden className="gem review-more-gem" />
+                    <span aria-hidden className="gem-rule review-more-rule" />
                   </button>
                 ) : null}
               </div>
@@ -248,11 +270,10 @@ export function TestimonialsSection() {
                 className="review-read-column scrollbar-hide"
                 onClick={(event) => event.stopPropagation()}
               >
-                <p className="text-center font-serif text-[18px] text-foreground">{review.name}</p>
+                <ReviewName name={review.name} className="text-center font-serif text-[18px] text-foreground" />
                 <p className="mt-1 text-center text-[12px] tracking-[0.2em] text-[#f5b51b]" aria-label="Оценка 5 из 5">
                   ★★★★★
                 </p>
-                <div aria-hidden className="review-dialog-rule" />
                 <p className="review-read-text">{review.text}</p>
               </div>
             </div>,
