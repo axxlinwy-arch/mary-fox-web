@@ -306,18 +306,20 @@ export function GalleryMarquee() {
       id="gallery"
       ref={sectionRef}
       className={cn(
-        "gallery-marquee relative scroll-mt-20 overflow-hidden pb-28 pt-6 md:pb-36",
+        "gallery-marquee relative scroll-mt-20 overflow-hidden pb-12 pt-6 md:pb-14 md:pt-0",
         entered && "is-shown"
       )}
     >
-      <div className="relative z-10 mx-auto mb-8 max-w-7xl px-6 text-center md:px-8">
+      <div className="relative z-10 mx-auto mb-8 max-w-7xl overflow-visible px-6 text-center md:px-8">
         <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
           <span className="h-px w-8 bg-accent-yellow/40" />
           By Mary Fox
           <span className="h-px w-8 bg-accent-yellow/40" />
         </p>
-        <h2 className="whitespace-nowrap font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-gradient-euphoria-50 sm:text-4xl lg:text-[2.6rem]">
-          Живое искусство
+        <h2 className="overflow-visible whitespace-nowrap font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight sm:text-4xl lg:text-[2.6rem]">
+          <span className="inline-block overflow-visible text-gradient-euphoria-50">
+            Живое искусство
+          </span>
         </h2>
       </div>
 

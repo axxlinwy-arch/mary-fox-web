@@ -128,7 +128,7 @@ export function TestimonialsSection() {
   return (
     <section
       ref={sectionRef}
-      className="cascade relative isolate flex scroll-mt-20 flex-col justify-center overflow-hidden bg-[#090709] px-5 pb-[9rem] pt-[7.5rem] md:min-h-[clamp(720px,48vw,900px)] md:px-0 md:py-16"
+      className="cascade relative isolate flex scroll-mt-20 flex-col justify-center overflow-hidden bg-[#090709] px-5 pb-[9rem] pt-10 md:min-h-[clamp(720px,48vw,900px)] md:px-0 md:pb-16 md:pt-8"
     >
       <div className="reviews-fon-stage" aria-hidden>
         <div className="reviews-fon-frame reviews-picture">
@@ -190,7 +190,7 @@ export function TestimonialsSection() {
             onTouchEnd={onTouchEnd}
           >
             <div key={index} className="review-enter">
-              <ReviewName name={review.name} className="reviews-name font-serif text-[15px] text-foreground" />
+              <p className="reviews-name font-serif text-[15px] text-foreground">{review.name}</p>
               <p className="mt-[0.4rem] text-[12px] tracking-[0.2em] text-[#f5b51b] md:mt-1" aria-label="Оценка 5 из 5">
                 ★★★★★
               </p>

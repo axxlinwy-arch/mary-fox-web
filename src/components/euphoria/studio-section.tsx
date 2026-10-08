@@ -452,6 +452,7 @@ function MobileCollage({
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
       >
+        <StudioBurst mobile />
         <StudioNav direction="prev" onClick={onPrev} className="left-0 h-8 w-8" />
         <StudioNav direction="next" onClick={onNext} className="right-0 h-8 w-8" />
         <div aria-hidden className="studio-main-glow studio-main-glow--mobile" />
