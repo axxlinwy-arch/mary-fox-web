@@ -825,6 +825,15 @@
   }
 }
 
+@keyframes cowork-statue-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+
 @keyframes hero-space-drift-a {
   0%,
   100% {
@@ -2469,6 +2478,27 @@
     animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  #coworking.cascade.is-shown .cascade-item {
+    animation-duration: 0.62s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #coworking.cascade:not(.is-shown) .cowork-statue {
+    opacity: 0;
+  }
+
+  #coworking.cascade.is-shown .cowork-statue {
+    animation: cowork-statue-enter 1s ease both;
+  }
+
+  #coworking.cascade.is-shown .cowork-statue--gorgon {
+    animation-delay: 0.06s;
+  }
+
+  #coworking.cascade.is-shown .cowork-statue--persey {
+    animation-delay: 0.16s;
+  }
+
   .gallery-marquee:not(.is-shown) .gallery-row-in {
     opacity: 0;
   }
@@ -3208,6 +3238,195 @@
 @media (prefers-reduced-motion: reduce) {
   .mf-head .gem-rule,
   .mf-head .title::after {
+    transition: none;
+  }
+}
+
+#coworking .cowork-statue--gorgon {
+  -webkit-mask-image:
+    linear-gradient(to left, #000 10%, #000 36%, rgba(0, 0, 0, 0.4) 66%, transparent 100%),
+    linear-gradient(to right, #000 0%, #000 70%, rgba(0, 0, 0, 0.5) 88%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.4) 14%, #000 28%, #000 70%, rgba(0, 0, 0, 0.4) 86%, transparent 100%);
+  mask-image:
+    linear-gradient(to left, #000 10%, #000 36%, rgba(0, 0, 0, 0.4) 66%, transparent 100%),
+    linear-gradient(to right, #000 0%, #000 70%, rgba(0, 0, 0, 0.5) 88%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.4) 14%, #000 28%, #000 70%, rgba(0, 0, 0, 0.4) 86%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+#coworking .cowork-statue--persey {
+  filter: saturate(1.38);
+  -webkit-mask-image:
+    linear-gradient(to right, black 16%, black 36%, rgba(0, 0, 0, 0.42) 72%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 16%, black 62%, transparent 100%);
+  mask-image:
+    linear-gradient(to right, black 16%, black 36%, rgba(0, 0, 0, 0.42) 72%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 16%, black 62%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+@media (max-width: 767px) {
+  #coworking .cowork-copy {
+    padding-top: 2.5rem;
+  }
+
+  #coworking .cowork-statue--gorgon,
+  #coworking .cowork-statue--persey {
+    top: -1.5rem;
+    bottom: auto;
+    width: auto;
+    max-width: none;
+  }
+
+  #coworking .cowork-statue--gorgon {
+    top: -5.5rem;
+    right: -22%;
+    left: auto;
+    height: min(108vw, 32rem);
+    -webkit-mask-image:
+      linear-gradient(to left, #000 14%, #000 40%, rgba(0, 0, 0, 0.45) 68%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.65) 7%, #000 16%, #000 80%, transparent 100%);
+    mask-image:
+      linear-gradient(to left, #000 14%, #000 40%, rgba(0, 0, 0, 0.45) 68%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.65) 7%, #000 16%, #000 80%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
+  #coworking .cowork-statue--persey {
+    top: 0rem;
+    left: -27%;
+    right: auto;
+    height: min(108vw, 32rem);
+    -webkit-mask-image:
+      linear-gradient(to right, #000 14%, #000 40%, rgba(0, 0, 0, 0.45) 68%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.65) 7%, #000 16%, #000 80%, transparent 100%);
+    mask-image:
+      linear-gradient(to right, #000 14%, #000 40%, rgba(0, 0, 0, 0.45) 68%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.65) 7%, #000 16%, #000 80%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+}
+
+#coworking .atmosphere-scale {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    width: min(34rem, 100%);
+    max-width: 100%;
+    margin-inline: auto;
+    padding: 0;
+    gap: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    position: relative;
+  }
+
+  #coworking .atmosphere-pills::after {
+    display: none;
+  }
+
+  #coworking .atmosphere-scale__rail {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(2.55rem + 0.2rem);
+    height: 5px;
+    background: rgba(221, 208, 186, 0.22);
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    clip-path: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
+  }
+
+  #coworking .atmosphere-scale__fill {
+    display: block;
+    height: 100%;
+    width: 50%;
+    background: linear-gradient(90deg, #f5b51b, #ff7a45, #f21b83);
+    transition: width 0.5s ease;
+  }
+
+  #coworking .atmosphere-scale[data-level="novice"] .atmosphere-scale__fill {
+    width: calc(100% / 6);
+  }
+
+  #coworking .atmosphere-scale[data-level="standard"] .atmosphere-scale__fill {
+    width: 50%;
+  }
+
+  #coworking .atmosphere-scale[data-level="comfort"] .atmosphere-scale__fill {
+    width: calc(500% / 6);
+  }
+
+  #coworking .atmosphere-scale__btn {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.4rem;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 0.35rem 0.15rem;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(241, 236, 229, 0.55);
+  }
+
+  #coworking .atmosphere-scale__btn.is-active,
+  #coworking .atmosphere-scale__btn.bg-accent {
+    background: transparent;
+    color: #f1ece5;
+  }
+
+  #coworking .atmosphere-scale__btn:hover {
+    color: #f1ece5;
+  }
+
+  #coworking .atmosphere-scale__btn:focus-visible {
+    outline: 2px solid #f5b51b;
+    outline-offset: 4px;
+  }
+
+  #coworking .atmosphere-scale__label {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  #coworking .atmosphere-scale__gem {
+    display: block;
+    width: 7px;
+    height: 7px;
+    margin-top: 0.15rem;
+    transform: rotate(45deg);
+    border: 1px solid rgba(245, 181, 27, 0.38);
+    background: #090709;
+    box-shadow: none;
+  }
+
+#coworking .atmosphere-scale__btn.is-active .atmosphere-scale__gem {
+  width: 11px;
+  height: 11px;
+  border: 0;
+  background: linear-gradient(135deg, #f5b51b, #f21b83);
+  box-shadow: 0 0 12px rgba(242, 27, 131, 0.55), 0 0 4px rgba(245, 181, 27, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #coworking .atmosphere-scale__fill {
     transition: none;
   }
 }

@@ -105,16 +105,16 @@ export function CoworkingSection() {
         ref={gorgonRef}
         src={ASSETS.gargonavrost}
         alt=""
-        className="pointer-events-none absolute -right-[2%] top-[-4rem] z-0 h-[58vw] w-auto max-w-none select-none object-contain object-right mix-blend-screen opacity-90 [mask-image:linear-gradient(to_left,black_22%,black_48%,transparent_86%),linear-gradient(to_bottom,transparent_0%,black_10%,black_72%,transparent_100%)] [mask-composite:intersect] [-webkit-mask-image:linear-gradient(to_left,black_22%,black_48%,transparent_86%),linear-gradient(to_bottom,transparent_0%,black_10%,black_72%,transparent_100%)] [-webkit-mask-composite:source-in] md:-right-[12%] md:top-[-2%] md:h-[96%] md:w-[min(52vw,998px)] md:[mask-image:linear-gradient(to_left,black_22%,black_48%,transparent_86%),linear-gradient(to_bottom,transparent_0%,black_10%,black_88%,transparent_100%)] md:[-webkit-mask-image:linear-gradient(to_left,black_22%,black_48%,transparent_86%),linear-gradient(to_bottom,transparent_0%,black_10%,black_88%,transparent_100%)]"
+        className="cowork-statue cowork-statue--gorgon pointer-events-none absolute -right-[2%] top-[-4rem] z-0 h-[58vw] w-auto max-w-none select-none object-contain object-right mix-blend-screen opacity-90 saturate-[1.25] [mask-image:linear-gradient(to_left,black_22%,black_48%,transparent_86%),linear-gradient(to_bottom,transparent_0%,black_10%,black_72%,transparent_100%)] [mask-composite:intersect] [-webkit-mask-image:linear-gradient(to_left,black_22%,black_48%,transparent_86%),linear-gradient(to_bottom,transparent_0%,black_10%,black_72%,transparent_100%)] [-webkit-mask-composite:source-in] md:-right-[12%] md:top-[-2%] md:h-[96%] md:w-[min(52vw,998px)] md:[mask-image:linear-gradient(to_left,black_22%,black_48%,transparent_86%),linear-gradient(to_bottom,transparent_0%,black_10%,black_88%,transparent_100%)] md:[-webkit-mask-image:linear-gradient(to_left,black_22%,black_48%,transparent_86%),linear-gradient(to_bottom,transparent_0%,black_10%,black_88%,transparent_100%)]"
         style={
           statueSize
             ? { width: statueSize.w, height: statueSize.h }
             : undefined
         }
       />
-      <div className="pointer-events-none absolute inset-y-[10%] left-[24%] right-[24%] z-[1] bg-gradient-to-r from-transparent via-[#090709]/28 to-transparent" />
+      <div className="cowork-statue-veil pointer-events-none absolute inset-y-[10%] left-[24%] right-[24%] z-[1] bg-gradient-to-r from-transparent via-[#090709]/22 to-transparent" />
 
-      <div className="relative z-10 mx-auto w-full max-w-[58rem] px-6 md:px-8">
+      <div className="cowork-copy relative z-10 mx-auto w-full max-w-[58rem] px-6 md:px-8">
         <header className="mx-auto max-w-xl text-center">
           <p className="cascade-item mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]" style={{ animationDelay: "0.12s" }}>
             <span className="h-px w-8 bg-accent-yellow/40" />
@@ -133,14 +133,15 @@ export function CoworkingSection() {
           </p>
         </header>
 
-        <div className="cascade-item mt-10 grid grid-cols-3 gap-2 sm:gap-3 md:mt-12 md:gap-4" style={{ animationDelay: "0.48s" }}>
+        <div className="mt-10 grid grid-cols-3 gap-2 sm:gap-3 md:mt-12 md:gap-4">
           {COWORKING.photos.map((photo, index) => (
             <figure
               key={photo.key}
               className={cn(
-                "atmosphere-frame group relative overflow-hidden rounded-xl",
+                "atmosphere-frame cascade-item group relative overflow-hidden rounded-xl",
                 index === 1 ? "aspect-[3/4] sm:aspect-[4/5]" : "aspect-[3/4] translate-y-3 sm:translate-y-4"
               )}
+              style={{ animationDelay: `${0.44 + index * 0.08}s` }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -155,12 +156,16 @@ export function CoworkingSection() {
           ))}
         </div>
 
-        <div className="cascade-item mt-12 md:mt-16" style={{ animationDelay: "0.6s" }}>
+        <div className="cascade-item mt-12 md:mt-16" style={{ animationDelay: "0.7s" }}>
           <div
             role="tablist"
             aria-label="Тарифы коворкинга"
-            className="atmosphere-pills mx-auto grid max-w-lg grid-cols-3 gap-1 rounded-full bg-[#110C11] p-1 shadow-volume"
+            data-level={activeId}
+            className="atmosphere-pills atmosphere-scale mx-auto grid max-w-lg grid-cols-3 gap-1 rounded-full bg-[#110C11] p-1 shadow-volume"
           >
+            <span className="atmosphere-scale__rail hidden" aria-hidden>
+              <span className="atmosphere-scale__fill" />
+            </span>
             {COWORKING.tariffs.map((tariff) => {
               const selected = tariff.id === activeId;
               return (
@@ -171,13 +176,14 @@ export function CoworkingSection() {
                   aria-selected={selected}
                   onClick={() => setActiveId(tariff.id)}
                   className={cn(
-                    "rounded-full px-2 py-2.5 text-[11px] font-medium uppercase tracking-[0.14em] transition-colors sm:text-xs sm:tracking-[0.18em]",
+                    "atmosphere-scale__btn rounded-full px-2 py-2.5 text-[11px] font-medium uppercase tracking-[0.14em] transition-colors sm:text-xs sm:tracking-[0.18em]",
                     selected
-                      ? "bg-accent text-white"
+                      ? "is-active bg-accent text-white"
                       : "text-secondary-foreground hover:text-foreground"
                   )}
                 >
-                  {tariff.name}
+                  <span className="atmosphere-scale__label">{tariff.name}</span>
+                  <span className="atmosphere-scale__gem hidden" aria-hidden />
                 </button>
               );
             })}
@@ -237,22 +243,16 @@ export function CoworkingSection() {
       <img
         src={ASSETS.persey}
         alt=""
-        className="pointer-events-none absolute -left-[2%] top-4 z-0 h-[58vw] w-auto max-w-none select-none object-contain object-left mix-blend-screen opacity-90 md:-left-[12%] md:top-auto md:h-auto"
+        className="cowork-statue cowork-statue--persey pointer-events-none absolute -left-[2%] top-4 z-0 h-[58vw] w-auto max-w-none select-none object-contain object-left mix-blend-screen opacity-90 saturate-[1.25] md:-left-[12%] md:top-auto md:h-auto"
         style={{
           top: statueSize ? (perseyTop ?? undefined) : undefined,
           bottom: statueSize && perseyTop == null ? "-2%" : undefined,
           width: statueSize?.w,
           height: statueSize?.h,
-          maskImage:
-            "linear-gradient(to right, black 16%, black 40%, rgba(0,0,0,0.35) 70%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 16%, black 62%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to right, black 16%, black 40%, rgba(0,0,0,0.35) 70%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 16%, black 62%, transparent 100%)",
-          maskComposite: "intersect",
-          WebkitMaskComposite: "source-in",
         }}
       />
 
-      <div className="relative z-10 mx-auto mt-8 w-full max-w-[58rem] px-6 md:mt-10 md:px-8">
+      <div className="cascade-item relative z-10 mx-auto mt-8 w-full max-w-[58rem] px-6 md:mt-10 md:px-8" style={{ animationDelay: "0.82s" }}>
         <div className="review-glow-card relative overflow-hidden rounded-2xl">
           <div className="pointer-events-none absolute right-4 top-6 z-20 hidden h-[calc(100%-3rem)] w-3 flex-col items-center gap-2 md:flex">
             <span className="h-[6px] w-[6px] shrink-0 rotate-45 bg-gradient-to-br from-accent-yellow to-[#F21B83]" />
@@ -292,7 +292,7 @@ export function CoworkingSection() {
         </div>
       </div>
 
-      <div className="relative z-10 mt-10 flex justify-center px-6">
+      <div className="cascade-item relative z-10 mt-10 flex justify-center px-6" style={{ animationDelay: "0.94s" }}>
         <CtaButton href={CONTACT.instagram}>
           <span className="text-sm font-semibold uppercase tracking-[0.08em]">
             {COWORKING.cta}
