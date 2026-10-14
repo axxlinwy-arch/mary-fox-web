@@ -5,7 +5,6 @@ import { MasterSection } from "@/components/euphoria/master-section";
 import { StudioSection } from "@/components/euphoria/studio-section";
 import { CoworkingSection } from "@/components/euphoria/coworking-section";
 import { EducationSection } from "@/components/euphoria/education-section";
-import { StudentReviewsSection } from "@/components/euphoria/student-reviews-section";
 
 export default function HomePage() {
   return (
@@ -17,7 +16,6 @@ export default function HomePage() {
       <StudioSection />
       <CoworkingSection />
       <EducationSection />
-      <StudentReviewsSection />
     </>
   );
 }

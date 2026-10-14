@@ -6,11 +6,6 @@ import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { CONTACT, ASSETS } from "@/constants/site";
 
-const NAV = [
-  { href: "/offer", label: "Оферта" },
-  { href: "#contacts", label: "Контакты" },
-] as const;
-
 export function EuphoriaHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -30,30 +25,30 @@ export function EuphoriaHeader() {
         </Link>
 
         <div className="hidden xl:flex items-center gap-8">
-          {NAV.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm text-secondary-foreground hover:text-accent transition-colors duration-300"
-            >
-              {link.label}
-            </a>
-          ))}
-          <a
-            href={CONTACT.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-secondary-foreground hover:text-accent-gold transition-colors duration-300"
-          >
-            Instagram
-          </a>
           <a
             href={CONTACT.telegram}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-cta inline-flex items-center rounded-full px-5 py-2 text-sm font-semibold tracking-[0.04em]"
+            className="text-sm text-foreground transition-colors duration-300 hover:text-accent"
           >
             Telegram
+          </a>
+          <a
+            href={CONTACT.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-foreground transition-colors duration-300 hover:text-accent"
+          >
+            Instagram
+          </a>
+          <a href="#contacts" className="text-sm text-foreground transition-colors duration-300 hover:text-accent">
+            Контакты
+          </a>
+          <a
+            href="/offer"
+            className="btn-cta inline-flex items-center rounded-full px-5 py-2 text-sm font-semibold tracking-[0.04em]"
+          >
+            Оферта
           </a>
         </div>
 
@@ -73,31 +68,33 @@ export function EuphoriaHeader() {
           animate={{ opacity: 1, y: 0 }}
           className="xl:hidden space-y-4 border-t border-accent-gold/20 bg-[#090709] px-6 py-6"
         >
-          {NAV.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => setMobileOpen(false)}
-              className="block text-lg text-foreground"
-            >
-              {link.label}
-            </a>
-          ))}
-          <a
-            href={CONTACT.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-lg text-accent-gold"
-          >
-            Instagram
-          </a>
           <a
             href={CONTACT.telegram}
             target="_blank"
             rel="noopener noreferrer"
-            className="block text-lg text-accent"
+            onClick={() => setMobileOpen(false)}
+            className="block text-lg text-foreground"
           >
             Telegram
+          </a>
+          <a
+            href={CONTACT.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setMobileOpen(false)}
+            className="block text-lg text-foreground"
+          >
+            Instagram
+          </a>
+          <a href="#contacts" onClick={() => setMobileOpen(false)} className="block text-lg text-foreground">
+            Контакты
+          </a>
+          <a
+            href="/offer"
+            onClick={() => setMobileOpen(false)}
+            className="btn-cta inline-flex items-center rounded-full px-5 py-2 text-sm font-semibold tracking-[0.04em]"
+          >
+            Оферта
           </a>
         </motion.div>
       )}

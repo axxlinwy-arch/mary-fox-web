@@ -1,189 +1,160 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ChevronDown, Lock } from "lucide-react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { EDUCATION } from "@/constants/content";
-import { cn } from "@/lib/utils";
-
-type ItemId = (typeof EDUCATION.items)[number]["id"];
+import { EducationCircles } from "@/components/euphoria/education/education-circles";
+import { EducationStage } from "@/components/euphoria/education/education-stage";
+import { CertificateCta } from "@/components/euphoria/education/certificate-cta";
+import { Reveal } from "@/components/euphoria/education/reveal";
+import { StudentReviews } from "@/components/euphoria/education/student-reviews";
+import { stages } from "@/components/euphoria/education/stages";
 
 export function EducationSection() {
-  const prefersReducedMotion = useReducedMotion();
-  const [openId, setOpenId] = useState<ItemId | null>("offline");
+  const reduced = useReducedMotion() === true;
+  const sectionRef = useRef<HTMLElement>(null);
+  const listRef = useRef<HTMLOListElement>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [seen, setSeen] = useState<string[]>([]);
+
+  const { scrollYProgress: threadProgress } = useScroll({
+    target: listRef,
+    offset: ["start 70%", "end 60%"],
+  });
+  const { scrollYProgress: sectionProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const circleY = [
+    useTransform(sectionProgress, [0, 1], [14, -14]),
+    useTransform(sectionProgress, [0, 1], [24, -24]),
+    useTransform(sectionProgress, [0, 1], [34, -34]),
+  ] as const;
+
+  const onInView = useCallback((id: string, visible: boolean) => {
+    setSeen((prev) => {
+      const has = prev.includes(id);
+      if (visible === has) return prev;
+      return visible ? [...prev, id] : prev.filter((item) => item !== id);
+    });
+  }, []);
+
+  const scrollActiveId = useMemo(() => {
+    const ordered = stages.map((stage) => stage.id).filter((id) => seen.includes(id));
+    return ordered.at(-1) ?? null;
+  }, [seen]);
+
+  const bustId = openId ?? scrollActiveId ?? stages[0].id;
+  const activeStage = stages.find((stage) => stage.id === bustId) ?? stages[0];
+  const petrified = activeStage.locked === true;
+  const activeCircle = petrified ? -1 : stages.indexOf(activeStage);
+
+  const title = EDUCATION.title;
+  const splitAt = title.lastIndexOf(" ");
+  const titleLead = title.slice(0, splitAt + 1);
+  const titleAccent = title.slice(splitAt + 1);
 
   return (
     <section
+      ref={sectionRef}
       id={EDUCATION.id}
-      className="relative scroll-mt-20 overflow-hidden bg-[#090709] py-20 md:py-28"
+      className="relative scroll-mt-20 bg-[#090709] py-20 md:py-28"
     >
-      <div className="glow-wash pointer-events-none absolute right-[-22%] top-[10%] h-[40rem] w-[34rem]" />
-      <div className="glow-wash pointer-events-none absolute bottom-[-20%] left-[-22%] h-[40rem] w-[40rem]" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="glow-wash absolute right-[-22%] top-[6%] h-[40rem] w-[34rem]" />
+        <div className="glow-wash absolute bottom-[8%] left-[-20%] h-[36rem] w-[36rem]" />
+      </div>
 
-      <div className="relative mx-auto w-full max-w-[58rem] px-6 md:px-8">
-        <header className="mx-auto max-w-xl text-center">
-          <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
-            <span className="h-px w-8 bg-accent-yellow/40" />
-            {EDUCATION.label}
-            <span className="h-px w-8 bg-accent-yellow/40" />
-          </p>
-          <h2 className="font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-[#F1ECE5] sm:text-4xl lg:text-[2.6rem]">
-            {EDUCATION.title.slice(0, EDUCATION.title.lastIndexOf(" ") + 1)}
-            <span className="text-gradient-euphoria">
-              {EDUCATION.title.slice(EDUCATION.title.lastIndexOf(" ") + 1)}
-            </span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[#F1ECE5]/48 sm:text-[15px]">
-            {EDUCATION.text}
-          </p>
-        </header>
+      <div className="relative mx-auto w-full max-w-7xl px-6 md:px-8">
+        <div className="grid items-stretch lg:min-h-[calc(22vw*3.6)] lg:grid-cols-12 lg:gap-6 xl:gap-10">
+          <div className="min-w-0 lg:col-span-7">
+            <header className="mx-auto mb-10 max-w-xl text-center lg:mx-0 lg:mb-0 lg:text-left">
+              <Reveal>
+                <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px] lg:justify-start">
+                  <span className="h-px w-8 bg-accent-yellow/40" />
+                  {EDUCATION.label}
+                  <span className="h-px w-8 bg-accent-yellow/40" />
+                </p>
+              </Reveal>
+              <Reveal delay={0.12}>
+                <h2 className="font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-foreground sm:text-4xl lg:text-[2.6rem]">
+                  {titleLead}
+                  <span className="text-gradient-euphoria">{titleAccent}</span>
+                </h2>
+              </Reveal>
+            </header>
 
-        <div className="mt-10 space-y-3 md:mt-14">
-          {EDUCATION.items.map((item, index) => {
-            const open = openId === item.id;
-            const secret = "secret" in item && item.secret;
-            const n = String(index + 1).padStart(2, "0");
+            <ol ref={listRef} className="relative list-none lg:mt-14">
+              <PathThread progress={threadProgress} reduced={reduced} />
+              {stages.map((stage, index) => (
+                <EducationStage
+                  key={stage.id}
+                  stage={stage}
+                  open={openId === stage.id}
+                  active={openId === stage.id || (openId === null && bustId === stage.id)}
+                  reduced={reduced}
+                  showDivider={index < stages.length - 1}
+                  listRef={listRef}
+                  progress={threadProgress}
+                  onToggle={() =>
+                    setOpenId((current) => (current === stage.id ? null : stage.id))
+                  }
+                  onInView={onInView}
+                />
+              ))}
+            </ol>
+          </div>
 
-            return (
-              <article
-                key={item.id}
-                className={cn(
-                  secret ? "neon-border-gold rounded-2xl bg-card" : "surface-card rounded-2xl"
-                )}
-              >
-                <button
-                  type="button"
-                  aria-expanded={open}
-                  onClick={() => setOpenId(open ? null : item.id)}
-                  className="flex w-full items-center gap-3 px-4 py-4 text-left sm:gap-4 sm:px-6 sm:py-5"
-                >
-                  <span
-                    className={cn(
-                      "font-serif text-xl leading-none sm:text-2xl",
-                      secret ? "text-accent-yellow/70" : "text-champagne/70"
-                    )}
-                  >
-                    {secret ? "??" : n}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-serif text-2xl font-semibold leading-none text-[#F1ECE5] sm:text-3xl">
-                      {item.title}
-                    </span>
-                    <span className="mt-2 flex flex-wrap gap-1.5">
-                      {secret ? (
-                        <span className="rounded-full border border-accent-yellow/40 bg-accent-yellow/10 px-2.5 py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent-yellow">
-                          Секретно · скоро
-                        </span>
-                      ) : (
-                        item.formats.map((format) => (
-                          <span
-                            key={format}
-                            className="rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent"
-                          >
-                            {format}
-                          </span>
-                        ))
-                      )}
-                    </span>
-                  </span>
-                  {secret ? (
-                    <Lock
-                      className="h-4 w-4 shrink-0 text-accent-yellow"
-                      strokeWidth={1.5}
-                    />
-                  ) : (
-                    <ChevronDown
-                      className={cn(
-                        "h-5 w-5 shrink-0 text-accent transition-transform duration-300",
-                        open && "rotate-180"
-                      )}
-                      strokeWidth={1.5}
-                    />
-                  )}
-                </button>
-
-                <AnimatePresence initial={false}>
-                  {open ? (
-                    <motion.div
-                      key={`${item.id}-body`}
-                      initial={
-                        prefersReducedMotion ? false : { height: 0, opacity: 0 }
-                      }
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={
-                        prefersReducedMotion
-                          ? { opacity: 0 }
-                          : { height: 0, opacity: 0 }
-                      }
-                      transition={{ duration: 0.32, ease: [0.4, 0, 0.2, 1] }}
-                      className="overflow-hidden"
-                    >
-                      {secret ? (
-                        <SecretBody text={item.intro} />
-                      ) : (
-                        <div className="border-t border-[rgba(180,35,100,0.22)] px-4 pb-5 pt-4 sm:px-6 sm:pb-6">
-                          <p className="text-sm leading-relaxed text-[#F1ECE5]/68">
-                            {item.intro}
-                          </p>
-                          {item.programs.length > 0 ? (
-                            <ul
-                              className={cn(
-                                "mt-4 grid gap-3",
-                                item.programs.length === 3
-                                  ? "md:grid-cols-3"
-                                  : "md:grid-cols-2"
-                              )}
-                            >
-                              {item.programs.map((program) => (
-                                <li
-                                  key={program.title}
-                                  className="rounded-xl border border-[rgba(180,35,100,0.38)] bg-[#110C11] p-4"
-                                >
-                                  <p className="text-xs uppercase tracking-[0.2em] text-accent-yellow">
-                                    {program.title}
-                                  </p>
-                                  <p className="mt-2 text-sm leading-relaxed text-[#F1ECE5]/68">
-                                    {program.text}
-                                  </p>
-                                </li>
-                              ))}
-                            </ul>
-                          ) : null}
-                        </div>
-                      )}
-                    </motion.div>
-                  ) : null}
-                </AnimatePresence>
-              </article>
-            );
-          })}
+          <Reveal className="relative hidden h-full self-stretch lg:col-span-5 lg:block" delay={0.18}>
+            <EducationCircles
+              activeIndex={activeCircle}
+              petrified={petrified}
+              reduced={reduced}
+              offsets={circleY}
+            />
+          </Reveal>
         </div>
+
+        <StudentReviews />
+        <CertificateCta />
       </div>
     </section>
   );
 }
 
-function SecretBody({ text }: { text: string }) {
+function PathThread({
+  progress,
+  reduced,
+}: {
+  progress: MotionValue<number>;
+  reduced: boolean;
+}) {
+  const needleTop = useTransform(progress, (value) => `${value * 100}%`);
+
   return (
-    <div className="relative border-t border-[rgba(180,35,100,0.22)] px-4 pb-6 pt-5 sm:px-6">
-      <div
-        className="select-none space-y-2 blur-[3px]"
-        aria-hidden
-      >
-        <p className="h-3 w-4/5 rounded-full bg-white/15" />
-        <p className="h-3 w-full rounded-full bg-white/10" />
-        <p className="h-3 w-2/3 rounded-full bg-white/10" />
-        <div className="mt-4 grid gap-2 sm:grid-cols-3">
-          <p className="h-16 rounded-lg bg-white/5" />
-          <p className="h-16 rounded-lg bg-white/5" />
-          <p className="h-16 rounded-lg bg-white/5" />
-        </div>
-      </div>
-      <div className="absolute inset-x-4 bottom-6 top-5 flex items-center justify-center sm:inset-x-6">
-        <p className="max-w-sm text-center text-sm leading-relaxed text-champagne">
-          {text}
-        </p>
-      </div>
+    <div
+      aria-hidden
+      className="pointer-events-none absolute bottom-0 left-0 top-0 z-[1] w-3"
+      style={{
+        maskImage: "linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%)",
+        WebkitMaskImage: "linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%)",
+      }}
+    >
+      <motion.div
+        className="absolute bottom-0 left-1/2 top-0 w-[2px] origin-top shadow-[0_0_8px_rgba(245,181,27,0.75),0_0_16px_rgba(242,27,131,0.4)]"
+        style={{
+          x: "-50%",
+          scaleY: reduced ? 1 : progress,
+          transformOrigin: "top center",
+          backgroundImage: "linear-gradient(180deg, #F5B51B 0%, #FF7A45 48%, #F21B83 100%)",
+        }}
+      />
+      {reduced ? null : (
+        <motion.span
+          className="absolute left-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-gold-soft shadow-[0_0_12px_2px_rgba(245,181,27,0.9)]"
+          style={{ top: needleTop }}
+        />
+      )}
     </div>
   );
 }
