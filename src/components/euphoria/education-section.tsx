@@ -68,16 +68,16 @@ export function EducationSection() {
       <div className="relative mx-auto w-full max-w-7xl px-6 md:px-8">
         <div className="grid items-stretch lg:min-h-[calc(22vw*3.6)] lg:grid-cols-12 lg:gap-6 xl:gap-10">
           <div className="min-w-0 lg:col-span-7">
-            <header className="mx-auto mb-10 max-w-xl text-center lg:mx-0 lg:mb-0 lg:text-left">
+            <header className="mb-10 w-full text-center lg:mb-0 lg:max-w-xl lg:text-left">
               <Reveal>
-                <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px] lg:justify-start">
+                <p className="mb-4 flex items-center justify-start gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
                   <span className="h-px w-8 bg-accent-yellow/40" />
                   {EDUCATION.label}
                   <span className="h-px w-8 bg-accent-yellow/40" />
                 </p>
               </Reveal>
               <Reveal delay={0.12}>
-                <h2 className="font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-foreground sm:text-4xl lg:text-[2.6rem]">
+                <h2 className="text-left font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-foreground sm:text-4xl lg:text-[2.6rem]">
                   {titleLead}
                   <span className="text-gradient-euphoria">{titleAccent}</span>
                 </h2>

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type TouchEvent } from "react";
 import { createPortal } from "react-dom";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { TESTIMONIALS, TESTIMONIALS_INTRO } from "@/constants/content";
 import { ASSETS, CONTACT } from "@/constants/site";
@@ -26,7 +27,15 @@ export function TestimonialsSection() {
   const [index, setIndex] = useState(0);
   const [overflows, setOverflows] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const reduced = useReducedMotion() === true;
   const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const outerScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.55, 1, 0.55]);
+  const outerOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.45, 1, 0.45]);
+  const photoScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1, 1.1]);
   const quoteRef = useRef<HTMLQuoteElement>(null);
   const readMoreRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -38,25 +47,6 @@ export function TestimonialsSection() {
 
   const goPrev = useCallback(() => goTo(index - 1), [goTo, index]);
   const goNext = useCallback(() => goTo(index + 1), [goTo, index]);
-
-  useEffect(() => {
-    const root = sectionRef.current;
-    if (!root) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-shown");
-          observer.disconnect();
-        });
-      },
-      { threshold: 0.08 }
-    );
-    observer.observe(root);
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -135,19 +125,31 @@ export function TestimonialsSection() {
           <picture>
             <source media="(max-width: 767px)" srcSet="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
             <source media="(min-width: 768px)" srcSet={ASSETS.fonzmei} />
-            <img src={ASSETS.fonzmei} alt="" className="reviews-fon" />
+            <motion.img
+              src={ASSETS.fonzmei}
+              alt=""
+              className="reviews-fon"
+            />
           </picture>
         </div>
         <div className="reviews-fon-frame reviews-fon-mob reviews-fon-mob--top">
-          <div
+          <motion.div
             className="reviews-fon-layer"
-            style={{ backgroundImage: `url(${ASSETS.fonzmeimob})` }}
+            style={
+              reduced
+                ? { backgroundImage: `url(${ASSETS.fonzmeimob})` }
+                : { backgroundImage: `url(${ASSETS.fonzmeimob})`, scale: photoScale }
+            }
           />
         </div>
         <div className="reviews-fon-frame reviews-fon-mob reviews-fon-mob--bottom">
-          <div
+          <motion.div
             className="reviews-fon-layer"
-            style={{ backgroundImage: `url(${ASSETS.fonzmeimob})` }}
+            style={
+              reduced
+                ? { backgroundImage: `url(${ASSETS.fonzmeimob})` }
+                : { backgroundImage: `url(${ASSETS.fonzmeimob})`, scale: photoScale }
+            }
           />
         </div>
       </div>
@@ -156,7 +158,6 @@ export function TestimonialsSection() {
         <header className="relative mx-auto mb-9 max-w-xl text-center md:mb-10">
           <p
             className="cascade-item mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]"
-            style={{ animationDelay: "0.12s" }}
           >
             <span className="h-px w-8 bg-accent-yellow/40" />
             {TESTIMONIALS_INTRO.label}
@@ -164,7 +165,6 @@ export function TestimonialsSection() {
           </p>
           <h2
             className="cascade-item font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]"
-            style={{ animationDelay: "0.24s" }}
           >
             {TESTIMONIALS_INTRO.titleLine1}
             <br />
@@ -174,15 +174,18 @@ export function TestimonialsSection() {
           </h2>
           <p
             className="reviews-lead cascade-item mx-auto mt-4 max-w-lg text-sm leading-relaxed text-white/70 sm:text-[15px]"
-            style={{ animationDelay: "0.36s" }}
           >
             {TESTIMONIALS_INTRO.text}
           </p>
         </header>
 
-        <div className="reviews-orbit">
+        <div className="reviews-orbit enter">
           <div aria-hidden className="reviews-haze" />
-          <div aria-hidden className="reviews-ring reviews-ring--outer" />
+          <motion.div
+            aria-hidden
+            className={reduced ? "reviews-ring reviews-ring--outer" : "reviews-ring reviews-ring--outer is-scroll"}
+            style={reduced ? undefined : { x: "-50%", y: "-50%", scale: outerScale, opacity: outerOpacity }}
+          />
           <div aria-hidden className="reviews-ring reviews-ring--main" />
           <div
             className="reviews-copy text-center"
@@ -222,7 +225,6 @@ export function TestimonialsSection() {
 
         <div
           className="cascade-item relative z-30 mt-6 flex items-center justify-center gap-6"
-          style={{ animationDelay: "0.6s" }}
         >
           <button type="button" onClick={goPrev} aria-label="Предыдущий отзыв" className="review-arrow">
             <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
@@ -238,11 +240,10 @@ export function TestimonialsSection() {
         <div className="relative z-30 mt-8 flex flex-col items-center text-center md:mt-6">
           <p
             className="cascade-item max-w-md text-[14px] leading-relaxed text-foreground/75"
-            style={{ animationDelay: "0.72s" }}
           >
             Подарочный заживляющий набор в конце сеанса
           </p>
-          <div className="cascade-item mt-6" style={{ animationDelay: "0.84s" }}>
+          <div className="cascade-item mt-6">
             <CtaButton href={CONTACT.maryInstagram} className="h-12 px-7">
               <span className="text-xs font-semibold uppercase tracking-[0.14em] sm:text-sm">
                 Записаться к Mary

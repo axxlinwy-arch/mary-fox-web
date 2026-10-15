@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { FileText } from "lucide-react";
 import { OFFER } from "@/constants/content";
 import { CONTACT } from "@/constants/site";
@@ -11,13 +8,7 @@ export function EuphoriaOffer() {
       <div className="absolute inset-0 bg-gradient-radial-gold opacity-10 pointer-events-none" />
 
       <div className="relative mx-auto max-w-4xl px-6 md:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7 }}
-          className="surface-card rounded-2xl p-8 md:p-12"
-        >
+        <div className="enter surface-card rounded-2xl p-8 md:p-12">
           <div className="flex items-start gap-4 mb-6">
             <div className="shrink-0 p-3 rounded-xl bg-accent/10 neon-border-gold">
               <FileText className="w-6 h-6 text-accent-gold" />
@@ -41,7 +32,7 @@ export function EuphoriaOffer() {
             <p className="text-foreground/80 mb-2">{OFFER.placeholder}</p>
             <p className="text-xs text-secondary-foreground">{OFFER.note}</p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

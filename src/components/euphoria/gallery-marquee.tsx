@@ -248,7 +248,6 @@ export function GalleryMarquee() {
   const sectionRef = useRef<HTMLElement>(null);
   const [mounted, setMounted] = useState(false);
   const [inView, setInView] = useState(false);
-  const [entered, setEntered] = useState(false);
   const [selectedKey, setSelectedKey] = useState<GalleryImageKey | null>(null);
 
   useEffect(() => {
@@ -262,24 +261,7 @@ export function GalleryMarquee() {
       { threshold: 0 }
     );
     visibility.observe(root);
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return () => visibility.disconnect();
-    }
-
-    const entrance = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        setEntered(true);
-        entrance.disconnect();
-      },
-      { threshold: 0.15 }
-    );
-    entrance.observe(root);
-    return () => {
-      visibility.disconnect();
-      entrance.disconnect();
-    };
+    return () => visibility.disconnect();
   }, []);
 
   useEffect(() => {
@@ -306,17 +288,16 @@ export function GalleryMarquee() {
       id="gallery"
       ref={sectionRef}
       className={cn(
-        "gallery-marquee relative scroll-mt-20 overflow-hidden pb-12 pt-6 md:pb-14 md:pt-0",
-        entered && "is-shown"
+        "gallery-marquee relative scroll-mt-20 overflow-hidden pb-12 pt-6 md:pb-14 md:pt-0"
       )}
     >
       <div className="relative z-10 mx-auto mb-8 max-w-7xl overflow-visible px-6 text-center md:px-8">
-        <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
+        <p className="enter mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
           <span className="h-px w-8 bg-accent-yellow/40" />
           By Mary Fox
           <span className="h-px w-8 bg-accent-yellow/40" />
         </p>
-        <h2 className="overflow-visible whitespace-nowrap font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight sm:text-4xl lg:text-[2.6rem]">
+        <h2 className="enter overflow-visible whitespace-nowrap font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight sm:text-4xl lg:text-[2.6rem]">
           <span className="inline-block overflow-visible text-gradient-euphoria-50">
             Живое искусство
           </span>

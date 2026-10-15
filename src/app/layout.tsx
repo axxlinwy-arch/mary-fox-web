@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Bebas_Neue, Playfair_Display } from "next/font/google";
 import { EuphoriaHeader } from "@/components/euphoria/header";
 import { EuphoriaFooter } from "@/components/euphoria/footer";
+import { ScrollEntrance } from "@/components/euphoria/scroll-entrance";
 import { SiteShell } from "@/components/euphoria/site-shell";
 import { SITE, ASSETS } from "@/constants/site";
 import "./globals.css";
@@ -90,6 +91,7 @@ export default function RootLayout({
     <html lang="ru" className={`${inter.variable} ${bebas.variable} ${playfair.variable}`}>
       <body className="min-h-screen bg-background text-foreground touch-manipulation">
         <SiteShell>
+          <ScrollEntrance />
           <EuphoriaHeader />
           <main>{children}</main>
           <EuphoriaFooter />

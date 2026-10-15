@@ -45,12 +45,12 @@ export function EuphoriaHero() {
       />
 
       <div className="hero__copy relative z-10 flex w-full max-w-none flex-1 flex-col justify-end bg-transparent px-3 pb-3 pt-24 md:h-full md:max-w-[46%] md:flex-none md:justify-center md:bg-gradient-to-r md:from-[#090709] md:via-[#090709]/80 md:to-transparent md:px-10 md:pb-24 lg:max-w-[40%] lg:px-16 xl:px-20">
-        <p className="hero__kicker flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-white/45 md:text-[11px] md:tracking-[0.32em]">
-          <span className="hidden h-px w-8 shrink-0 bg-white/30 xl:block" />
+        <p className="hero__kicker flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-accent-yellow md:text-[11px] md:tracking-[0.32em]">
+          <span className="hidden h-px w-8 shrink-0 bg-accent-yellow/40 xl:block" />
           <span className="hidden xl:inline">{HERO.kicker}</span>
           <span className="hero__brand font-display xl:hidden">EUPHORIA</span>
           <span className="hero__kicker-rest xl:hidden">Tattoo Studio / Минск</span>
-          <span className="hidden h-px w-8 shrink-0 bg-white/30 xl:block" />
+          <span className="hidden h-px w-8 shrink-0 bg-accent-yellow/40 xl:block" />
         </p>
         <h1 className="hero__title font-serif relative z-[12] mt-5 flex w-full flex-col items-start text-left gap-0 text-[min(2.35rem,8.9vw)] font-semibold uppercase leading-none tracking-tight text-white md:text-4xl lg:text-[2.75rem] xl:text-[3.35rem]">
           <span>{HERO.titleLead}</span>
@@ -80,24 +80,24 @@ export function EuphoriaHero() {
           </a>
         </div>
 
-        <div className="hero__stats mt-8 flex w-full flex-nowrap items-center justify-center gap-0 text-[#E8DCC4] md:mt-10 md:w-auto md:justify-start">
+        <div className="hero__stats mt-8 flex w-full flex-nowrap items-center justify-center gap-0 text-[#F1ECE5] md:mt-10 md:w-auto md:justify-start">
           {HERO.stats.map((stat, i) => {
             const Icon = STAT_ICONS[i];
             return (
               <div key={stat.label} className="hero__stat flex min-w-0 items-center">
                 {i > 0 ? (
-                  <span className="mx-2 block h-7 w-px shrink-0 bg-[#E8DCC4]/25 md:mx-5 md:h-9" />
+                  <span className="mx-2 block h-7 w-px shrink-0 bg-[#F1ECE5]/25 md:mx-5 md:h-9" />
                 ) : null}
                 <div className="flex items-center gap-2.5">
                   <Icon
-                    className="h-[1.35rem] w-[1.35rem] text-[#E8DCC4]"
+                    className="h-[1.35rem] w-[1.35rem] text-[#F1ECE5]"
                     strokeWidth={1.5}
                   />
                   <div>
-                    <p className="text-[15px] font-medium leading-none tracking-wide text-[#E8DCC4] md:text-base">
+                    <p className="text-[15px] font-medium leading-none tracking-wide text-[#F1ECE5] md:text-base">
                       {stat.value}
                     </p>
-                    <p className="mt-1 text-[9px] uppercase tracking-[0.16em] text-[#E8DCC4]/70 md:text-[10px]">
+                    <p className="mt-1 text-[9px] uppercase tracking-[0.16em] text-[#F1ECE5]/70 md:text-[10px]">
                       {stat.label}
                     </p>
                   </div>

@@ -5,7 +5,11 @@ import { Reveal } from "@/components/euphoria/education/reveal";
 
 export function EuphoriaFooter() {
   return (
-    <footer id="contacts" className="scroll-mt-20 border-t border-[rgba(180,35,100,0.28)] bg-[#090709]">
+    <footer id="contacts" className="scroll-mt-20 bg-[#090709]">
+      <div
+        aria-hidden
+        className="h-px w-full bg-[linear-gradient(90deg,transparent,rgba(245,181,27,0.55)_42%,rgba(242,27,131,0.45)_62%,transparent)]"
+      />
       <div className="mx-auto max-w-7xl px-6 py-16 md:px-8">
         <div className="grid items-start gap-12 md:grid-cols-3">
           <Reveal>
@@ -73,14 +77,17 @@ export function EuphoriaFooter() {
           </Reveal>
         </div>
 
-        <Reveal
-          delay={0.32}
-          className="mt-12 flex flex-col justify-between gap-4 border-t border-[rgba(180,35,100,0.22)] pt-8 text-xs text-[#F1ECE5] sm:flex-row"
-        >
-          <p>
-            © {new Date().getFullYear()} {SITE.shortName}. {CONTACT.legalEntity}.
-          </p>
-          <p>Республика Беларусь, г. Минск</p>
+        <Reveal delay={0.32} className="mt-12 text-xs text-[#F1ECE5]">
+          <div
+            aria-hidden
+            className="h-px w-full bg-[linear-gradient(90deg,transparent,rgba(245,181,27,0.55)_42%,rgba(242,27,131,0.45)_62%,transparent)]"
+          />
+          <div className="flex flex-col justify-between gap-4 pt-8 sm:flex-row">
+            <p>
+              © {new Date().getFullYear()} {SITE.shortName}. {CONTACT.legalEntity}.
+            </p>
+            <p>Республика Беларусь, г. Минск</p>
+          </div>
         </Reveal>
       </div>
     </footer>

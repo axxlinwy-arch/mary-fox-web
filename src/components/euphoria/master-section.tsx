@@ -71,7 +71,7 @@ function MfStatRings() {
         setActive(true);
         io.disconnect();
       },
-      { threshold: 0.08, rootMargin: "80px 0px 0px 0px" }
+      { threshold: 0.45, rootMargin: "0px 0px -8% 0px" }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -137,7 +137,7 @@ function MfStatRings() {
   const dashOffset = MF_RING_C * (1 - progress);
 
   return (
-    <div ref={rootRef} className="mf-stats cascade-item" style={{ animationDelay: "0.76s" }}>
+    <div ref={rootRef} className="mf-stats cascade-item">
       {MF_STATS.map((stat, i) => (
         <div key={stat.label} className="mf-stat">
           <div className="mf-stat-col">
@@ -325,47 +325,9 @@ function MobilePhotoCarousel() {
 }
 
 export function MasterSection() {
-  const highlightsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const root = highlightsRef.current;
-    if (!root) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const cascadeObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-shown");
-          cascadeObserver.disconnect();
-        });
-      },
-      { threshold: 0.08 }
-    );
-    cascadeObserver.observe(root);
-
-    const nodes = root.querySelectorAll(".master-highlight");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-shown");
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.18 }
-    );
-    nodes.forEach((node) => observer.observe(node));
-    return () => {
-      cascadeObserver.disconnect();
-      observer.disconnect();
-    };
-  }, []);
-
   return (
     <section
       id={MARY_FOX.id}
-      ref={highlightsRef}
       className="cascade relative scroll-mt-20 overflow-x-clip bg-[#090709] pb-12 pt-[5.75rem] lg:pb-16 lg:-mt-8 lg:pt-8"
     >
       <div aria-hidden className="master-corner-glow" />
@@ -375,12 +337,12 @@ export function MasterSection() {
         <div className="grid items-center gap-5 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-12 xl:gap-16">
           <div className="relative z-20 order-2 mx-auto flex w-full max-w-[28rem] flex-col items-center justify-center text-center md:max-w-[34rem] lg:order-1 lg:mx-0 lg:max-w-[28rem] lg:items-start lg:text-left">
             <div>
-              <p className="cascade-item mb-[18px] flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.25em] text-accent-yellow lg:mb-3 lg:justify-start lg:gap-3 lg:text-xs lg:tracking-[0.32em]" style={{ animationDelay: "0.22s" }}>
+              <p className="cascade-item mb-[18px] flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.25em] text-accent-yellow lg:mb-3 lg:justify-start lg:gap-3 lg:text-xs lg:tracking-[0.32em]">
                 <span className="h-px w-6 bg-accent-yellow/40 lg:w-8" />
                 {MARY_FOX.label}
                 <span className="h-px w-6 bg-accent-yellow/40 lg:w-8" />
               </p>
-              <h2 className="cascade-item flex flex-col items-center gap-0 font-serif text-[clamp(1.7rem,7.6vw,2.15rem)] font-semibold leading-[1] tracking-tight text-[#F1ECE5] lg:items-start lg:text-[2.55rem] lg:leading-[0.92] xl:text-[2.9rem]" style={{ animationDelay: "0.4s" }}>
+              <h2 className="cascade-item flex flex-col items-center gap-0 font-serif text-[clamp(1.7rem,7.6vw,2.15rem)] font-semibold leading-[1] tracking-tight text-[#F1ECE5] lg:items-start lg:text-[2.55rem] lg:leading-[0.92] xl:text-[2.9rem]">
                 <span>{MARY_FOX.titleLead}</span>
                 <span
                   className="w-max max-w-full overflow-visible whitespace-nowrap text-gradient-euphoria-50"
@@ -392,7 +354,7 @@ export function MasterSection() {
               </h2>
             </div>
 
-            <p className="mf-lead cascade-item mx-auto mt-6 max-w-[19rem] text-[13.5px] font-normal leading-[1.5] text-white/75 lg:mx-0 lg:mt-6 lg:max-w-[26rem] lg:text-[15px] lg:leading-[1.55] lg:text-white/70" style={{ animationDelay: "0.58s" }}>
+            <p className="mf-lead cascade-item mx-auto mt-6 max-w-[19rem] text-[13.5px] font-normal leading-[1.5] text-white/75 lg:mx-0 lg:mt-6 lg:max-w-[26rem] lg:text-[15px] lg:leading-[1.55] lg:text-white/70">
               {MARY_FOX.roles
                 .map((role, i) => (i === 0 ? role : role.charAt(0).toLowerCase() + role.slice(1)))
                 .join(", ")}
@@ -401,7 +363,7 @@ export function MasterSection() {
 
             <MfStatRings />
 
-            <div className="mf-tags cascade-item" style={{ animationDelay: "0.94s" }}>
+            <div className="mf-tags cascade-item">
               {MARY_FOX.tags.map((tag) => (
                 <span key={tag} className="mf-tag">
                   {tag}
@@ -409,7 +371,7 @@ export function MasterSection() {
               ))}
             </div>
 
-            <div className="mf-socials cascade-item" style={{ animationDelay: "1.12s" }}>
+            <div className="mf-socials cascade-item">
               <a
                 href={CONTACT.maryInstagram}
                 target="_blank"
@@ -431,7 +393,7 @@ export function MasterSection() {
             </div>
           </div>
 
-          <div className="cascade-item relative z-10 order-1 lg:order-2" style={{ animationDelay: "0s" }}>
+          <div className="cascade-item relative z-10 order-1 lg:order-2">
             <MobilePhotoCarousel />
 
             <div className="relative mx-auto hidden min-h-[34rem] w-full max-w-[32rem] lg:block xl:min-h-[42rem] xl:max-w-[40rem]">

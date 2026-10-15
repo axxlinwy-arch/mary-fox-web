@@ -841,6 +841,15 @@
   }
 }
 
+@keyframes cowork-statue-enter-mobile {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.28;
+  }
+}
+
 @keyframes hero-space-drift-a {
   0%,
   100% {
@@ -2468,67 +2477,48 @@
   }
 }
 
+.gallery-row-in--from-left {
+  --row-shift: -7%;
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  .cascade:not(.is-shown) .cascade-item {
+  .cascade-item:not(.is-shown),
+  .enter:not(.is-shown),
+  .master-reveal:not(.is-shown),
+  .gallery-row-in:not(.is-shown) {
     opacity: 0;
   }
 
-  .cascade.is-shown .cascade-item {
+  .cascade-item.is-shown,
+  .enter.is-shown {
     animation-name: hero-enter;
     animation-duration: 0.7s;
-    animation-timing-function: ease;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
     animation-fill-mode: both;
+    animation-delay: var(--enter-delay, 0s);
   }
 
-  #master.cascade.is-shown .cascade-item {
+  #master .cascade-item.is-shown {
     animation-duration: 0.55s;
-    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  #coworking.cascade.is-shown .cascade-item {
-    animation-duration: 0.62s;
-    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  #coworking.cascade:not(.is-shown) .cowork-statue {
+  #coworking .cowork-statue:not(.is-shown) {
     opacity: 0;
   }
 
-  #coworking.cascade.is-shown .cowork-statue {
+  #coworking .cowork-statue.is-shown {
     animation: cowork-statue-enter 1s ease both;
+    animation-delay: var(--enter-delay, 0s);
   }
 
-  #coworking.cascade.is-shown .cowork-statue--gorgon {
-    animation-delay: 0.06s;
-  }
-
-  #coworking.cascade.is-shown .cowork-statue--persey {
-    animation-delay: 0.16s;
-  }
-
-  .gallery-marquee:not(.is-shown) .gallery-row-in {
-    opacity: 0;
-  }
-
-  .gallery-marquee.is-shown .gallery-row-in {
+  .gallery-row-in.is-shown {
     animation: gallery-row-enter 1.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .gallery-marquee.is-shown .gallery-row-in--from-left {
-    --row-shift: -7%;
-    animation-delay: 0.22s;
-  }
-
-  .master-reveal:not(.is-shown) {
-    opacity: 0;
+    animation-delay: var(--enter-delay, 0s);
   }
 
   .master-reveal.is-shown {
     animation: master-highlight-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  .master-reveal-late.is-shown {
-    animation-delay: 0.12s;
+    animation-delay: var(--enter-delay, 0s);
   }
 
   #master .master-highlight:not(.is-shown) .from-left,
@@ -2541,6 +2531,7 @@
     animation-duration: 0.65s;
     animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
     animation-fill-mode: both;
+    animation-delay: var(--enter-delay, 0s);
   }
 
   #master .master-highlight.is-shown .from-left {
@@ -2551,18 +2542,26 @@
     animation-name: master-highlight-from-right;
   }
 
-  #master .mf-row .master-highlight:nth-child(2).is-shown .from-left,
-  #master .mf-row .master-highlight:nth-child(2).is-shown .from-right,
-  #master .mf-mob-row .master-highlight:nth-child(2).is-shown .from-left,
-  #master .mf-mob-row .master-highlight:nth-child(2).is-shown .from-right {
-    animation-delay: 0.12s;
+  .studio-photo-in:not(.is-shown) {
+    animation: none;
+    opacity: 0;
   }
 
-  #master .mf-row .master-highlight:nth-child(3).is-shown .from-left,
-  #master .mf-row .master-highlight:nth-child(3).is-shown .from-right,
-  #master .mf-mob-row .master-highlight:nth-child(3).is-shown .from-left,
-  #master .mf-mob-row .master-highlight:nth-child(3).is-shown .from-right {
-    animation-delay: 0.24s;
+  .studio-photo-in.is-shown {
+    animation: studio-photo-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--enter-delay, 0s);
+  }
+}
+
+@media (scripting: none) {
+  .cascade-item,
+  .enter,
+  .master-reveal,
+  .gallery-row-in,
+  .studio-photo-in,
+  #coworking .cowork-statue {
+    opacity: 1 !important;
+    animation: none !important;
   }
 }
 
@@ -2605,23 +2604,23 @@
   transform: perspective(460px) translate3d(var(--ox), var(--oy), 0) rotateX(var(--rx)) rotateY(var(--ry)) rotate(var(--rot-from)) scale(0.95);
 }
 
-.studio-collage.is-shown .studio-sat {
+.studio-sat.is-shown {
   opacity: 1;
   transform: perspective(460px) rotateX(var(--rx)) rotateY(var(--ry)) rotate(var(--rot)) scale(1);
   transition:
     transform 820ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 700ms ease;
-  transition-delay: var(--d);
+  transition-delay: var(--enter-delay, var(--d));
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .studio-collage.is-shown .studio-sat:hover {
+  .studio-sat.is-shown:hover {
     transform: perspective(460px) rotateX(var(--rx)) rotateY(var(--ry)) rotate(calc(var(--rot) + var(--tilt))) scale(1.03);
     transition-delay: 0s;
     transition-duration: 220ms;
   }
 
-  .studio-collage.is-shown .studio-sat:hover .studio-card::after {
+  .studio-sat.is-shown:hover .studio-card::after {
     opacity: 1;
   }
 }
@@ -2857,8 +2856,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .studio-sat,
-  .studio-collage.is-shown .studio-sat,
-  .studio-collage.is-shown .studio-sat:hover {
+  .studio-sat.is-shown,
+  .studio-sat.is-shown:hover {
     opacity: 1;
     transform: perspective(460px) rotateX(var(--rx)) rotateY(var(--ry)) rotate(var(--rot)) scale(1);
     transition: none;
@@ -2972,7 +2971,11 @@
 .reviews-ring--outer {
   width: calc(clamp(400px, 28vw, 480px) * 1.3);
   height: calc(clamp(400px, 28vw, 480px) * 1.3);
-  border: 1px solid rgba(245, 181, 27, 0.12);
+  border: 1.5px solid rgba(245, 181, 27, 0.46);
+}
+
+.reviews-ring--outer.is-scroll {
+  translate: none;
 }
 
 .reviews-copy {
@@ -3249,6 +3252,36 @@
   }
 }
 
+#coworking .cowork-figure-layer {
+  border: 0;
+  box-shadow: none;
+}
+
+@media (min-width: 1024px) {
+  #coworking .cowork-figure-layer {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 0.2) 5%,
+      rgba(0, 0, 0, 0.55) 12%,
+      #000 20%,
+      #000 72%,
+      rgba(0, 0, 0, 0.4) 90%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 0.2) 5%,
+      rgba(0, 0, 0, 0.55) 12%,
+      #000 20%,
+      #000 72%,
+      rgba(0, 0, 0, 0.4) 90%,
+      transparent 100%
+    );
+  }
+}
+
 #coworking .cowork-statue--gorgon {
   -webkit-mask-image:
     linear-gradient(to left, #000 10%, #000 36%, rgba(0, 0, 0, 0.4) 66%, transparent 100%),
@@ -3263,58 +3296,67 @@
 }
 
 #coworking .cowork-statue--persey {
-  filter: saturate(1.38);
   -webkit-mask-image:
-    linear-gradient(to right, black 16%, black 36%, rgba(0, 0, 0, 0.42) 72%, transparent 100%),
+    linear-gradient(to right, black 0%, black 55%, transparent 85%),
     linear-gradient(to bottom, transparent 0%, black 16%, black 62%, transparent 100%);
   mask-image:
-    linear-gradient(to right, black 16%, black 36%, rgba(0, 0, 0, 0.42) 72%, transparent 100%),
+    linear-gradient(to right, black 0%, black 55%, transparent 85%),
     linear-gradient(to bottom, transparent 0%, black 16%, black 62%, transparent 100%);
   -webkit-mask-composite: source-in;
   mask-composite: intersect;
 }
 
-@media (max-width: 767px) {
-  #coworking .cowork-copy {
-    padding-top: 2.5rem;
+@media (min-width: 1024px) {
+  #coworking .cowork-figure--gorgon,
+  #coworking .cowork-figure--persey {
+    filter: brightness(0.82);
   }
 
-  #coworking .cowork-statue--gorgon,
-  #coworking .cowork-statue--persey {
-    top: -1.5rem;
-    bottom: auto;
-    width: auto;
-    max-width: none;
-  }
-
-  #coworking .cowork-statue--gorgon {
-    top: -5.5rem;
-    right: -22%;
-    left: auto;
-    height: min(108vw, 32rem);
+  #coworking .cowork-figure--persey {
     -webkit-mask-image:
-      linear-gradient(to left, #000 14%, #000 40%, rgba(0, 0, 0, 0.45) 68%, transparent 100%),
-      linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.65) 7%, #000 16%, #000 80%, transparent 100%);
+      radial-gradient(ellipse at 46% 62%, #000 22%, rgba(0, 0, 0, 0.55) 48%, transparent 74%),
+      linear-gradient(to right, transparent 0%, #000 8%, #000 72%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, transparent var(--statue-top, 0%), rgba(0, 0, 0, 0.35) calc(var(--statue-top, 0%) + 5%), #000 var(--statue-fade, 14%), #000 76%, transparent 100%);
     mask-image:
-      linear-gradient(to left, #000 14%, #000 40%, rgba(0, 0, 0, 0.45) 68%, transparent 100%),
-      linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.65) 7%, #000 16%, #000 80%, transparent 100%);
+      radial-gradient(ellipse at 46% 62%, #000 22%, rgba(0, 0, 0, 0.55) 48%, transparent 74%),
+      linear-gradient(to right, transparent 0%, #000 8%, #000 72%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, transparent var(--statue-top, 0%), rgba(0, 0, 0, 0.35) calc(var(--statue-top, 0%) + 5%), #000 var(--statue-fade, 14%), #000 76%, transparent 100%);
+    -webkit-mask-composite: source-in, source-in;
+    mask-composite: intersect;
+  }
+
+  #coworking .cowork-figure--gorgon {
+    -webkit-mask-image:
+      radial-gradient(ellipse at 54% 62%, #000 22%, rgba(0, 0, 0, 0.55) 48%, transparent 74%),
+      linear-gradient(to left, transparent 0%, #000 20%, #000 72%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, transparent var(--statue-top, 0%), rgba(0, 0, 0, 0.35) calc(var(--statue-top, 0%) + 5%), #000 var(--statue-fade, 14%), #000 76%, transparent 100%);
+    mask-image:
+      radial-gradient(ellipse at 54% 62%, #000 22%, rgba(0, 0, 0, 0.55) 48%, transparent 74%),
+      linear-gradient(to left, transparent 0%, #000 20%, #000 72%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, transparent var(--statue-top, 0%), rgba(0, 0, 0, 0.35) calc(var(--statue-top, 0%) + 5%), #000 var(--statue-fade, 14%), #000 76%, transparent 100%);
+    -webkit-mask-composite: source-in, source-in;
+    mask-composite: intersect;
+  }
+}
+
+@media (max-width: 1023px) {
+  #coworking .cowork-statue.cowork-figure--gorgon {
+    animation: none !important;
+    opacity: 1 !important;
+    mix-blend-mode: normal !important;
+    filter: none !important;
+    -webkit-mask-image:
+      linear-gradient(to left, transparent 0%, #000 36%, #000 100%),
+      linear-gradient(to bottom, transparent 0%, #000 25%, #000 70%, transparent 100%);
+    mask-image:
+      linear-gradient(to left, transparent 0%, #000 45%, #000 100%),
+      linear-gradient(to bottom, transparent 0%, #000 5%, #000 30%, transparent 100%);
     -webkit-mask-composite: source-in;
     mask-composite: intersect;
   }
 
-  #coworking .cowork-statue--persey {
-    top: 0rem;
-    left: -27%;
-    right: auto;
-    height: min(108vw, 32rem);
-    -webkit-mask-image:
-      linear-gradient(to right, #000 14%, #000 40%, rgba(0, 0, 0, 0.45) 68%, transparent 100%),
-      linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.65) 7%, #000 16%, #000 80%, transparent 100%);
-    mask-image:
-      linear-gradient(to right, #000 14%, #000 40%, rgba(0, 0, 0, 0.45) 68%, transparent 100%),
-      linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.65) 7%, #000 16%, #000 80%, transparent 100%);
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
+  #coworking .cowork-statue.is-shown {
+    animation: none;
   }
 }
 
@@ -3435,6 +3477,45 @@
 @media (prefers-reduced-motion: reduce) {
   #coworking .atmosphere-scale__fill {
     transition: none;
+  }
+}
+
+.cowork-spin-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 9999px;
+  pointer-events: none;
+  padding: 1.5px;
+  background: conic-gradient(
+    from 206deg,
+    transparent 0 8%,
+    rgba(255, 244, 214, 0.95) 14%,
+    rgba(245, 181, 27, 0.45) 22%,
+    transparent 30% 58%,
+    rgba(255, 244, 214, 0.95) 64%,
+    rgba(245, 181, 27, 0.45) 72%,
+    transparent 80% 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: cowork-spin 40s linear infinite;
+}
+
+@keyframes cowork-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cowork-spin-ring {
+    animation: none;
   }
 }
 

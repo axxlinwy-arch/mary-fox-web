@@ -49,13 +49,7 @@ export function EducationStage({
   }, [inView, onInView, stage.id]);
 
   return (
-    <motion.li
-      className="grid grid-cols-[12px_minmax(0,1fr)] gap-x-4 lg:gap-x-6"
-      initial={reduced ? false : { opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px 0px -8% 0px" }}
-      transition={{ duration: reduced ? 0 : 0.7, ease }}
-    >
+    <li className="enter grid grid-cols-[12px_minmax(0,1fr)] gap-x-4 lg:gap-x-6">
       <div className="relative">
         <span
           ref={nodeRef}
@@ -148,7 +142,7 @@ export function EducationStage({
           className="col-start-2 h-px bg-[linear-gradient(90deg,transparent,rgba(245,181,27,0.55)_42%,rgba(242,27,131,0.45)_62%,transparent)]"
         />
       ) : null}
-    </motion.li>
+    </li>
   );
 }
 

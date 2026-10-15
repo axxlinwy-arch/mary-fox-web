@@ -1,11 +1,26 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Check, Sparkles } from "lucide-react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useInView,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
+import Image from "next/image";
+import { Sparkles } from "lucide-react";
 import { COWORKING } from "@/constants/content";
 import { ASSETS, CONTACT } from "@/constants/site";
+import { CarouselArrows, SlideCounter } from "@/components/euphoria/carousel-controls";
 import { CtaButton } from "@/components/euphoria/cta-button";
 import { cn } from "@/lib/utils";
+
+const SHOW_MOBILE_FIGURES = true;
+const SHOW_TIER_TITLE_GLOW = false;
+const MotionImage = motion.create(Image);
 
 const PHOTO_SRC = {
   studia3: ASSETS.studia3,
@@ -13,56 +28,45 @@ const PHOTO_SRC = {
   studia7: ASSETS.studia7,
 } as const;
 
-type TariffId = (typeof COWORKING.tariffs)[number]["id"];
+const tiers = COWORKING.tiers;
+type TierId = (typeof tiers)[number]["id"];
 
-function ComfortExtras() {
-  return (
-    <div className="mt-6 border-t border-accent-gold/20 pt-5">
-      <p className="text-[10px] uppercase tracking-[0.28em] text-accent-yellow">
-        Дополнительно в «Комфорт»
-      </p>
-      <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-        {COWORKING.comfortExtras.map((item) => (
-          <li
-            key={item}
-            className="flex items-start gap-2.5 text-sm leading-snug text-[#F1ECE5]/68"
-          >
-            <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-gold" strokeWidth={2} />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+const ease = [0.22, 1, 0.36, 1] as const;
+const PERSEUS_OFFSET_X = "clamp(32px, 3.5vw, 72px)";
+const STATUE_LAYER_LIFT = 220;
+const archHeights = ["lg:h-[420px]", "lg:h-[500px]", "lg:h-[450px]"] as const;
+const archShift = ["", "lg:-translate-y-[30px]", ""] as const;
 
 export function CoworkingSection() {
-  const [activeId, setActiveId] = useState<TariffId>("standard");
-  const active = COWORKING.tariffs.find((t) => t.id === activeId) ?? COWORKING.tariffs[1];
-  const showExtras = active.id === "comfort";
+  const reduced = useReducedMotion() === true;
   const sectionRef = useRef<HTMLElement>(null);
-  const [shown, setShown] = useState(false);
   const gorgonRef = useRef<HTMLImageElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
   const [statueSize, setStatueSize] = useState<{ w: number; h: number } | null>(null);
   const [perseyTop, setPerseyTop] = useState<number | null>(null);
+  const [photoMask, setPhotoMask] = useState<{ top: string; fade: string } | null>(null);
+  const [isLg, setIsLg] = useState(true);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const statueY = useTransform(scrollYProgress, [0, 1], [40, -80]);
+  const archY = [
+    useTransform(scrollYProgress, [0, 1], [28, -28]),
+    useTransform(scrollYProgress, [0, 1], [12, -12]),
+    useTransform(scrollYProgress, [0, 1], [44, -44]),
+  ] as const;
+  const bustY = useTransform(scrollYProgress, [0, 1], [18, -18]);
+  const copyY = useTransform(scrollYProgress, [0, 1], [32, -32]);
+  const move = isLg && !reduced;
 
   useEffect(() => {
-    const root = sectionRef.current;
-    if (!root) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setShown(true);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        setShown(true);
-        observer.disconnect();
-      },
-      { threshold: 0.08 }
-    );
-    observer.observe(root);
-    return () => observer.disconnect();
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const apply = () => setIsLg(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
   }, []);
 
   useLayoutEffect(() => {
@@ -73,21 +77,38 @@ export function CoworkingSection() {
     const sync = () => {
       gorgon.style.height = "";
       gorgon.style.width = "";
-      if (!window.matchMedia("(min-width: 768px)").matches) {
+      if (!window.matchMedia("(min-width: 1024px)").matches) {
         setStatueSize(null);
         setPerseyTop(null);
+        setPhotoMask(null);
         return;
       }
       const width = gorgon.offsetWidth;
       const height = gorgon.offsetHeight;
       if (width <= 0 || height <= 0) return;
       setStatueSize({ w: width, h: height });
-      setPerseyTop(section.clientHeight * 0.98 - height);
+      const renderedH = Math.min(height, width * (1536 / 1024));
+      const bitmapTop = Math.max(0, height - renderedH);
+      const fadeEnd = Math.min(bitmapTop + renderedH * 0.14, height * 0.7);
+      setPhotoMask({
+        top: `${(bitmapTop / height) * 100}%`,
+        fade: `${(fadeEnd / height) * 100}%`,
+      });
+      const line = lineRef.current;
+      const lineTop = line
+        ? line.getBoundingClientRect().top - section.getBoundingClientRect().top
+        : section.clientHeight * 0.62;
+      setPerseyTop(lineTop - height);
     };
 
     sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(section);
     window.addEventListener("resize", sync);
-    return () => window.removeEventListener("resize", sync);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", sync);
+    };
   }, []);
 
   return (
@@ -95,210 +116,824 @@ export function CoworkingSection() {
       ref={sectionRef}
       id={COWORKING.id}
       className={cn(
-        "cascade relative scroll-mt-20 overflow-hidden bg-[#090709] py-20 md:py-28",
-        shown && "is-shown"
+        "cascade relative scroll-mt-20 overflow-x-clip bg-[#090709] pb-[72px] pt-[196px] lg:py-28 lg:pt-[calc(7rem+24px)]"
       )}
     >
-      <div className="relative max-md:overflow-visible md:overflow-hidden">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <div className="cowork-figure-layer pointer-events-none absolute inset-0 lg:-top-[220px]">
+      {SHOW_MOBILE_FIGURES ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute z-0 lg:hidden"
+          style={{
+            top: "-8vw",
+            left: "-28vw",
+            width: "110vw",
+            height: "100vw",
+            background:
+              "radial-gradient(ellipse at 50% 50%, rgba(242,27,131,0.4) 0%, rgba(242,27,131,0.18) 16%, rgba(196,20,98,0.07) 28%, transparent 76%)",
+            filter: "blur(68px)",
+          }}
+        />
+      ) : null}
+      <MotionImage
         ref={gorgonRef}
         src={ASSETS.gargonavrost}
         alt=""
-        className="cowork-statue cowork-statue--gorgon pointer-events-none absolute -right-[2%] top-[-4rem] z-0 h-[58vw] w-auto max-w-none select-none object-contain object-right mix-blend-screen opacity-90 saturate-[1.25] [mask-image:linear-gradient(to_left,black_22%,black_48%,transparent_86%),linear-gradient(to_bottom,transparent_0%,black_10%,black_72%,transparent_100%)] [mask-composite:intersect] [-webkit-mask-image:linear-gradient(to_left,black_22%,black_48%,transparent_86%),linear-gradient(to_bottom,transparent_0%,black_10%,black_72%,transparent_100%)] [-webkit-mask-composite:source-in] md:-right-[12%] md:top-[-2%] md:h-[96%] md:w-[min(52vw,998px)] md:[mask-image:linear-gradient(to_left,black_22%,black_48%,transparent_86%),linear-gradient(to_bottom,transparent_0%,black_10%,black_88%,transparent_100%)] md:[-webkit-mask-image:linear-gradient(to_left,black_22%,black_48%,transparent_86%),linear-gradient(to_bottom,transparent_0%,black_10%,black_88%,transparent_100%)]"
-        style={
-          statueSize
-            ? { width: statueSize.w, height: statueSize.h }
-            : undefined
-        }
-      />
-      <div className="cowork-statue-veil pointer-events-none absolute inset-y-[10%] left-[24%] right-[24%] z-[1] bg-gradient-to-r from-transparent via-[#090709]/22 to-transparent" />
-
-      <div className="cowork-copy relative z-10 mx-auto w-full max-w-[58rem] px-6 md:px-8">
-        <header className="mx-auto max-w-xl text-center">
-          <p className="cascade-item mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]" style={{ animationDelay: "0.12s" }}>
-            <span className="h-px w-8 bg-accent-yellow/40" />
-            {COWORKING.label}
-            <span className="h-px w-8 bg-accent-yellow/40" />
-          </p>
-          <h2 className="cascade-item font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]" style={{ animationDelay: "0.24s" }}>
-            {COWORKING.titleLine1}
-            <br />
-            <span className="text-gradient-euphoria">{COWORKING.titleLine2}</span>
-            <br />
-            {COWORKING.titleLine3}
-          </h2>
-          <p className="cascade-item mx-auto mt-4 max-w-lg text-sm leading-relaxed text-white/70 sm:text-[15px]" style={{ animationDelay: "0.36s" }}>
-            {COWORKING.text}
-          </p>
-        </header>
-
-        <div className="mt-10 grid grid-cols-3 gap-2 sm:gap-3 md:mt-12 md:gap-4">
-          {COWORKING.photos.map((photo, index) => (
-            <figure
-              key={photo.key}
-              className={cn(
-                "atmosphere-frame cascade-item group relative overflow-hidden rounded-xl",
-                index === 1 ? "aspect-[3/4] sm:aspect-[4/5]" : "aspect-[3/4] translate-y-3 sm:translate-y-4"
-              )}
-              style={{ animationDelay: `${0.44 + index * 0.08}s` }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={PHOTO_SRC[photo.key]}
-                alt={photo.alt}
-                loading="lazy"
-                decoding="async"
-                className="media-zoom absolute inset-0 h-full w-full object-cover"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
-            </figure>
-          ))}
-        </div>
-
-        <div className="cascade-item mt-12 md:mt-16" style={{ animationDelay: "0.7s" }}>
-          <div
-            role="tablist"
-            aria-label="Тарифы коворкинга"
-            data-level={activeId}
-            className="atmosphere-pills atmosphere-scale mx-auto grid max-w-lg grid-cols-3 gap-1 rounded-full bg-[#110C11] p-1 shadow-volume"
-          >
-            <span className="atmosphere-scale__rail hidden" aria-hidden>
-              <span className="atmosphere-scale__fill" />
-            </span>
-            {COWORKING.tariffs.map((tariff) => {
-              const selected = tariff.id === activeId;
-              return (
-                <button
-                  key={tariff.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={selected}
-                  onClick={() => setActiveId(tariff.id)}
-                  className={cn(
-                    "atmosphere-scale__btn rounded-full px-2 py-2.5 text-[11px] font-medium uppercase tracking-[0.14em] transition-colors sm:text-xs sm:tracking-[0.18em]",
-                    selected
-                      ? "is-active bg-accent text-white"
-                      : "text-secondary-foreground hover:text-foreground"
-                  )}
-                >
-                  <span className="atmosphere-scale__label">{tariff.name}</span>
-                  <span className="atmosphere-scale__gem hidden" aria-hidden />
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="review-glow-card mt-6 overflow-hidden rounded-2xl p-5 sm:p-7">
-            <div className="flex items-center gap-3">
-              <p className="shrink-0 font-serif text-3xl text-[#F1ECE5] sm:text-4xl">
-                {active.name}
-              </p>
-              <span className="h-[6px] w-[6px] shrink-0 rotate-45 bg-gradient-to-br from-accent-yellow to-[#F21B83]" />
-              <span className="h-px min-w-[2rem] flex-1 bg-gradient-to-r from-accent-yellow via-[#FF7A45] to-transparent" />
-              {active.note ? (
-                <p className="hidden max-w-[11rem] text-right text-[10px] uppercase leading-snug tracking-[0.14em] text-accent-yellow sm:block">
-                  {active.note}
-                </p>
-              ) : null}
-            </div>
-            <p className="mt-2 text-sm text-[#F1ECE5]/48">{active.tagline}</p>
-            {active.note ? (
-              <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-accent-yellow sm:hidden">
-                {active.note}
-              </p>
-            ) : null}
-
-            <p className="mt-6 text-[10px] uppercase tracking-[0.28em] text-accent-yellow">
-              Что входит
-            </p>
-
-            <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-              {COWORKING.baseIncludes.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-start gap-2.5 text-sm leading-snug text-[#F1ECE5]/68"
-                >
-                  <Check
-                    className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent"
-                    strokeWidth={2}
-                  />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-
-            {showExtras ? <ComfortExtras /> : null}
-
-            <p className="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-champagne">
-              <Sparkles className="h-3.5 w-3.5" strokeWidth={1.5} />
-              {COWORKING.sharedNote}
-            </p>
-          </div>
-        </div>
-      </div>
-      </div>
-
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={ASSETS.persey}
-        alt=""
-        className="cowork-statue cowork-statue--persey pointer-events-none absolute -left-[2%] top-4 z-0 h-[58vw] w-auto max-w-none select-none object-contain object-left mix-blend-screen opacity-90 saturate-[1.25] md:-left-[12%] md:top-auto md:h-auto"
+        width={2048}
+        height={3072}
+        quality={95}
+        sizes="(min-width: 1024px) 998px, 124vw"
+        className={cn(
+          "cowork-statue cowork-statue--gorgon cowork-figure cowork-figure--gorgon pointer-events-none absolute left-[-40vw] top-[-20px] z-[1] h-[158vw] w-[124vw] max-w-none select-none object-cover object-top opacity-100 lg:left-auto lg:top-[-2%] lg:z-0 lg:h-[96%] lg:-right-[12%] lg:w-[min(52vw,998px)] lg:object-contain lg:object-right-bottom lg:mix-blend-screen lg:opacity-90",
+          !SHOW_MOBILE_FIGURES && "max-lg:hidden"
+        )}
+        initial={false}
+        animate={undefined}
         style={{
-          top: statueSize ? (perseyTop ?? undefined) : undefined,
-          bottom: statueSize && perseyTop == null ? "-2%" : undefined,
-          width: statueSize?.w,
-          height: statueSize?.h,
+          ...(statueSize
+            ? { width: statueSize.w, height: statueSize.h, top: (perseyTop ?? 0) + STATUE_LAYER_LIFT }
+            : {}),
+          ["--statue-top" as string]: photoMask?.top,
+          ["--statue-fade" as string]: photoMask?.fade,
+          ...(move ? { y: statueY } : {}),
         }}
       />
 
-      <div className="cascade-item relative z-10 mx-auto mt-8 w-full max-w-[58rem] px-6 md:mt-10 md:px-8" style={{ animationDelay: "0.82s" }}>
-        <div className="review-glow-card relative overflow-hidden rounded-2xl">
-          <div className="pointer-events-none absolute right-4 top-6 z-20 hidden h-[calc(100%-3rem)] w-3 flex-col items-center gap-2 md:flex">
-            <span className="h-[6px] w-[6px] shrink-0 rotate-45 bg-gradient-to-br from-accent-yellow to-[#F21B83]" />
-            <span className="w-px min-h-[2rem] flex-1 bg-gradient-to-b from-accent-yellow via-[#FF7A45] to-transparent" />
-          </div>
-          <div className="relative grid items-stretch md:grid-cols-[minmax(13rem,18rem)_minmax(0,1fr)]">
-            <div className="relative h-52 w-full md:h-auto md:min-h-[17rem]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={ASSETS.golovapodpiska}
-                alt=""
-                className="absolute inset-0 h-full w-full object-cover object-[50%_38%] mix-blend-screen md:[mask-image:linear-gradient(to_right,black_58%,transparent_100%)] md:[-webkit-mask-image:linear-gradient(to_right,black_58%,transparent_100%)]"
-              />
-            </div>
-            <article className="relative z-10 flex h-full flex-col justify-evenly gap-4 px-6 py-7 text-center md:px-10 md:py-8 md:pr-14 md:text-left">
-              <p className="text-[10px] uppercase tracking-[0.32em] text-accent-yellow">
-                {COWORKING.subscription.title}
-              </p>
-              <h3 className="font-serif text-[1.55rem] font-semibold leading-[1.12] tracking-tight text-white sm:text-[1.9rem]">
-                Больше, чем
-                <br />
-                просто рабочее место
-              </h3>
-              <p className="text-sm leading-relaxed text-[#F1ECE5]/50">
-                {COWORKING.subscription.text}
-              </p>
-              <a
-                href={CONTACT.instagramCoworkingHighlight}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-link-draw inline-block self-center text-xs font-semibold uppercase tracking-[0.16em] text-accent-yellow hover:text-accent-gold md:self-start"
-              >
-                {COWORKING.subscription.more} →
-              </a>
-            </article>
-          </div>
-        </div>
+      <MotionImage
+        src={ASSETS.persey}
+        alt=""
+        width={2048}
+        height={3072}
+        quality={95}
+        sizes="998px"
+        className="cowork-statue cowork-statue--persey cowork-figure cowork-figure--persey pointer-events-none absolute z-0 hidden max-w-none select-none object-contain object-right-bottom mix-blend-screen lg:-left-[12%] lg:right-auto lg:top-auto lg:block lg:h-auto lg:w-auto lg:opacity-90"
+        style={{
+          top: statueSize ? (perseyTop ?? 0) + STATUE_LAYER_LIFT : undefined,
+          bottom: statueSize && perseyTop == null ? "-2%" : undefined,
+          width: statueSize?.w,
+          height: statueSize?.h,
+          ["--statue-top" as string]: photoMask?.top,
+          ["--statue-fade" as string]: photoMask?.fade,
+          x: isLg ? `calc(${PERSEUS_OFFSET_X} * -1)` : 0,
+          y: move ? statueY : 0,
+        }}
+      />
       </div>
 
-      <div className="cascade-item relative z-10 mt-10 flex justify-center px-6" style={{ animationDelay: "0.94s" }}>
-        <CtaButton href={CONTACT.instagram}>
-          <span className="text-sm font-semibold uppercase tracking-[0.08em]">
-            {COWORKING.cta}
-          </span>
-        </CtaButton>
-      </div>
+      <CoworkingDesktop
+        lineRef={lineRef}
+        reduced={reduced}
+        isLg={isLg}
+        move={move}
+        archY={archY}
+        bustY={bustY}
+        copyY={copyY}
+      />
     </section>
   );
 }
+
+function useOnceInView(ref: React.RefObject<HTMLElement | null>, reduced: boolean) {
+  const inView = useInView(ref, { once: true, amount: 0.28, margin: "0px 0px -10% 0px" });
+  const [forced, setForced] = useState(false);
+
+  useEffect(() => {
+    if (reduced || inView) return;
+    const timer = window.setTimeout(() => {
+      const el = ref.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const visible = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+      if (visible > 72) setForced(true);
+    }, 1200);
+    return () => window.clearTimeout(timer);
+  }, [reduced, inView, ref]);
+
+  return reduced || inView || forced;
+}
+
+function CoworkingDesktop({
+  lineRef,
+  reduced,
+  isLg,
+  move,
+  archY,
+  bustY,
+  copyY,
+}: {
+  lineRef: React.RefObject<HTMLDivElement | null>;
+  reduced: boolean;
+  isLg: boolean;
+  move: boolean;
+  archY: readonly [MotionValue<number>, MotionValue<number>, MotionValue<number>];
+  bustY: MotionValue<number>;
+  copyY: MotionValue<number>;
+}) {
+  const headerRef = useRef<HTMLElement>(null);
+  const stripWrapRef = useRef<HTMLDivElement>(null);
+  const archRowRef = useRef<HTMLDivElement>(null);
+  const tariffsRef = useRef<HTMLDivElement>(null);
+  const [activeArch, setActiveArch] = useState(0);
+  const [archStep, setArchStep] = useState(0);
+  const headerShown = useOnceInView(headerRef, reduced);
+  const archesShown = useOnceInView(stripWrapRef, reduced);
+  const tariffsShown = useOnceInView(tariffsRef, reduced);
+  const stripInView = useInView(stripWrapRef, { amount: 0.35 });
+  const { scrollYProgress: archProgress } = useScroll({
+    target: archRowRef,
+    offset: ["start 80%", "end 40%"],
+  });
+  const { scrollYProgress: mobileGlint } = useScroll({
+    target: stripWrapRef,
+    offset: ["start 85%", "end 25%"],
+  });
+
+  useLayoutEffect(() => {
+    const root = stripWrapRef.current;
+    if (!root) return;
+    const sync = () => {
+      const style = getComputedStyle(root);
+      const pad = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+      setArchStep(Math.max(0, root.clientWidth - pad));
+    };
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, []);
+
+  const titleDelay = (desktop: number, mobile: number) => (isLg ? desktop : mobile);
+
+  return (
+    <div className="cowork-copy relative z-10 mx-auto w-full max-w-[58rem] px-5 lg:px-8">
+      <header ref={headerRef} className="relative">
+        <motion.p
+          className="mb-6 flex items-center justify-end gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px] lg:mb-[calc(1rem+28px)] lg:justify-start"
+          initial={reduced ? false : { opacity: 0, y: 16 }}
+          animate={headerShown || reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+          transition={{ duration: reduced ? 0 : 0.7, ease }}
+        >
+          <span className="h-px w-8 bg-accent-yellow/40" />
+          {COWORKING.label}
+          <span className="h-px w-8 bg-accent-yellow/40" />
+        </motion.p>
+        <h2 className="cowork-title ml-auto w-full text-right font-serif text-[clamp(30px,8.6vw,38px)] font-semibold leading-[1.1] tracking-tight text-white [text-shadow:0_2px_18px_rgba(0,0,0,0.7)] lg:ml-0 lg:w-auto lg:text-left lg:text-[2.6rem] lg:leading-[1.18] lg:[text-shadow:none]">
+          <MaskLine shown={headerShown} reduced={reduced} delay={titleDelay(0, 0.1)}>{COWORKING.titleLine1}</MaskLine>
+          <MaskLine shown={headerShown} reduced={reduced} delay={titleDelay(0.1, 0.2)} className="whitespace-nowrap">
+            <span className="text-gradient-euphoria">в которой хочется</span>
+          </MaskLine>
+          <MaskLine shown={headerShown} reduced={reduced} delay={titleDelay(0.2, 0.3)}>{COWORKING.titleLine3}</MaskLine>
+        </h2>
+      </header>
+
+      <div ref={stripWrapRef} className="relative mt-10 overflow-hidden lg:mt-16 lg:overflow-visible">
+        <motion.div
+          ref={archRowRef}
+          className="cowork-arch-strip flex w-full min-w-0 py-8 [touch-action:pan-y] lg:grid lg:w-auto lg:grid-cols-3 lg:items-end lg:gap-7 lg:overflow-visible lg:py-0"
+          animate={isLg ? { x: 0 } : { x: -activeArch * archStep }}
+          transition={{ duration: reduced || isLg ? 0 : 0.45, ease }}
+        >
+          {COWORKING.photos.map((photo, index) => (
+            <ArchPhoto
+              key={photo.key}
+              index={index}
+              src={PHOTO_SRC[photo.key]}
+              alt={photo.alt}
+              heightClass={archHeights[index]}
+              liftClass={archShift[index]}
+              y={archY[index]}
+              move={move}
+              isLg={isLg}
+              active={!isLg && activeArch === index}
+              stripInView={stripInView}
+              reduced={reduced}
+              shown={isLg ? archesShown : archesShown && activeArch === index}
+              delay={isLg ? index * 0.12 : 0}
+              glintProgress={isLg ? archProgress : mobileGlint}
+            />
+          ))}
+        </motion.div>
+        <motion.div
+          className="mt-2 lg:hidden"
+          initial={reduced ? false : { opacity: 0, y: 12 }}
+          animate={archesShown || reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+          transition={{ duration: reduced ? 0 : 0.7, delay: reduced ? 0 : 0.28, ease }}
+        >
+          <CarouselArrows
+            onPrev={() =>
+              setActiveArch((index) => (index - 1 + COWORKING.photos.length) % COWORKING.photos.length)
+            }
+            onNext={() => setActiveArch((index) => (index + 1) % COWORKING.photos.length)}
+            prevLabel="Предыдущая арка"
+            nextLabel="Следующая арка"
+          >
+            <SlideCounter index={activeArch} total={COWORKING.photos.length} />
+          </CarouselArrows>
+        </motion.div>
+      </div>
+
+      <motion.div
+        ref={tariffsRef}
+        initial={reduced ? false : { opacity: 0, y: 18 }}
+        animate={tariffsShown || reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+        transition={{ duration: reduced ? 0 : 0.7, ease }}
+      >
+        <TierBoard reduced={reduced} isLg={isLg} />
+      </motion.div>
+
+      <div
+        ref={lineRef}
+        aria-hidden
+        className="mt-12 h-px w-full bg-[linear-gradient(90deg,transparent,rgba(245,181,27,0.55)_42%,rgba(242,27,131,0.45)_62%,transparent)] lg:mt-[88px]"
+      />
+
+      <div className="relative mt-7 flex flex-col items-center text-center lg:mt-14 lg:grid lg:grid-cols-12 lg:items-center lg:text-left">
+        <motion.div
+          className="relative mx-auto lg:col-span-5 lg:mx-0 lg:-ml-8"
+          style={move ? { y: bustY } : undefined}
+          initial={reduced ? false : { opacity: 0, scale: isLg ? 1 : 0.92 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.35, margin: "0px 0px -8% 0px" }}
+          transition={{ duration: reduced ? 0 : 0.7, ease }}
+        >
+          <div className="relative p-10 lg:w-[clamp(240px,24vw,320px)]">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute left-1/2 top-1/2 h-[140%] w-[min(100vw,140%)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(242,27,131,0.34)_0%,rgba(242,27,131,0.1)_40%,transparent_70%)] lg:h-[150%] lg:w-[150%]"
+            />
+            <div className="cowork-spin-ring" aria-hidden />
+            <div className="relative aspect-square w-[clamp(190px,56vw,230px)] overflow-hidden rounded-full lg:w-full">
+              <Image
+                src={ASSETS.golovapodpiska}
+                alt=""
+                width={640}
+                height={640}
+                sizes="(min-width: 1024px) 320px, 56vw"
+                className="h-full w-full object-cover object-[50%_38%]"
+              />
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.article
+          className="relative mt-7 w-full text-center lg:col-span-7 lg:col-start-6 lg:mt-0 lg:text-left"
+          style={move ? { y: copyY } : undefined}
+        >
+          <motion.p
+            className="text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]"
+            initial={reduced ? false : { opacity: 0, y: isLg ? 0 : 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4, margin: "0px 0px -8% 0px" }}
+            transition={{ duration: reduced ? 0 : 0.65, ease }}
+          >
+            ◆ {COWORKING.subscription.title}
+          </motion.p>
+          <motion.h3
+            className="mt-4 font-serif text-[clamp(28px,8vw,34px)] font-semibold leading-[1.12] tracking-tight text-white lg:text-4xl xl:text-5xl"
+            initial={reduced ? false : { opacity: 0, y: isLg ? 0 : 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4, margin: "0px 0px -8% 0px" }}
+            transition={{ duration: reduced ? 0 : 0.65, delay: reduced ? 0 : 0.08, ease }}
+          >
+            <span className="lg:hidden">
+              Больше, чем
+              <br />
+              просто рабочее место
+            </span>
+            <span className="hidden lg:inline">
+              Больше, чем
+              <br />
+              просто рабочее место
+            </span>
+          </motion.h3>
+          <motion.p
+            className="mx-auto mt-3.5 max-w-[32ch] text-sm leading-relaxed text-white/70 sm:text-[15px] lg:mx-0 lg:mt-5 lg:max-w-xl"
+            initial={reduced ? false : { opacity: 0, y: isLg ? 0 : 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4, margin: "0px 0px -8% 0px" }}
+            transition={{ duration: reduced ? 0 : 0.65, delay: reduced ? 0 : 0.16, ease }}
+          >
+            {COWORKING.subscription.text}
+          </motion.p>
+          <motion.a
+            href={CONTACT.instagramCoworkingHighlight}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-link-draw group mx-auto mt-5 inline-flex min-h-11 items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-accent-yellow lg:mx-0 lg:mt-6 [@media(hover:hover)]:hover:text-accent-gold"
+            initial={reduced ? false : { opacity: 0, y: isLg ? 0 : 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5, margin: "0px 0px -8% 0px" }}
+            transition={{ duration: reduced ? 0 : 0.65, delay: reduced ? 0 : 0.24, ease }}
+          >
+            {COWORKING.subscription.more}
+            <span className="transition-transform duration-300 [@media(hover:hover)]:group-hover:translate-x-1">→</span>
+          </motion.a>
+        </motion.article>
+      </div>
+
+      <motion.div
+        className="mt-9 flex justify-center lg:mt-14"
+        initial={reduced ? false : { opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.6, margin: "0px 0px -8% 0px" }}
+        transition={{ duration: reduced ? 0 : 0.6, ease }}
+      >
+        <CtaButton href={CONTACT.instagram} className="w-full max-w-[340px] lg:w-auto lg:max-w-none">
+          <span className="text-sm font-semibold uppercase tracking-[0.08em]">{COWORKING.cta}</span>
+        </CtaButton>
+      </motion.div>
+    </div>
+  );
+}
+
+function MaskLine({
+  children,
+  delay = 0,
+  shown,
+  reduced,
+  className,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  shown: boolean;
+  reduced: boolean;
+  className?: string;
+}) {
+  return (
+    <span className={cn("block overflow-hidden", className)}>
+      <motion.span
+        className="block"
+        initial={reduced ? false : { y: "100%" }}
+        animate={shown || reduced ? { y: "0%" } : { y: "100%" }}
+        transition={{ duration: reduced ? 0 : 0.7, delay: reduced ? 0 : delay, ease }}
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
+}
+
+function ArchPhoto({
+  index,
+  src,
+  alt,
+  heightClass,
+  liftClass,
+  y,
+  move,
+  isLg,
+  active,
+  stripInView,
+  reduced,
+  shown,
+  delay,
+  glintProgress,
+}: {
+  index: number;
+  src: string;
+  alt: string;
+  heightClass: string;
+  liftClass: string;
+  y: MotionValue<number>;
+  move: boolean;
+  isLg: boolean;
+  active: boolean;
+  stripInView: boolean;
+  reduced: boolean;
+  shown: boolean;
+  delay: number;
+  glintProgress: MotionValue<number>;
+}) {
+  const float = !isLg && active && stripInView && !reduced;
+
+  return (
+    <motion.figure
+      data-arch={index}
+      className={cn(
+        "relative aspect-[1/1.4] w-full min-w-full shrink-0 basis-full overflow-visible px-3 lg:aspect-auto lg:w-auto lg:min-w-0 lg:max-w-none lg:shrink lg:basis-auto lg:px-0",
+        heightClass,
+        liftClass
+      )}
+      style={isLg && move ? { y } : undefined}
+    >
+      <motion.div
+        className="group relative h-full overflow-visible"
+        whileHover={isLg && !reduced ? { y: -6 } : undefined}
+        animate={isLg ? undefined : float ? { y: [0, -5] } : { y: 0 }}
+        transition={
+          float
+            ? { duration: 6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }
+            : { type: "spring", stiffness: 260, damping: 24 }
+        }
+      >
+      {!isLg ? (
+        <motion.div aria-hidden className="studio-main-glow studio-main-glow--mobile !z-0" style={{ opacity: active ? 1 : 0 }} />
+      ) : null}
+      <ArchStroke reduced={reduced} shown={shown} delay={delay} />
+      <motion.div
+        className="relative z-10 h-full w-full overflow-hidden rounded-b-[18px] rounded-t-[999px] lg:rounded-b-[20px]"
+        initial={reduced ? false : { clipPath: "inset(100% 0 0 0)" }}
+        animate={shown || reduced ? { clipPath: "inset(0% 0 0 0)" } : { clipPath: "inset(100% 0 0 0)" }}
+        transition={{ duration: reduced ? 0 : 0.9, ease: "easeOut", delay: reduced ? 0 : delay }}
+      >
+        <motion.img
+          src={src}
+          alt={alt}
+          className="h-full w-[116%] max-w-none object-cover lg:w-full"
+          initial={reduced ? false : { scale: 1.15 }}
+          animate={shown || reduced ? { scale: 1 } : { scale: 1.15 }}
+          transition={{ duration: reduced ? 0 : 0.9, ease: "easeOut", delay: reduced ? 0 : delay }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#F21B83,rgba(242,27,131,0.35))] opacity-[0.12] mix-blend-soft-light"
+        />
+      </motion.div>
+      {reduced ? null : <ArchGlint progress={glintProgress} />}
+      </motion.div>
+    </motion.figure>
+  );
+}
+
+function useElementSize(ref: React.RefObject<HTMLElement | null>) {
+  const [size, setSize] = useState({ w: 0, h: 0 });
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const sync = () => {
+      const rect = el.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) setSize({ w: rect.width, h: rect.height });
+    };
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+
+  return size;
+}
+
+const GLINT_COPIES = [
+  { len: 0.22, opacity: 0.18, width: 1, stroke: "#F5B51B" },
+  { len: 0.14, opacity: 0.35, width: 1.2, stroke: "#F5B51B" },
+  { len: 0.08, opacity: 0.6, width: 1.5, stroke: "#F5B51B" },
+  { len: 0.04, opacity: 0.95, width: 1.8, stroke: "#FFF4D6" },
+] as const;
+
+function ArchGlint({ progress }: { progress: MotionValue<number> }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { w, h } = useElementSize(ref);
+  const pos = useTransform(progress, [0, 1], [-0.11, 1.11]);
+  const dash0 = useTransform(pos, (value) => -(value - GLINT_COPIES[0].len / 2));
+  const dash1 = useTransform(pos, (value) => -(value - GLINT_COPIES[1].len / 2));
+  const dash2 = useTransform(pos, (value) => -(value - GLINT_COPIES[2].len / 2));
+  const dash3 = useTransform(pos, (value) => -(value - GLINT_COPIES[3].len / 2));
+  const dashes = [dash0, dash1, dash2, dash3];
+
+  const pad = 12;
+  const radius = w / 2;
+  const yStraight = Math.max(h - 20, radius);
+  const d =
+    w > 0 && h > 0
+      ? `M ${pad} ${pad + yStraight} L ${pad} ${pad + radius} A ${radius} ${radius} 0 0 1 ${pad + w} ${pad + radius} L ${pad + w} ${pad + yStraight}`
+      : "";
+
+  return (
+    <div ref={ref} className="pointer-events-none absolute inset-0 z-20 overflow-visible">
+      {d ? (
+        <svg
+          aria-hidden
+          className="absolute -inset-3 overflow-visible"
+          width={w + pad * 2}
+          height={h + pad * 2}
+          style={{ filter: "drop-shadow(0 0 5px rgba(245,181,27,0.3))" }}
+        >
+          {GLINT_COPIES.map((copy, index) => (
+            <motion.path
+              key={copy.len}
+              d={d}
+              fill="none"
+              stroke={copy.stroke}
+              strokeWidth={copy.width}
+              strokeLinecap="round"
+              pathLength={1}
+              strokeDasharray={`${copy.len} 1`}
+              vectorEffect="non-scaling-stroke"
+              style={{ strokeDashoffset: dashes[index], opacity: copy.opacity }}
+            />
+          ))}
+        </svg>
+      ) : null}
+    </div>
+  );
+}
+
+function ArchStroke({ reduced, shown, delay }: { reduced: boolean; shown: boolean; delay: number }) {
+  const ref = useRef<SVGSVGElement>(null);
+  const [size, setSize] = useState({ w: 220, h: 420 });
+
+  useLayoutEffect(() => {
+    const parent = ref.current?.parentElement;
+    if (!parent) return;
+    const sync = () => {
+      const rect = parent.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) setSize({ w: rect.width, h: rect.height });
+    };
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(parent);
+    return () => observer.disconnect();
+  }, []);
+
+  const pad = 10;
+  const rx = size.w / 2;
+  const br = 20;
+  const x0 = pad;
+  const y0 = pad;
+  const x1 = pad + size.w;
+  const y1 = pad + size.h;
+  const d = [
+    `M ${x0} ${y1 - br}`,
+    `L ${x0} ${y0 + rx}`,
+    `A ${rx} ${rx} 0 0 1 ${x1} ${y0 + rx}`,
+    `L ${x1} ${y1 - br}`,
+    `A ${br} ${br} 0 0 1 ${x1 - br} ${y1}`,
+    `L ${x0 + br} ${y1}`,
+    `A ${br} ${br} 0 0 1 ${x0} ${y1 - br}`,
+  ].join(" ");
+
+  return (
+    <svg
+      ref={ref}
+      aria-hidden
+      className="pointer-events-none absolute -inset-[10px] z-20 overflow-visible"
+      width={size.w + pad * 2}
+      height={size.h + pad * 2}
+    >
+      <motion.path
+        d={d}
+        fill="none"
+        stroke="#F5B51B"
+        strokeWidth={1}
+        vectorEffect="non-scaling-stroke"
+        className="stroke-[rgba(245,181,27,0.5)] transition-[stroke] duration-300 [@media(hover:hover)]:group-hover:stroke-[rgba(245,181,27,0.95)]"
+        initial={reduced ? false : { pathLength: 0 }}
+        animate={shown || reduced ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: reduced ? 0 : 1.2, ease, delay: reduced ? 0 : delay }}
+      />
+    </svg>
+  );
+}
+
+function TierBoard({ reduced, isLg }: { reduced: boolean; isLg: boolean }) {
+  const [activeId, setActiveId] = useState<TierId>("standard");
+  const panelId = useId();
+  const onKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const index = tiers.findIndex((tier) => tier.id === activeId);
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp" && event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
+      return;
+    }
+    event.preventDefault();
+    const next =
+      event.key === "ArrowDown" || event.key === "ArrowRight"
+        ? (index + 1) % tiers.length
+        : (index - 1 + tiers.length) % tiers.length;
+    setActiveId(tiers[next].id);
+  };
+
+  const roRef = useRef<ResizeObserver | null>(null);
+  const [panelHeight, setPanelHeight] = useState<number | "auto">("auto");
+  const [canAnimateHeight, setCanAnimateHeight] = useState(false);
+  const activeTier = tiers.find((tier) => tier.id === activeId) ?? tiers[1];
+
+  const setMeasure = useCallback((node: HTMLDivElement | null) => {
+    roRef.current?.disconnect();
+    if (!node) return;
+    const apply = () => setPanelHeight(node.offsetHeight);
+    apply();
+    const observer = new ResizeObserver(apply);
+    observer.observe(node);
+    roRef.current = observer;
+  }, []);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setCanAnimateHeight(true));
+    return () => {
+      cancelAnimationFrame(frame);
+      roRef.current?.disconnect();
+    };
+  }, []);
+
+  return (
+    <div className="cowork-tariffs relative mt-12 flex flex-col gap-8 [overflow-anchor:none] lg:mt-24 lg:grid lg:grid-cols-12 lg:gap-8">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -z-10 hidden bg-[radial-gradient(closest-side,rgba(242,27,131,0.16),transparent)] lg:block lg:-inset-[120px]"
+      />
+      <div
+        role="tablist"
+        aria-label="Тарифы коворкинга"
+        onKeyDown={onKeyDown}
+        className="relative flex justify-between border-b border-white/15 lg:col-span-4 lg:flex-col lg:justify-start lg:gap-5 lg:border-0 lg:pl-5"
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -inset-[60px] -z-10 hidden bg-[radial-gradient(ellipse_at_center,rgba(8,6,10,0.7)_0%,transparent_70%)] lg:block"
+        />
+        <span
+          aria-hidden
+          className="absolute bottom-0 left-0 top-0 hidden w-px bg-[linear-gradient(180deg,transparent,rgba(245,181,27,0.35),transparent)] lg:block"
+        />
+        {tiers.map((tier) => {
+          const selected = tier.id === activeId;
+          return (
+            <button
+              key={tier.id}
+              type="button"
+              role="tab"
+              id={`cowork-tab-${tier.id}`}
+              aria-selected={selected}
+              aria-controls={panelId}
+              tabIndex={selected ? 0 : -1}
+              onClick={() => setActiveId(tier.id)}
+              className={cn(
+                "relative min-h-11 whitespace-nowrap text-left font-serif text-[clamp(18px,5.6vw,24px)] leading-none lg:text-5xl",
+                !selected && "text-white opacity-[0.55] lg:opacity-[0.62] lg:[text-shadow:0_2px_20px_rgba(0,0,0,0.75)] [@media(hover:hover)]:lg:hover:opacity-70"
+              )}
+            >
+              {selected ? (
+                <motion.span
+                  layoutId="cowork-tier-rail"
+                  className="absolute -bottom-px left-0 h-0.5 w-full bg-[linear-gradient(90deg,#F5B51B,#FF7A45,#F21B83)] lg:-left-5 lg:bottom-auto lg:top-0 lg:h-full lg:w-px lg:bg-[linear-gradient(180deg,#F5B51B,#FF7A45,#F21B83)]"
+                  transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 320, damping: 30 }}
+                />
+              ) : null}
+              <motion.span
+                className="inline-flex min-h-11 items-center gap-3"
+                animate={{ x: selected && isLg && !reduced ? 14 : 0 }}
+                transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 280, damping: 24 }}
+              >
+                <span
+                  aria-hidden
+                  className={cn(
+                    "hidden h-2 w-2 shrink-0 rotate-45 lg:block",
+                    selected
+                      ? "bg-gradient-euphoria"
+                      : "border border-accent-gold/80 bg-transparent"
+                  )}
+                />
+                <span className={selected ? "text-gradient-euphoria" : undefined}>{tier.name}</span>
+              </motion.span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="relative min-w-0 lg:col-span-8">
+        {SHOW_TIER_TITLE_GLOW ? (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-0 top-0 -z-10 h-[220px] w-[220px] -translate-x-[18%] -translate-y-[42%] lg:hidden"
+            style={{
+              background: "radial-gradient(circle, hsl(var(--accent) / 0.18) 0%, transparent 70%)",
+            }}
+          />
+        ) : null}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -z-10 hidden bg-[radial-gradient(ellipse_at_center,rgba(8,6,10,0.5)_0%,transparent_70%)] lg:block lg:-inset-[60px]"
+        />
+        <motion.div
+          className="overflow-hidden [overflow-anchor:none]"
+          initial={false}
+          animate={{ height: panelHeight }}
+          transition={{ duration: !canAnimateHeight || reduced ? 0 : 0.42, ease }}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={activeTier.id}
+              id={panelId}
+              role="tabpanel"
+              aria-labelledby={`cowork-tab-${activeTier.id}`}
+              initial={reduced ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: reduced ? 0 : 0.18, ease } }}
+              transition={{ duration: reduced ? 0 : 0.32, ease }}
+            >
+              <div ref={setMeasure}>
+                <TierCopy tier={activeTier} reduced={reduced} isLg={isLg} reveal />
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+const includeVariants = {
+  hidden: { opacity: 0, y: 10, filter: "blur(4px)" },
+  show: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.5, delay, ease },
+  }),
+};
+
+const mobileIncludeVariants = {
+  hidden: { opacity: 0, y: 10, filter: "none" },
+  show: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    filter: "none",
+    transition: { duration: 0.5, delay, ease },
+  }),
+};
+
+function TierCopy({
+  tier,
+  reduced,
+  isLg,
+  reveal = false,
+}: {
+  tier: (typeof tiers)[number];
+  reduced: boolean;
+  isLg: boolean;
+  reveal?: boolean;
+}) {
+  const listRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(listRef, { once: true, amount: "some" });
+  const play = reveal && (reduced || inView);
+  const split = Math.ceil(tier.items.length / 2);
+  const lastDelay = tier.items.reduce((max, _item, index) => {
+    const colIndex = index < split ? 0 : 1;
+    const rowIndex = index < split ? index : index - split;
+    const delay = isLg ? 0.15 + (rowIndex * 2 + colIndex) * 0.06 : index * 0.06;
+    return Math.max(max, delay);
+  }, 0.15);
+
+  return (
+    <div ref={listRef}>
+      <div className="flex items-center gap-3">
+        <p className="shrink-0 font-serif text-3xl text-[#F1ECE5]">{tier.name}</p>
+        <span aria-hidden className="h-1.5 w-1.5 shrink-0 rotate-45 bg-gradient-euphoria" />
+        <motion.span
+          aria-hidden
+          className="h-px min-w-[2rem] flex-1 origin-left bg-[linear-gradient(90deg,#F5B51B,#FF7A45,#F21B83,transparent)]"
+          initial={reveal && !reduced ? { scaleX: 0 } : false}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: reduced ? 0 : 0.7, ease }}
+        />
+      </div>
+      <p className="mt-3 text-sm leading-relaxed text-[#F1ECE5]/70">{tier.subtitle}</p>
+      <p className="mt-8 text-[10px] uppercase tracking-[0.32em] text-accent-yellow">Что входит</p>
+      <ul className="mt-4 flex flex-col items-start gap-3 lg:grid lg:grid-cols-2 lg:gap-x-12 lg:gap-y-3.5">
+        {tier.items.map((item, index) => {
+          const colIndex = index < split ? 0 : 1;
+          const rowIndex = index < split ? index : index - split;
+          const delay = isLg ? 0.15 + (rowIndex * 2 + colIndex) * 0.06 : index * 0.06;
+          return (
+            <motion.li
+              key={item}
+              custom={delay}
+              variants={reduced ? undefined : isLg ? includeVariants : mobileIncludeVariants}
+              initial={reduced ? false : "hidden"}
+              animate={reduced ? undefined : play ? "show" : "hidden"}
+              className="flex items-start gap-2.5 text-sm leading-snug text-[#F1ECE5]/70 lg:col-start-[var(--c)] lg:row-start-[var(--r)]"
+              style={{ ["--c" as string]: colIndex + 1, ["--r" as string]: rowIndex + 1 }}
+            >
+              <svg viewBox="0 0 16 16" className="mt-0.5 h-3.5 w-3.5 shrink-0 overflow-visible text-accent" aria-hidden>
+                <motion.path
+                  d="M3.2 8.4 L6.4 11.5 L12.8 4.4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  initial={reduced ? false : { pathLength: 0 }}
+                  animate={{ pathLength: reduced || play ? 1 : 0 }}
+                  transition={{ duration: reduced ? 0 : isLg ? 0.4 : 0.35, delay: reduced || !play ? 0 : delay + 0.12, ease }}
+                />
+              </svg>
+              <span>{item}</span>
+            </motion.li>
+          );
+        })}
+      </ul>
+      {tier.extra ? (
+        <motion.p
+          className="mt-8 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-accent-yellow"
+          initial={reduced ? false : { opacity: 0, y: 8 }}
+          animate={play ? { opacity: 1, y: 0 } : { opacity: reduced ? 1 : 0, y: reduced ? 0 : 8 }}
+          transition={{ duration: reduced ? 0 : 0.5, delay: reduced ? 0 : lastDelay + 0.18, ease }}
+        >
+          <Sparkles className="h-3.5 w-3.5" strokeWidth={1.5} />
+          {tier.extra}
+        </motion.p>
+      ) : null}
+    </div>
+  );
+}
+

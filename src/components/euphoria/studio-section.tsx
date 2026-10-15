@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode, type Ref } from "react";
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { STUDIO } from "@/constants/content";
 import { ASSETS } from "@/constants/site";
+import { BrandMark } from "@/components/euphoria/brand-mark";
 import { cn } from "@/lib/utils";
 
 const STUDIO_IMAGES = {
@@ -33,6 +35,8 @@ const COLLAGE_SLOTS: ReadonlyArray<{
   delay: string;
   sizes: string;
   glint: number;
+  pushX: number;
+  pushY: number;
 }> = [
   {
     className: "left-[calc(50%-25rem)] top-[calc(50%-25.2rem)] z-10 h-[15.2rem] w-[11rem]",
@@ -46,6 +50,8 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     delay: "0ms",
     sizes: "450px",
     glint: 128,
+    pushX: -36,
+    pushY: -32,
   },
   {
     className: "left-[calc(50%-22.6rem)] top-[calc(50%+13.2rem)] z-10 h-[11.5rem] w-[13.4rem]",
@@ -59,6 +65,8 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     delay: "70ms",
     sizes: "450px",
     glint: 210,
+    pushX: -28,
+    pushY: 38,
   },
   {
     className: "left-[calc(50%-37.6rem)] top-[calc(50%-3.6rem)] z-10 h-[19.2rem] w-[14.2rem]",
@@ -72,6 +80,8 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     delay: "140ms",
     sizes: "450px",
     glint: 305,
+    pushX: -48,
+    pushY: 8,
   },
   {
     className: "left-[calc(50%-22.8rem)] top-[calc(50%-7rem)] z-10 h-[9.4rem] w-[8.8rem]",
@@ -85,6 +95,8 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     delay: "210ms",
     sizes: "200px",
     glint: 48,
+    pushX: -44,
+    pushY: -8,
   },
   {
     className: "left-[calc(50%+17.4rem)] top-[calc(50%-3.4rem)] z-10 h-[19.2rem] w-[13.4rem]",
@@ -98,6 +110,8 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     delay: "280ms",
     sizes: "190px",
     glint: 168,
+    pushX: 46,
+    pushY: 12,
   },
   {
     className: "left-[calc(50%+14.5rem)] top-[calc(50%-23.6rem)] z-10 h-[14.6rem] w-[10.2rem]",
@@ -111,6 +125,8 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     delay: "350ms",
     sizes: "190px",
     glint: 242,
+    pushX: 36,
+    pushY: -32,
   },
   {
     className: "left-[calc(50%+1.8rem)] top-[calc(50%+16.6rem)] z-10 h-[8.2rem] w-[13rem]",
@@ -124,6 +140,8 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     delay: "420ms",
     sizes: "200px",
     glint: 78,
+    pushX: 16,
+    pushY: 44,
   },
 ];
 
@@ -138,10 +156,16 @@ function padIndex(index: number) {
 }
 
 export function StudioSection() {
+  const reduced = useReducedMotion() === true;
   const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const collageY = useTransform(scrollYProgress, [0, 1], [22, -22]);
   const photos = STUDIO.photos;
   const [activeIndex, setActiveIndex] = useState(0);
-  const [shown, setShown] = useState(false);
+  const [direction, setDirection] = useState<"next" | "prev" | null>(null);
   const [viewport, setViewport] = useState<"pending" | "mobile" | "desktop">("pending");
 
   const selectPhoto = useCallback((index: number) => {
@@ -149,10 +173,12 @@ export function StudioSection() {
   }, []);
 
   const goPrev = useCallback(() => {
+    setDirection("prev");
     setActiveIndex((i) => (i - 1 + photos.length) % photos.length);
   }, [photos.length]);
 
   const goNext = useCallback(() => {
+    setDirection("next");
     setActiveIndex((i) => (i + 1) % photos.length);
   }, [photos.length]);
 
@@ -163,34 +189,6 @@ export function StudioSection() {
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
   }, []);
-
-  useEffect(() => {
-    const root = sectionRef.current;
-    if (!root || viewport === "pending") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setShown(true);
-      return;
-    }
-    let frame = 0;
-    const reveal = () => {
-      frame = requestAnimationFrame(() => {
-        frame = requestAnimationFrame(() => setShown(true));
-      });
-    };
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        reveal();
-        observer.disconnect();
-      },
-      { threshold: 0.2 }
-    );
-    observer.observe(root);
-    return () => {
-      observer.disconnect();
-      cancelAnimationFrame(frame);
-    };
-  }, [viewport]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -216,34 +214,37 @@ export function StudioSection() {
       id={STUDIO.id}
       ref={sectionRef}
       className={cn(
-        "studio-collage relative scroll-mt-20 overflow-x-clip bg-[#090709] py-20 md:py-28",
-        shown && "is-shown"
+        "studio-collage relative scroll-mt-20 overflow-x-clip bg-[#090709] py-20 md:py-28"
       )}
     >
       <div className="relative mx-auto w-full px-6 md:px-8">
         <header className="mx-auto max-w-xl text-center">
-          <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
+          <p className="enter mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
             <span className="h-px w-8 bg-accent-yellow/40" />
             {STUDIO.label}
             <span className="h-px w-8 bg-accent-yellow/40" />
           </p>
-          <h2 className="font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
+          <h2 className="enter font-serif text-[1.85rem] font-semibold leading-[1.18] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
             {STUDIO.titleLine1}
             <br />
             <span className="text-gradient-euphoria">{STUDIO.titleLine2}</span>
             <br />
             {STUDIO.titleLine3}
           </h2>
-          <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-white/70 sm:text-[15px]">
+          <p className="enter mx-auto mt-4 max-w-lg text-sm leading-relaxed text-white/70 sm:text-[15px]">
             {STUDIO.text}
           </p>
         </header>
 
-        <div className="relative mt-0 min-h-[24rem] lg:min-h-0">
+        <motion.div
+          className="relative mt-0 min-h-[24rem] lg:min-h-0"
+          style={!reduced && viewport === "mobile" ? { y: collageY } : undefined}
+        >
           {viewport === "mobile" ? (
             <MobileCollage
               photos={photos}
               activeIndex={activeIndex}
+              direction={direction}
               onNext={goNext}
               onPrev={goPrev}
             />
@@ -252,12 +253,14 @@ export function StudioSection() {
             <DesktopCollage
               photos={photos}
               activeIndex={activeIndex}
+              progress={scrollYProgress}
+              reduced={reduced}
               onSelect={selectPhoto}
               onNext={goNext}
               onPrev={goPrev}
             />
           ) : null}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -291,15 +294,18 @@ function StudioNav({
   direction,
   onClick,
   className,
+  buttonRef,
 }: {
   direction: "prev" | "next";
   onClick: () => void;
   className: string;
+  buttonRef?: Ref<HTMLButtonElement>;
 }) {
   const prev = direction === "prev";
   const Icon = prev ? ChevronLeft : ChevronRight;
   return (
     <button
+      ref={buttonRef}
       type="button"
       onClick={onClick}
       aria-label={prev ? "Предыдущее фото" : "Следующее фото"}
@@ -316,12 +322,16 @@ function StudioNav({
 function DesktopCollage({
   photos,
   activeIndex,
+  progress,
+  reduced,
   onSelect,
   onNext,
   onPrev,
 }: {
   photos: readonly StudioPhoto[];
   activeIndex: number;
+  progress: MotionValue<number>;
+  reduced: boolean;
   onSelect: (index: number) => void;
   onNext: () => void;
   onPrev: () => void;
@@ -372,18 +382,27 @@ function DesktopCollage({
           } as CSSProperties;
 
           return (
-            <div key={slotIdx} className={cn("studio-sat absolute", slot.className)} style={style}>
-              <button
-                type="button"
-                aria-label={`Показать фото ${photoIndex + 1}`}
-                onClick={() => onSelect(photoIndex)}
-                className="studio-card relative h-full w-full cursor-pointer overflow-hidden rounded-xl bg-[#110C11] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70"
-              >
-                <span key={photo.key} className="studio-photo-in absolute inset-0">
-                  <StudioImage photo={photo} alt="" sizes={slot.sizes} />
-                </span>
-              </button>
-            </div>
+            <StudioSatellite
+              key={slotIdx}
+              className={cn("absolute", slot.className)}
+              pushX={slot.pushX}
+              pushY={slot.pushY}
+              progress={progress}
+              reduced={reduced}
+            >
+              <div className="studio-sat relative h-full w-full" style={style}>
+                <button
+                  type="button"
+                  aria-label={`Показать фото ${photoIndex + 1}`}
+                  onClick={() => onSelect(photoIndex)}
+                  className="studio-card relative h-full w-full cursor-pointer overflow-hidden rounded-xl bg-[#110C11] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70"
+                >
+                  <span key={photo.key} className="studio-photo-in absolute inset-0">
+                    <StudioImage photo={photo} alt="" sizes={slot.sizes} />
+                  </span>
+                </button>
+              </div>
+            </StudioSatellite>
           );
         })}
 
@@ -414,18 +433,48 @@ function DesktopCollage({
   );
 }
 
+function StudioSatellite({
+  children,
+  className,
+  pushX,
+  pushY,
+  progress,
+  reduced,
+}: {
+  children: ReactNode;
+  className: string;
+  pushX: number;
+  pushY: number;
+  progress: MotionValue<number>;
+  reduced: boolean;
+}) {
+  const x = useTransform(progress, [0, 1], [0, pushX]);
+  const y = useTransform(progress, [0, 1], [0, pushY]);
+
+  return (
+    <motion.div className={className} style={reduced ? undefined : { x, y }}>
+      {children}
+    </motion.div>
+  );
+}
+
 function MobileCollage({
   photos,
   activeIndex,
+  direction,
   onNext,
   onPrev,
 }: {
   photos: readonly StudioPhoto[];
   activeIndex: number;
+  direction: "next" | "prev" | null;
   onNext: () => void;
   onPrev: () => void;
 }) {
   const swipe = useRef<{ x: number; y: number } | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const prevRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
   const main = photos[activeIndex];
 
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -446,24 +495,32 @@ function MobileCollage({
   };
 
   return (
-    <div className="mx-auto mt-8 w-full max-w-md pb-10" aria-label="Галерея студии">
+    <div className="mx-auto mt-11 w-full max-w-md pb-14" aria-label="Галерея студии">
       <div
         className="relative aspect-[4/5] w-full touch-pan-y"
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
       >
         <StudioBurst mobile />
-        <StudioNav direction="prev" onClick={onPrev} className="left-0 h-8 w-8" />
-        <StudioNav direction="next" onClick={onNext} className="right-0 h-8 w-8" />
+        <StudioNav direction="prev" onClick={onPrev} buttonRef={prevRef} className="left-0 h-8 w-8" />
+        <StudioNav direction="next" onClick={onNext} buttonRef={nextRef} className="right-0 h-8 w-8" />
         <div aria-hidden className="studio-main-glow studio-main-glow--mobile" />
         <div
+          ref={cardRef}
           key={main.key}
           className="studio-card studio-card--main studio-photo-in absolute inset-x-10 inset-y-2 z-20 overflow-hidden rounded-2xl bg-[#110C11]"
           style={{ "--glint": "158deg" } as CSSProperties}
         >
           <StudioImage photo={main} alt={main.alt} sizes="(max-width: 1023px) 78vw, 22rem" />
         </div>
-        <p className="pointer-events-none absolute inset-x-10 top-[calc(100%+0.7rem)] z-30 text-center font-serif text-sm tracking-[0.18em] text-white/70">
+        <BrandMark
+          cardRef={cardRef}
+          prevRef={prevRef}
+          nextRef={nextRef}
+          direction={direction}
+          activeIndex={activeIndex}
+        />
+        <p className="pointer-events-none absolute inset-x-10 top-[calc(100%+0.7rem+14px)] z-30 text-center font-serif text-sm tracking-[0.18em] text-white/70">
           {padIndex(activeIndex)}
           <span className="text-white/35"> / {padIndex(photos.length - 1)}</span>
         </p>
