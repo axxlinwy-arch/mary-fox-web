@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useLayoutEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import {
   motion,
   useInView,
@@ -295,7 +295,9 @@ export function BrandMark({
 }) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion() === true;
-  const appear = useInView(overlayRef, { once: true, margin: "-15% 0px" });
+  const entered = useInView(overlayRef, { once: true, margin: "-15% 0px" });
+  const [photoFirst, setPhotoFirst] = useState(false);
+  const appear = entered && photoFirst;
   const onScreen = useInView(overlayRef, { amount: 0.2 });
   const { scrollY } = useScroll();
   const velocity = useVelocity(scrollY);
@@ -307,6 +309,33 @@ export function BrandMark({
   const uid = useId().replace(/:/g, "");
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [marks, setMarks] = useState<MarkGeom[] | null>(null);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (reduced) {
+      setPhotoFirst(true);
+      return;
+    }
+    if (!card) return;
+    let timer = 0;
+    const showLines = () => {
+      timer = window.setTimeout(() => setPhotoFirst(true), 420);
+    };
+    if (card.classList.contains("is-shown")) {
+      showLines();
+      return () => window.clearTimeout(timer);
+    }
+    const watcher = new MutationObserver(() => {
+      if (!card.classList.contains("is-shown")) return;
+      watcher.disconnect();
+      showLines();
+    });
+    watcher.observe(card, { attributes: true, attributeFilter: ["class"] });
+    return () => {
+      watcher.disconnect();
+      window.clearTimeout(timer);
+    };
+  }, [cardRef, reduced]);
 
   useLayoutEffect(() => {
     const root = overlayRef.current;

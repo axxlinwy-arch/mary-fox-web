@@ -118,7 +118,7 @@ export function TestimonialsSection() {
   return (
     <section
       ref={sectionRef}
-      className="cascade relative isolate flex scroll-mt-20 flex-col justify-center overflow-hidden bg-[#090709] px-5 pb-[9rem] pt-10 md:min-h-[clamp(720px,48vw,900px)] md:px-0 md:pb-16 md:pt-8"
+      className="cascade relative isolate flex scroll-mt-20 flex-col justify-center overflow-hidden bg-[#090709] px-5 pb-[9rem] pt-[7.5rem] md:min-h-[clamp(720px,48vw,900px)] md:px-0 md:pb-16 md:pt-8"
     >
       <div className="reviews-fon-stage" aria-hidden>
         <div className="reviews-fon-frame reviews-picture">

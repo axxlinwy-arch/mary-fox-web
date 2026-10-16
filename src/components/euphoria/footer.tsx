@@ -34,9 +34,7 @@ export function EuphoriaFooter() {
                 <a href={`tel:${CONTACT.phone}`} className="block transition-colors duration-300 hover:text-accent">
                   {CONTACT.phoneDisplay}
                 </a>
-                <a href={`mailto:${CONTACT.email}`} className="block transition-colors duration-300 hover:text-accent">
-                  {CONTACT.email}
-                </a>
+                <p>{CONTACT.email}</p>
                 <a
                   href={CONTACT.instagram}
                   target="_blank"

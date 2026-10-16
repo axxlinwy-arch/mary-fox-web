@@ -509,13 +509,10 @@ function ArchPhoto({
   return (
     <motion.figure
       data-arch={index}
-      className={cn(
-        "relative aspect-[1/1.4] w-full min-w-full shrink-0 basis-full overflow-visible px-3 lg:aspect-auto lg:w-auto lg:min-w-0 lg:max-w-none lg:shrink lg:basis-auto lg:px-0",
-        heightClass,
-        liftClass
-      )}
+      className="relative flex w-full min-w-full shrink-0 basis-full justify-center overflow-visible px-6 lg:block lg:w-auto lg:min-w-0 lg:max-w-none lg:shrink lg:basis-auto lg:px-0"
       style={isLg && move ? { y } : undefined}
     >
+      <div className={cn("relative aspect-[1/1.3] w-[94%] max-w-[22rem] lg:aspect-auto lg:w-full lg:max-w-none", heightClass, liftClass)}>
       <motion.div
         className="group relative h-full overflow-visible"
         whileHover={isLg && !reduced ? { y: -6 } : undefined}
@@ -530,16 +527,17 @@ function ArchPhoto({
         <motion.div aria-hidden className="studio-main-glow studio-main-glow--mobile !z-0" style={{ opacity: active ? 1 : 0 }} />
       ) : null}
       <ArchStroke reduced={reduced} shown={shown} delay={delay} />
-      <motion.div
-        className="relative z-10 h-full w-full overflow-hidden rounded-b-[18px] rounded-t-[999px] lg:rounded-b-[20px]"
-        initial={reduced ? false : { clipPath: "inset(100% 0 0 0)" }}
-        animate={shown || reduced ? { clipPath: "inset(0% 0 0 0)" } : { clipPath: "inset(100% 0 0 0)" }}
-        transition={{ duration: reduced ? 0 : 0.9, ease: "easeOut", delay: reduced ? 0 : delay }}
-      >
+      <div className="relative z-10 h-full w-full overflow-hidden rounded-t-[999px]">
+        <motion.div
+          className="h-full w-full"
+          initial={reduced ? false : { clipPath: "inset(100% 0 0 0)" }}
+          animate={shown || reduced ? { clipPath: "inset(0% 0 0 0)" } : { clipPath: "inset(100% 0 0 0)" }}
+          transition={{ duration: reduced ? 0 : 0.9, ease: "easeOut", delay: reduced ? 0 : delay }}
+        >
         <motion.img
           src={src}
           alt={alt}
-          className="h-full w-[116%] max-w-none object-cover lg:w-full"
+          className="h-full w-full object-cover"
           initial={reduced ? false : { scale: 1.15 }}
           animate={shown || reduced ? { scale: 1 } : { scale: 1.15 }}
           transition={{ duration: reduced ? 0 : 0.9, ease: "easeOut", delay: reduced ? 0 : delay }}
@@ -548,9 +546,11 @@ function ArchPhoto({
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#F21B83,rgba(242,27,131,0.35))] opacity-[0.12] mix-blend-soft-light"
         />
-      </motion.div>
+        </motion.div>
+      </div>
       {reduced ? null : <ArchGlint progress={glintProgress} />}
       </motion.div>
+      </div>
     </motion.figure>
   );
 }
@@ -593,10 +593,9 @@ function ArchGlint({ progress }: { progress: MotionValue<number> }) {
 
   const pad = 12;
   const radius = w / 2;
-  const yStraight = Math.max(h - 20, radius);
   const d =
     w > 0 && h > 0
-      ? `M ${pad} ${pad + yStraight} L ${pad} ${pad + radius} A ${radius} ${radius} 0 0 1 ${pad + w} ${pad + radius} L ${pad + w} ${pad + yStraight}`
+      ? `M ${pad} ${pad + h} L ${pad} ${pad + radius} A ${radius} ${radius} 0 0 1 ${pad + w} ${pad + radius} L ${pad + w} ${pad + h}`
       : "";
 
   return (
@@ -648,20 +647,11 @@ function ArchStroke({ reduced, shown, delay }: { reduced: boolean; shown: boolea
 
   const pad = 10;
   const rx = size.w / 2;
-  const br = 20;
   const x0 = pad;
   const y0 = pad;
   const x1 = pad + size.w;
   const y1 = pad + size.h;
-  const d = [
-    `M ${x0} ${y1 - br}`,
-    `L ${x0} ${y0 + rx}`,
-    `A ${rx} ${rx} 0 0 1 ${x1} ${y0 + rx}`,
-    `L ${x1} ${y1 - br}`,
-    `A ${br} ${br} 0 0 1 ${x1 - br} ${y1}`,
-    `L ${x0 + br} ${y1}`,
-    `A ${br} ${br} 0 0 1 ${x0} ${y1 - br}`,
-  ].join(" ");
+  const d = `M ${x0} ${y1} L ${x0} ${y0 + rx} A ${rx} ${rx} 0 0 1 ${x1} ${y0 + rx} L ${x1} ${y1} Z`;
 
   return (
     <svg

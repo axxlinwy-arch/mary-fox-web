@@ -16,12 +16,16 @@ const SELECTOR = [
 const MAX_STAGGER = 6;
 const STAGGER_STEP = 0.11;
 
-function ready(entry: IntersectionObserverEntry) {
+function ready(entry: IntersectionObserverEntry, mobile: boolean) {
   if (!entry.isIntersecting) return false;
   const box = entry.boundingClientRect;
   if (box.height < 8 || box.width < 8) return false;
-  const visible = entry.intersectionRect.height;
   const view = entry.rootBounds?.height || window.innerHeight;
+  if (mobile) {
+    const onScreen = Math.min(box.bottom, view) - Math.max(box.top, 0);
+    return onScreen >= 16;
+  }
+  const visible = entry.intersectionRect.height;
   if (box.height > view * 0.72) return visible >= view * 0.22;
   const need = box.height <= 40 ? box.height * 0.7 : Math.min(Math.max(box.height * 0.45, 24), 120);
   return visible >= need;
@@ -60,6 +64,8 @@ function revealBatch(nodes: Element[]) {
 export function ScrollEntrance() {
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const mobileQuery = window.matchMedia("(max-width: 1023px)");
+    let mobile = mobileQuery.matches;
     const seen = new WeakSet<Element>();
     let frame = 0;
 
@@ -90,7 +96,7 @@ export function ScrollEntrance() {
       (entries) => {
         const groups = new Map<Element, Element[]>();
         entries.forEach((entry) => {
-          if (!ready(entry) || seen.has(entry.target)) return;
+          if (!ready(entry, mobile) || seen.has(entry.target)) return;
           seen.add(entry.target);
           observer.unobserve(entry.target);
           const group = entry.target.closest("section, footer") ?? entry.target;
@@ -104,7 +110,9 @@ export function ScrollEntrance() {
           });
         });
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: [0, 0.2, 0.45, 0.7] }
+      mobile
+        ? { rootMargin: "0px 0px -12px 0px", threshold: [0, 0.03, 0.08, 0.15] }
+        : { rootMargin: "0px 0px -8% 0px", threshold: [0, 0.2, 0.45, 0.7] }
     );
 
     schedule();
