@@ -56,9 +56,9 @@ export const metadata: Metadata = {
     siteName: SITE.shortName,
     images: [
       {
-        url: ASSETS.logoEuphoria,
-        width: 512,
-        height: 512,
+        url: ASSETS.podelit,
+        width: 1320,
+        height: 2346,
         alt: SITE.shortName,
       },
     ],
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE.name,
     description: SITE.description,
-    images: [ASSETS.logoEuphoria],
+    images: [ASSETS.podelit],
   },
   robots: {
     index: true,

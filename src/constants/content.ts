@@ -23,7 +23,7 @@ export const HERO = {
     {
       title: "Коворкинг",
       href: "#coworking",
-      imageKey: "team" as const,
+      imageKey: "studio" as const,
     },
     {
       title: "Обучение",

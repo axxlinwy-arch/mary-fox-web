@@ -16,7 +16,7 @@ const HERO_SPACE = [
 
 const CARD_IMAGES = {
   tattoo1: ASSETS.tattoo1,
-  team: ASSETS.team,
+  studio: ASSETS.studio,
   delaettattomary2: ASSETS.delaettattomary2,
 } as const;
 
