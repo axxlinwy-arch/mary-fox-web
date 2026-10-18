@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, type Transition } from "framer-motion";
 import { Lock } from "lucide-react";
 
@@ -8,6 +9,8 @@ const lockEase = [0.22, 1, 0.36, 1] as const;
 type CircleImageProps = {
   src: string;
   alt: string;
+  width: number;
+  height: number;
   glow: number;
   ring: number;
   opacity: number;
@@ -21,6 +24,8 @@ type CircleImageProps = {
 export function CircleImage({
   src,
   alt,
+  width,
+  height,
   glow,
   ring,
   opacity,
@@ -56,7 +61,15 @@ export function CircleImage({
         animate={{ opacity, filter }}
         transition={{ opacity: transition, filter: filterTransition }}
       >
-        <img src={src} alt={alt} draggable={false} className="h-full w-full object-cover" />
+        <Image
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          draggable={false}
+          unoptimized
+          className="h-full w-full object-cover"
+        />
       </motion.div>
       {lock ? (
         <motion.div

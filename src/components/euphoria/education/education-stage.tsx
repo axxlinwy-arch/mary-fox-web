@@ -7,6 +7,7 @@ import {
   useInView,
   type MotionValue,
 } from "framer-motion";
+import Image from "next/image";
 import { Lock, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { circles, SHOW_MOBILE_CIRCLES, stages, type Stage } from "@/components/euphoria/education/stages";
@@ -316,7 +317,15 @@ function MobileStageCircle({ stage, reduced }: { stage: Stage; reduced: boolean 
               : undefined
           }
         >
-          <img src={circle.src} alt="" draggable={false} className="h-full w-full object-cover" />
+          <Image
+            src={circle.src}
+            alt=""
+            width={circle.width}
+            height={circle.height}
+            draggable={false}
+            unoptimized
+            className="h-full w-full object-cover"
+          />
         </div>
         {petrified ? (
           <div className="pointer-events-none absolute inset-0 z-[2] grid place-items-center">

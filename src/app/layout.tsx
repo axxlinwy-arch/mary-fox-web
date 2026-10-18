@@ -4,7 +4,7 @@ import { EuphoriaHeader } from "@/components/euphoria/header";
 import { EuphoriaFooter } from "@/components/euphoria/footer";
 import { ScrollEntrance } from "@/components/euphoria/scroll-entrance";
 import { SiteShell } from "@/components/euphoria/site-shell";
-import { SITE, ASSETS } from "@/constants/site";
+import { SITE, SITE_URL, ASSETS } from "@/constants/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -26,13 +26,10 @@ const playfair = Playfair_Display({
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  minimumScale: 1,
-  userScalable: false,
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE.url),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: SITE.name,
     template: `%s | ${SITE.shortName}`,
@@ -53,7 +50,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: SITE.locale,
-    url: SITE.url,
+    url: SITE_URL,
     title: SITE.name,
     description: SITE.description,
     siteName: SITE.shortName,

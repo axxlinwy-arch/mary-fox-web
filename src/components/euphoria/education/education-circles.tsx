@@ -69,6 +69,8 @@ export function EducationCircles({
               <CircleImage
                 src={circle.src}
                 alt={circle.alt}
+                width={circle.width}
+                height={circle.height}
                 glow={petrified ? 0 : active ? 1 : 0.34}
                 ring={petrified ? 0.2 : active ? 1 : 0.45}
                 opacity={petrified ? 0.35 : active ? 1 : 0.5}

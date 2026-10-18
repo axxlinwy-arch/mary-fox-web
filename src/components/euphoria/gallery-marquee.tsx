@@ -9,6 +9,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 import { motion, useMotionValue } from "framer-motion";
 import { X } from "lucide-react";
 import { GALLERY } from "@/constants/content";
@@ -30,6 +31,19 @@ const IMAGE_MAP = {
 
 type GalleryImageKey = keyof typeof IMAGE_MAP;
 
+const IMAGE_SIZE: Record<GalleryImageKey, { width: number; height: number }> = {
+  tattoo1: { width: 720, height: 1280 },
+  tattoo2: { width: 960, height: 1280 },
+  tattoo3: { width: 720, height: 1280 },
+  tattoo4: { width: 1024, height: 1280 },
+  tattoo5: { width: 720, height: 1280 },
+  tattoo6: { width: 960, height: 1280 },
+  tattoo7: { width: 720, height: 1280 },
+  tattoo8: { width: 960, height: 1280 },
+  tattoo9: { width: 720, height: 1280 },
+  tattoo10: { width: 960, height: 1280 },
+};
+
 const AUTO_SCROLL_PX_PER_SEC = 38;
 const DRAG_CLICK_THRESHOLD = 8;
 const DRAG_RESUME_MS = 350;
@@ -44,12 +58,16 @@ function wrapOffset(value: number, loopWidth: number) {
 function GalleryCard({
   src,
   alt,
+  width,
+  height,
   eager,
   onOpen,
   dragGuardRef,
 }: {
   src: string;
   alt: string;
+  width: number;
+  height: number;
   eager?: boolean;
   onOpen: () => void;
   dragGuardRef: MutableRefObject<boolean>;
@@ -65,13 +83,14 @@ function GalleryCard({
       className="gallery-marquee-card hero-space-card-face group relative h-56 w-40 shrink-0 cursor-pointer overflow-hidden rounded-[0.9rem] transition-transform duration-300 ease-out hover:-translate-y-2 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 active:scale-[0.98] md:h-72 md:w-52"
       style={{ touchAction: "pan-x" }}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src={src}
         alt={alt}
+        width={width}
+        height={height}
         loading={eager ? "eager" : "lazy"}
-        decoding="async"
         draggable={false}
+        unoptimized
         className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
@@ -211,6 +230,8 @@ function MarqueeRow({
         key={`${keyPrefix}-${item.imageKey}`}
         src={IMAGE_MAP[item.imageKey]}
         alt={item.alt}
+        width={IMAGE_SIZE[item.imageKey].width}
+        height={IMAGE_SIZE[item.imageKey].height}
         eager={eager && index < 4}
         dragGuardRef={dragGuardRef}
         onOpen={() => onOpen(item.imageKey)}

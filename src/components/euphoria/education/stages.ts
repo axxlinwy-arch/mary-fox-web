@@ -20,14 +20,16 @@ export type Stage = {
 export type CircleAsset = {
   src: string;
   alt: string;
+  width: number;
+  height: number;
 };
 
 export const SHOW_MOBILE_CIRCLES = false;
 
 export const circles: CircleAsset[] = [
-  { src: ASSETS.papyrus, alt: "Папирус" },
-  { src: ASSETS.waxTablet, alt: "Восковая табличка" },
-  { src: ASSETS.inkwell, alt: "Чернильница" },
+  { src: ASSETS.papyrus, alt: "Папирус", width: 1254, height: 1254 },
+  { src: ASSETS.waxTablet, alt: "Восковая табличка", width: 1254, height: 1254 },
+  { src: ASSETS.inkwell, alt: "Чернильница", width: 1254, height: 1254 },
 ];
 
 export const stages: Stage[] = [
