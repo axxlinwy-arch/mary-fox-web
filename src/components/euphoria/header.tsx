@@ -12,7 +12,7 @@ export function EuphoriaHeader() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#090709]">
       <nav
-        className="mx-auto flex h-16 w-full max-w-[1920px] items-center justify-between px-5 xl:h-20 xl:px-16"
+        className="mx-auto flex h-16 w-full max-w-[120rem] items-center justify-between px-5 xl:h-20 xl:px-16"
       >
         <Link href="/" className="group block leading-none">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -64,7 +64,7 @@ export function EuphoriaHeader() {
 
       {mobileOpen && (
         <motion.div
-          initial={{ opacity: 0, y: -8 }}
+          initial={{ opacity: 0, y: "-0.5rem" }}
           animate={{ opacity: 1, y: 0 }}
           className="xl:hidden space-y-4 border-t border-accent-gold/20 bg-[#090709] px-6 py-6"
         >

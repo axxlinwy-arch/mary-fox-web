@@ -18,6 +18,12 @@ import { CarouselArrows, SlideCounter } from "@/components/euphoria/carousel-con
 import { CtaButton } from "@/components/euphoria/cta-button";
 import { cn } from "@/lib/utils";
 
+function rootScale() {
+  if (typeof document === "undefined") return 1;
+  const root = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  return (Number.isFinite(root) ? root : 16) / 16;
+}
+
 const SHOW_MOBILE_FIGURES = true;
 const SHOW_TIER_TITLE_GLOW = false;
 const MotionImage = motion.create(Image);
@@ -32,10 +38,10 @@ const tiers = COWORKING.tiers;
 type TierId = (typeof tiers)[number]["id"];
 
 const ease = [0.22, 1, 0.36, 1] as const;
-const PERSEUS_OFFSET_X = "clamp(32px, 3.5vw, 72px)";
+const PERSEUS_OFFSET_X = "clamp(2rem, 3.5vw, 4.5rem)";
 const STATUE_LAYER_LIFT = 220;
-const archHeights = ["lg:h-[420px]", "lg:h-[500px]", "lg:h-[450px]"] as const;
-const archShift = ["", "lg:-translate-y-[30px]", ""] as const;
+const archHeights = ["lg:h-[26.25rem]", "lg:h-[31.25rem]", "lg:h-[28.125rem]"] as const;
+const archShift = ["", "lg:-translate-y-[1.875rem]", ""] as const;
 
 export function CoworkingSection() {
   const reduced = useReducedMotion() === true;
@@ -51,14 +57,14 @@ export function CoworkingSection() {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-  const statueY = useTransform(scrollYProgress, [0, 1], [40, -80]);
+  const statueY = useTransform(scrollYProgress, (progress) => (40 - 120 * progress) * rootScale());
   const archY = [
-    useTransform(scrollYProgress, [0, 1], [28, -28]),
-    useTransform(scrollYProgress, [0, 1], [12, -12]),
-    useTransform(scrollYProgress, [0, 1], [44, -44]),
+    useTransform(scrollYProgress, (progress) => (28 + -56 * progress) * rootScale()),
+    useTransform(scrollYProgress, (progress) => (12 + -24 * progress) * rootScale()),
+    useTransform(scrollYProgress, (progress) => (44 + -88 * progress) * rootScale()),
   ] as const;
-  const bustY = useTransform(scrollYProgress, [0, 1], [18, -18]);
-  const copyY = useTransform(scrollYProgress, [0, 1], [32, -32]);
+  const bustY = useTransform(scrollYProgress, (progress) => (18 + -36 * progress) * rootScale());
+  const copyY = useTransform(scrollYProgress, (progress) => (32 + -64 * progress) * rootScale());
   const move = isLg && !reduced;
 
   useEffect(() => {
@@ -116,10 +122,10 @@ export function CoworkingSection() {
       ref={sectionRef}
       id={COWORKING.id}
       className={cn(
-        "cascade relative scroll-mt-20 overflow-x-clip bg-[#090709] pb-[72px] pt-[196px] lg:py-28 lg:pt-[calc(7rem+24px)]"
+        "cascade relative scroll-mt-20 overflow-x-clip bg-[#090709] pb-[4.5rem] pt-[12.25rem] lg:py-28 lg:pt-[calc(7rem+1.5rem)]"
       )}
     >
-      <div className="cowork-figure-layer pointer-events-none absolute inset-0 lg:-top-[220px]">
+      <div className="cowork-figure-layer pointer-events-none absolute inset-0 lg:-top-[13.75rem]">
       {SHOW_MOBILE_FIGURES ? (
         <div
           aria-hidden
@@ -131,7 +137,7 @@ export function CoworkingSection() {
             height: "100vw",
             background:
               "radial-gradient(ellipse at 50% 50%, rgba(242,27,131,0.4) 0%, rgba(242,27,131,0.18) 16%, rgba(196,20,98,0.07) 28%, transparent 76%)",
-            filter: "blur(68px)",
+            filter: "blur(4.25rem)",
           }}
         />
       ) : null}
@@ -142,16 +148,20 @@ export function CoworkingSection() {
         width={2048}
         height={3072}
         quality={95}
-        sizes="(min-width: 1024px) 998px, 124vw"
+        sizes="(min-width: 1024px) 62.375rem, 124vw"
         className={cn(
-          "cowork-statue cowork-statue--gorgon cowork-figure cowork-figure--gorgon pointer-events-none absolute left-[-40vw] top-[-20px] z-[1] h-[158vw] w-[124vw] max-w-none select-none object-cover object-top opacity-100 lg:left-auto lg:top-[-2%] lg:z-0 lg:h-[96%] lg:-right-[12%] lg:w-[min(52vw,998px)] lg:object-contain lg:object-right-bottom lg:mix-blend-screen lg:opacity-90",
+          "cowork-statue cowork-statue--gorgon cowork-figure cowork-figure--gorgon pointer-events-none absolute left-[-40vw] top-[-1.25rem] z-[1] h-[158vw] w-[124vw] max-w-none select-none object-cover object-top opacity-100 lg:left-auto lg:top-[-2%] lg:z-0 lg:h-[96%] lg:-right-[12%] lg:w-[min(52vw,62.375rem)] lg:object-contain lg:object-right-bottom lg:mix-blend-screen lg:opacity-90",
           !SHOW_MOBILE_FIGURES && "max-lg:hidden"
         )}
         initial={false}
         animate={undefined}
         style={{
           ...(statueSize
-            ? { width: statueSize.w, height: statueSize.h, top: (perseyTop ?? 0) + STATUE_LAYER_LIFT }
+            ? {
+                width: statueSize.w,
+                height: statueSize.h,
+                top: (perseyTop ?? 0) + STATUE_LAYER_LIFT * rootScale(),
+              }
             : {}),
           ["--statue-top" as string]: photoMask?.top,
           ["--statue-fade" as string]: photoMask?.fade,
@@ -165,10 +175,10 @@ export function CoworkingSection() {
         width={2048}
         height={3072}
         quality={95}
-        sizes="998px"
+        sizes="62.375rem"
         className="cowork-statue cowork-statue--persey cowork-figure cowork-figure--persey pointer-events-none absolute z-0 hidden max-w-none select-none object-contain object-right-bottom mix-blend-screen lg:-left-[12%] lg:right-auto lg:top-auto lg:block lg:h-auto lg:w-auto lg:opacity-90"
         style={{
-          top: statueSize ? (perseyTop ?? 0) + STATUE_LAYER_LIFT : undefined,
+          top: statueSize ? (perseyTop ?? 0) + STATUE_LAYER_LIFT * rootScale() : undefined,
           bottom: statueSize && perseyTop == null ? "-2%" : undefined,
           width: statueSize?.w,
           height: statueSize?.h,
@@ -268,16 +278,16 @@ function CoworkingDesktop({
     <div className="cowork-copy relative z-10 mx-auto w-full max-w-[58rem] px-5 lg:px-8">
       <header ref={headerRef} className="relative">
         <motion.p
-          className="mb-6 flex items-center justify-end gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px] lg:mb-[calc(1rem+28px)] lg:justify-start"
-          initial={reduced ? false : { opacity: 0, y: 16 }}
-          animate={headerShown || reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+          className="mb-6 flex items-center justify-end gap-3 text-[0.625rem] uppercase tracking-[0.32em] text-accent-yellow sm:text-[0.6875rem] lg:mb-[calc(1rem+1.75rem)] lg:justify-start"
+          initial={reduced ? false : { opacity: 0, y: "1rem" }}
+          animate={headerShown || reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: "1rem" }}
           transition={{ duration: reduced ? 0 : 0.7, ease }}
         >
           <span className="h-px w-8 bg-accent-yellow/40" />
           {COWORKING.label}
           <span className="h-px w-8 bg-accent-yellow/40" />
         </motion.p>
-        <h2 className="cowork-title ml-auto w-full text-right font-serif text-[clamp(30px,8.6vw,38px)] font-semibold leading-[1.1] tracking-tight text-white [text-shadow:0_2px_18px_rgba(0,0,0,0.7)] lg:ml-0 lg:w-auto lg:text-left lg:text-[2.6rem] lg:leading-[1.18] lg:[text-shadow:none]">
+        <h2 className="cowork-title ml-auto w-full text-right font-serif text-[clamp(1.875rem,8.6vw,2.375rem)] font-semibold leading-[1.1] tracking-tight text-white [text-shadow:0_2px_1.125rem_rgba(0,0,0,0.7)] lg:ml-0 lg:w-auto lg:text-left lg:text-[2.6rem] lg:leading-[1.18] lg:[text-shadow:none]">
           <MaskLine shown={headerShown} reduced={reduced} delay={titleDelay(0, 0.1)}>{COWORKING.titleLine1}</MaskLine>
           <MaskLine shown={headerShown} reduced={reduced} delay={titleDelay(0.1, 0.2)} className="whitespace-nowrap">
             <span className="text-gradient-euphoria">в которой хочется</span>
@@ -315,8 +325,8 @@ function CoworkingDesktop({
         </motion.div>
         <motion.div
           className="mt-2 lg:hidden"
-          initial={reduced ? false : { opacity: 0, y: 12 }}
-          animate={archesShown || reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+          initial={reduced ? false : { opacity: 0, y: "0.75rem" }}
+          animate={archesShown || reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: "0.75rem" }}
           transition={{ duration: reduced ? 0 : 0.7, delay: reduced ? 0 : 0.28, ease }}
         >
           <CarouselArrows
@@ -334,8 +344,8 @@ function CoworkingDesktop({
 
       <motion.div
         ref={tariffsRef}
-        initial={reduced ? false : { opacity: 0, y: 18 }}
-        animate={tariffsShown || reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+        initial={reduced ? false : { opacity: 0, y: "1.125rem" }}
+        animate={tariffsShown || reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: "1.125rem" }}
         transition={{ duration: reduced ? 0 : 0.7, ease }}
       >
         <TierBoard reduced={reduced} isLg={isLg} />
@@ -344,7 +354,7 @@ function CoworkingDesktop({
       <div
         ref={lineRef}
         aria-hidden
-        className="mt-12 h-px w-full bg-[linear-gradient(90deg,transparent,rgba(245,181,27,0.55)_42%,rgba(242,27,131,0.45)_62%,transparent)] lg:mt-[88px]"
+        className="mt-12 h-px w-full bg-[linear-gradient(90deg,transparent,rgba(245,181,27,0.55)_42%,rgba(242,27,131,0.45)_62%,transparent)] lg:mt-[5.5rem]"
       />
 
       <div className="relative mt-7 flex flex-col items-center text-center lg:mt-14 lg:grid lg:grid-cols-12 lg:items-center lg:text-left">
@@ -356,19 +366,19 @@ function CoworkingDesktop({
           viewport={{ once: true, amount: 0.35, margin: "0px 0px -8% 0px" }}
           transition={{ duration: reduced ? 0 : 0.7, ease }}
         >
-          <div className="relative p-10 lg:w-[clamp(240px,24vw,320px)]">
+          <div className="relative p-10 lg:w-[clamp(15rem,24vw,20rem)]">
             <div
               aria-hidden
               className="pointer-events-none absolute left-1/2 top-1/2 h-[140%] w-[min(100vw,140%)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(242,27,131,0.34)_0%,rgba(242,27,131,0.1)_40%,transparent_70%)] lg:h-[150%] lg:w-[150%]"
             />
             <div className="cowork-spin-ring" aria-hidden />
-            <div className="relative aspect-square w-[clamp(190px,56vw,230px)] overflow-hidden rounded-full lg:w-full">
+            <div className="relative aspect-square w-[clamp(11.875rem,56vw,14.375rem)] overflow-hidden rounded-full lg:w-full">
               <Image
                 src={ASSETS.golovapodpiska}
                 alt=""
                 width={640}
                 height={640}
-                sizes="(min-width: 1024px) 320px, 56vw"
+                sizes="(min-width: 1024px) 20rem, 56vw"
                 className="h-full w-full object-cover object-[50%_38%]"
               />
             </div>
@@ -380,7 +390,7 @@ function CoworkingDesktop({
           style={move ? { y: copyY } : undefined}
         >
           <motion.p
-            className="text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]"
+            className="text-[0.625rem] uppercase tracking-[0.32em] text-accent-yellow sm:text-[0.6875rem]"
             initial={reduced ? false : { opacity: 0, y: isLg ? 0 : 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4, margin: "0px 0px -8% 0px" }}
@@ -389,7 +399,7 @@ function CoworkingDesktop({
             ◆ {COWORKING.subscription.title}
           </motion.p>
           <motion.h3
-            className="mt-4 font-serif text-[clamp(28px,8vw,34px)] font-semibold leading-[1.12] tracking-tight text-white lg:text-4xl xl:text-5xl"
+            className="mt-4 font-serif text-[clamp(1.75rem,8vw,2.125rem)] font-semibold leading-[1.12] tracking-tight text-white lg:text-4xl xl:text-5xl"
             initial={reduced ? false : { opacity: 0, y: isLg ? 0 : 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4, margin: "0px 0px -8% 0px" }}
@@ -407,7 +417,7 @@ function CoworkingDesktop({
             </span>
           </motion.h3>
           <motion.p
-            className="mx-auto mt-3.5 max-w-[32ch] text-sm leading-relaxed text-white/70 sm:text-[15px] lg:mx-0 lg:mt-5 lg:max-w-xl"
+            className="mx-auto mt-3.5 max-w-[32ch] text-sm leading-relaxed text-white/70 sm:text-[0.9375rem] lg:mx-0 lg:mt-5 lg:max-w-xl"
             initial={reduced ? false : { opacity: 0, y: isLg ? 0 : 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4, margin: "0px 0px -8% 0px" }}
@@ -433,12 +443,12 @@ function CoworkingDesktop({
 
       <motion.div
         className="mt-9 flex justify-center lg:mt-14"
-        initial={reduced ? false : { opacity: 0, y: 12 }}
+        initial={reduced ? false : { opacity: 0, y: "0.75rem" }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.6, margin: "0px 0px -8% 0px" }}
         transition={{ duration: reduced ? 0 : 0.6, ease }}
       >
-        <CtaButton href={CONTACT.instagram} className="w-full max-w-[340px] lg:w-auto lg:max-w-none">
+        <CtaButton href={CONTACT.instagram} className="w-full max-w-[21.25rem] lg:w-auto lg:max-w-none">
           <span className="text-sm font-semibold uppercase tracking-[0.08em]">{COWORKING.cta}</span>
         </CtaButton>
       </motion.div>
@@ -515,8 +525,8 @@ function ArchPhoto({
       <div className={cn("relative aspect-[1/1.3] w-[94%] max-w-[22rem] lg:aspect-auto lg:w-full lg:max-w-none", heightClass, liftClass)}>
       <motion.div
         className="group relative h-full overflow-visible"
-        whileHover={isLg && !reduced ? { y: -6 } : undefined}
-        animate={isLg ? undefined : float ? { y: [0, -5] } : { y: 0 }}
+        whileHover={isLg && !reduced ? { y: "-0.375rem" } : undefined}
+        animate={isLg ? undefined : float ? { y: [0, "-0.3125rem"] } : { y: 0 }}
         transition={
           float
             ? { duration: 6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }
@@ -527,7 +537,7 @@ function ArchPhoto({
         <motion.div aria-hidden className="studio-main-glow studio-main-glow--mobile !z-0" style={{ opacity: active ? 1 : 0 }} />
       ) : null}
       <ArchStroke reduced={reduced} shown={shown} delay={delay} />
-      <div className="relative z-10 h-full w-full overflow-hidden rounded-t-[999px]">
+      <div className="relative z-10 h-full w-full overflow-hidden rounded-t-[62.4375rem]">
         <motion.div
           className="h-full w-full"
           initial={reduced ? false : { clipPath: "inset(100% 0 0 0)" }}
@@ -606,7 +616,7 @@ function ArchGlint({ progress }: { progress: MotionValue<number> }) {
           className="absolute -inset-3 overflow-visible"
           width={w + pad * 2}
           height={h + pad * 2}
-          style={{ filter: "drop-shadow(0 0 5px rgba(245,181,27,0.3))" }}
+          style={{ filter: "drop-shadow(0 0 0.3125rem rgba(245,181,27,0.3))" }}
         >
           {GLINT_COPIES.map((copy, index) => (
             <motion.path
@@ -657,7 +667,7 @@ function ArchStroke({ reduced, shown, delay }: { reduced: boolean; shown: boolea
     <svg
       ref={ref}
       aria-hidden
-      className="pointer-events-none absolute -inset-[10px] z-20 overflow-visible"
+      className="pointer-events-none absolute -inset-[0.625rem] z-20 overflow-visible"
       width={size.w + pad * 2}
       height={size.h + pad * 2}
     >
@@ -719,7 +729,7 @@ function TierBoard({ reduced, isLg }: { reduced: boolean; isLg: boolean }) {
     <div className="cowork-tariffs relative mt-12 flex flex-col gap-8 [overflow-anchor:none] lg:mt-24 lg:grid lg:grid-cols-12 lg:gap-8">
       <div
         aria-hidden
-        className="pointer-events-none absolute -z-10 hidden bg-[radial-gradient(closest-side,rgba(242,27,131,0.16),transparent)] lg:block lg:-inset-[120px]"
+        className="pointer-events-none absolute -z-10 hidden bg-[radial-gradient(closest-side,rgba(242,27,131,0.16),transparent)] lg:block lg:-inset-[7.5rem]"
       />
       <div
         role="tablist"
@@ -729,7 +739,7 @@ function TierBoard({ reduced, isLg }: { reduced: boolean; isLg: boolean }) {
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute -inset-[60px] -z-10 hidden bg-[radial-gradient(ellipse_at_center,rgba(8,6,10,0.7)_0%,transparent_70%)] lg:block"
+          className="pointer-events-none absolute -inset-[3.75rem] -z-10 hidden bg-[radial-gradient(ellipse_at_center,rgba(8,6,10,0.7)_0%,transparent_70%)] lg:block"
         />
         <span
           aria-hidden
@@ -748,8 +758,8 @@ function TierBoard({ reduced, isLg }: { reduced: boolean; isLg: boolean }) {
               tabIndex={selected ? 0 : -1}
               onClick={() => setActiveId(tier.id)}
               className={cn(
-                "relative min-h-11 whitespace-nowrap text-left font-serif text-[clamp(18px,5.6vw,24px)] leading-none lg:text-5xl",
-                !selected && "text-white opacity-[0.55] lg:opacity-[0.62] lg:[text-shadow:0_2px_20px_rgba(0,0,0,0.75)] [@media(hover:hover)]:lg:hover:opacity-70"
+                "relative min-h-11 whitespace-nowrap text-left font-serif text-[clamp(1.125rem,5.6vw,1.5rem)] leading-none lg:text-5xl",
+                !selected && "text-white opacity-[0.55] lg:opacity-[0.62] lg:[text-shadow:0_2px_1.25rem_rgba(0,0,0,0.75)] [@media(hover:hover)]:lg:hover:opacity-70"
               )}
             >
               {selected ? (
@@ -784,7 +794,7 @@ function TierBoard({ reduced, isLg }: { reduced: boolean; isLg: boolean }) {
         {SHOW_TIER_TITLE_GLOW ? (
           <div
             aria-hidden
-            className="pointer-events-none absolute left-0 top-0 -z-10 h-[220px] w-[220px] -translate-x-[18%] -translate-y-[42%] lg:hidden"
+            className="pointer-events-none absolute left-0 top-0 -z-10 h-[13.75rem] w-[13.75rem] -translate-x-[18%] -translate-y-[42%] lg:hidden"
             style={{
               background: "radial-gradient(circle, hsl(var(--accent) / 0.18) 0%, transparent 70%)",
             }}
@@ -792,7 +802,7 @@ function TierBoard({ reduced, isLg }: { reduced: boolean; isLg: boolean }) {
         ) : null}
         <div
           aria-hidden
-          className="pointer-events-none absolute -z-10 hidden bg-[radial-gradient(ellipse_at_center,rgba(8,6,10,0.5)_0%,transparent_70%)] lg:block lg:-inset-[60px]"
+          className="pointer-events-none absolute -z-10 hidden bg-[radial-gradient(ellipse_at_center,rgba(8,6,10,0.5)_0%,transparent_70%)] lg:block lg:-inset-[3.75rem]"
         />
         <motion.div
           className="overflow-hidden [overflow-anchor:none]"
@@ -823,7 +833,7 @@ function TierBoard({ reduced, isLg }: { reduced: boolean; isLg: boolean }) {
 }
 
 const includeVariants = {
-  hidden: { opacity: 0, y: 10, filter: "blur(4px)" },
+  hidden: { opacity: 0, y: "0.625rem", filter: "blur(0.25rem)" },
   show: (delay: number) => ({
     opacity: 1,
     y: 0,
@@ -833,7 +843,7 @@ const includeVariants = {
 };
 
 const mobileIncludeVariants = {
-  hidden: { opacity: 0, y: 10, filter: "none" },
+  hidden: { opacity: 0, y: "0.625rem", filter: "none" },
   show: (delay: number) => ({
     opacity: 1,
     y: 0,
@@ -878,7 +888,7 @@ function TierCopy({
         />
       </div>
       <p className="mt-3 text-sm leading-relaxed text-[#F1ECE5]/70">{tier.subtitle}</p>
-      <p className="mt-8 text-[10px] uppercase tracking-[0.32em] text-accent-yellow">Что входит</p>
+      <p className="mt-8 text-[0.625rem] uppercase tracking-[0.32em] text-accent-yellow">Что входит</p>
       <ul className="mt-4 flex flex-col items-start gap-3 lg:grid lg:grid-cols-2 lg:gap-x-12 lg:gap-y-3.5">
         {tier.items.map((item, index) => {
           const colIndex = index < split ? 0 : 1;
@@ -915,7 +925,7 @@ function TierCopy({
       {tier.extra ? (
         <motion.p
           className="mt-8 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-accent-yellow"
-          initial={reduced ? false : { opacity: 0, y: 8 }}
+          initial={reduced ? false : { opacity: 0, y: "0.5rem" }}
           animate={play ? { opacity: 1, y: 0 } : { opacity: reduced ? 1 : 0, y: reduced ? 0 : 8 }}
           transition={{ duration: reduced ? 0 : 0.5, delay: reduced ? 0 : lastDelay + 0.18, ease }}
         >

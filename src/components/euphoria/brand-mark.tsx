@@ -15,10 +15,13 @@ import {
 const GOLD = "#F5B51B";
 const PINK = "#F21B83";
 const GOLD_SOFT = "#F3D98A";
-const OFFSET = 14;
-const DIAMOND = 9 / Math.SQRT2;
-const DIAMOND_HALF = 4.5;
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+function rootScale() {
+  if (typeof document === "undefined") return 1;
+  const root = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  return (Number.isFinite(root) ? root : 16) / 16;
+}
 
 type Point = { x: number; y: number };
 type Side = "tr" | "bl";
@@ -26,6 +29,7 @@ type Side = "tr" | "bl";
 type MarkGeom = {
   side: Side;
   diamond: Point;
+  diamondSize: number;
   start: Point;
   tip: Point;
   joint: Point;
@@ -48,18 +52,21 @@ function centerOf(el: HTMLElement, origin: DOMRect): Point {
   };
 }
 
-function buildMark(card: Box, anchor: Point, side: Side): MarkGeom {
+function buildMark(card: Box, anchor: Point, side: Side, scale: number): MarkGeom {
+  const u = (value: number) => value * scale;
   const down = side === "bl";
   const ySign = down ? 1 : -1;
   const xSign = down ? -1 : 1;
   const radius = Math.max(0, card.r);
-  const lineRadius = radius + OFFSET;
+  const offset = u(14);
+  const diamondSize = u(9 / Math.SQRT2);
+  const lineRadius = radius + offset;
   const kappa = lineRadius * 0.5522847498;
-  const diamond = { x: anchor.x, y: anchor.y + ySign * 44 };
-  const start = { x: diamond.x, y: diamond.y + ySign * DIAMOND_HALF };
-  const lifted = { x: start.x, y: start.y + ySign * 18 };
-  const sideX = down ? card.x - OFFSET : card.x + card.w + OFFSET;
-  const edgeY = down ? card.y + card.h + OFFSET : card.y - OFFSET;
+  const diamond = { x: anchor.x, y: anchor.y + ySign * u(44) };
+  const start = { x: diamond.x, y: diamond.y + ySign * (diamondSize / 2) };
+  const lifted = { x: start.x, y: start.y + ySign * u(18) };
+  const sideX = down ? card.x - offset : card.x + card.w + offset;
+  const edgeY = down ? card.y + card.h + offset : card.y - offset;
   const corner = down
     ? { x: card.x + radius, y: card.y + card.h - radius }
     : { x: card.x + card.w - radius, y: card.y + radius };
@@ -67,30 +74,30 @@ function buildMark(card: Box, anchor: Point, side: Side): MarkGeom {
   const arcEnd = down
     ? { x: corner.x, y: edgeY }
     : { x: corner.x, y: edgeY };
-  const run = Math.max(card.w * 0.26, 22);
-  const joint = { x: arcEnd.x + xSign * -(run - 16), y: edgeY };
-  const tip = { x: arcEnd.x + xSign * -run, y: edgeY + ySign * 6 };
+  const run = Math.max(card.w * 0.26, u(22));
+  const joint = { x: arcEnd.x + xSign * -(run - u(16)), y: edgeY };
+  const tip = { x: arcEnd.x + xSign * -run, y: edgeY + ySign * u(6) };
   const joinY = down
-    ? Math.min(arcStart.y - 12, lifted.y + 28)
-    : Math.max(arcStart.y + 12, lifted.y - 28);
+    ? Math.min(arcStart.y - u(12), lifted.y + u(28))
+    : Math.max(arcStart.y + u(12), lifted.y - u(28));
   const join = { x: sideX, y: joinY };
   const arcCp1 = down ? { x: arcStart.x, y: arcStart.y + kappa } : { x: arcStart.x, y: arcStart.y - kappa };
   const arcCp2 = down ? { x: arcEnd.x - kappa, y: arcEnd.y } : { x: arcEnd.x + kappa, y: arcEnd.y };
-  const tailCp1 = { x: joint.x + xSign * -7, y: joint.y };
-  const tailCp2 = { x: tip.x + xSign * 4, y: tip.y - ySign * 2 };
+  const tailCp1 = { x: joint.x + xSign * -u(7), y: joint.y };
+  const tailCp2 = { x: tip.x + xSign * u(4), y: tip.y - ySign * u(2) };
   const tailCurve = `C ${n(tailCp1.x)} ${n(tailCp1.y)} ${n(tailCp2.x)} ${n(tailCp2.y)} ${n(tip.x)} ${n(tip.y)}`;
 
   const main = [
     `M ${n(start.x)} ${n(start.y)}`,
     `L ${n(lifted.x)} ${n(lifted.y)}`,
-    `C ${n(lifted.x)} ${n(lifted.y + ySign * 22)} ${n(join.x)} ${n(lifted.y + ySign * 8)} ${n(join.x)} ${n(join.y)}`,
+    `C ${n(lifted.x)} ${n(lifted.y + ySign * u(22))} ${n(join.x)} ${n(lifted.y + ySign * u(8))} ${n(join.x)} ${n(join.y)}`,
     `L ${n(arcStart.x)} ${n(arcStart.y)}`,
     `C ${n(arcCp1.x)} ${n(arcCp1.y)} ${n(arcCp2.x)} ${n(arcCp2.y)} ${n(arcEnd.x)} ${n(arcEnd.y)}`,
     `L ${n(joint.x)} ${n(joint.y)}`,
   ].join(" ");
   const tail = `M ${n(joint.x)} ${n(joint.y)} ${tailCurve}`;
 
-  return { side, diamond, start, tip, joint, main, tail, full: `${main} ${tailCurve}` };
+  return { side, diamond, diamondSize, start, tip, joint, main, tail, full: `${main} ${tailCurve}` };
 }
 
 function MarkSign({
@@ -250,13 +257,13 @@ function MarkSign({
         style={{ transformOrigin: `${geom.diamond.x}px ${geom.diamond.y}px`, transformBox: "view-box" }}
       >
         <motion.rect
-          x={geom.diamond.x - DIAMOND / 2}
-          y={geom.diamond.y - DIAMOND / 2}
-          width={DIAMOND}
-          height={DIAMOND}
+          x={geom.diamond.x - geom.diamondSize / 2}
+          y={geom.diamond.y - geom.diamondSize / 2}
+          width={geom.diamondSize}
+          height={geom.diamondSize}
           fill={GOLD}
           transform={`rotate(45 ${geom.diamond.x} ${geom.diamond.y})`}
-          style={{ filter: "drop-shadow(0 0 5px rgba(245,181,27,0.35))" }}
+          style={{ filter: "drop-shadow(0 0 0.3125rem rgba(245,181,27,0.35))" }}
           initial={false}
           animate={onScreen && !reduced ? { opacity: [0.5, 1] } : { opacity: 1 }}
           transition={
@@ -266,10 +273,10 @@ function MarkSign({
           }
         />
         <rect
-          x={geom.diamond.x - DIAMOND / 2}
-          y={geom.diamond.y - DIAMOND / 2}
-          width={DIAMOND}
-          height={DIAMOND}
+          x={geom.diamond.x - geom.diamondSize / 2}
+          y={geom.diamond.y - geom.diamondSize / 2}
+          width={geom.diamondSize}
+          height={geom.diamondSize}
           fill={`url(#${gradientId})`}
           stroke={GOLD}
           strokeWidth={0.7}
@@ -304,8 +311,14 @@ export function BrandMark({
   const smoothVelocity = useSpring(velocity, { stiffness: 80, damping: 22, mass: 0.4 });
   const trRotate = useTransform(smoothVelocity, [-1500, 0, 1500], [10, 0, -10]);
   const blRotate = useTransform(smoothVelocity, [-1500, 0, 1500], [-10, 0, 10]);
-  const trShift = useTransform(smoothVelocity, [-1500, 0, 1500], [4, 0, -4]);
-  const blShift = useTransform(smoothVelocity, [-1500, 0, 1500], [-4, 0, 4]);
+  const trShift = useTransform(smoothVelocity, (velocity) => {
+    const t = Math.max(-1, Math.min(1, velocity / 1500));
+    return -4 * t * rootScale();
+  });
+  const blShift = useTransform(smoothVelocity, (velocity) => {
+    const t = Math.max(-1, Math.min(1, velocity / 1500));
+    return 4 * t * rootScale();
+  });
   const uid = useId().replace(/:/g, "");
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [marks, setMarks] = useState<MarkGeom[] | null>(null);
@@ -361,7 +374,8 @@ export function BrandMark({
         ? centerOf(prevRef.current, origin)
         : { x: box.x, y: box.y + box.h / 2 };
       setSize({ w: origin.width, h: origin.height });
-      setMarks([buildMark(box, nextAnchor, "tr"), buildMark(box, prevAnchor, "bl")]);
+      const scale = rootScale();
+      setMarks([buildMark(box, nextAnchor, "tr", scale), buildMark(box, prevAnchor, "bl", scale)]);
     };
 
     measure();

@@ -61,13 +61,26 @@ function revealBatch(nodes: Element[]) {
   });
 }
 
+function showEntranceTargets() {
+  document.querySelectorAll(SELECTOR).forEach((node) => {
+    if (node.closest(".hero, header.fixed")) return;
+    node.classList.add("is-shown");
+    if (node.classList.contains("studio-sat")) {
+      node.querySelectorAll(".studio-photo-in").forEach((photo) => {
+        photo.classList.add("is-shown");
+      });
+    }
+  });
+}
+
 export function ScrollEntrance() {
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const mobileQuery = window.matchMedia("(max-width: 1023px)");
-    let mobile = mobileQuery.matches;
+    const mobile = mobileQuery.matches;
     const seen = new WeakSet<Element>();
     let frame = 0;
+    let observer: IntersectionObserver | null = null;
 
     const scan = () => {
       document.querySelectorAll(SELECTOR).forEach((node) => {
@@ -79,7 +92,7 @@ export function ScrollEntrance() {
         ) {
           return;
         }
-        if (reduced) {
+        if (reduced || !observer) {
           node.classList.add("is-shown");
           return;
         }
@@ -92,28 +105,38 @@ export function ScrollEntrance() {
       frame = requestAnimationFrame(scan);
     };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const groups = new Map<Element, Element[]>();
-        entries.forEach((entry) => {
-          if (!ready(entry, mobile) || seen.has(entry.target)) return;
-          seen.add(entry.target);
-          observer.unobserve(entry.target);
-          const group = entry.target.closest("section, footer") ?? entry.target;
-          const list = groups.get(group) ?? [];
-          list.push(entry.target);
-          groups.set(group, list);
-        });
-        groups.forEach((nodes) => {
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => revealBatch(nodes));
+    try {
+      if (typeof IntersectionObserver === "undefined") {
+        throw new Error("IntersectionObserver unavailable");
+      }
+      observer = new IntersectionObserver(
+        (entries) => {
+          const current = observer;
+          if (!current) return;
+          const groups = new Map<Element, Element[]>();
+          entries.forEach((entry) => {
+            if (!ready(entry, mobile) || seen.has(entry.target)) return;
+            seen.add(entry.target);
+            current.unobserve(entry.target);
+            const group = entry.target.closest("section, footer") ?? entry.target;
+            const list = groups.get(group) ?? [];
+            list.push(entry.target);
+            groups.set(group, list);
           });
-        });
-      },
-      mobile
-        ? { rootMargin: "0px 0px -12px 0px", threshold: [0, 0.03, 0.08, 0.15] }
-        : { rootMargin: "0px 0px -8% 0px", threshold: [0, 0.2, 0.45, 0.7] }
-    );
+          groups.forEach((nodes) => {
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => revealBatch(nodes));
+            });
+          });
+        },
+        mobile
+          ? { rootMargin: "0px 0px -12px 0px", threshold: [0, 0.03, 0.08, 0.15] }
+          : { rootMargin: "0px 0px -8% 0px", threshold: [0, 0.2, 0.45, 0.7] }
+      );
+    } catch {
+      showEntranceTargets();
+      return;
+    }
 
     schedule();
     const mutations = new MutationObserver((records) => {
@@ -123,7 +146,7 @@ export function ScrollEntrance() {
 
     return () => {
       cancelAnimationFrame(frame);
-      observer.disconnect();
+      observer?.disconnect();
       mutations.disconnect();
     };
   }, []);

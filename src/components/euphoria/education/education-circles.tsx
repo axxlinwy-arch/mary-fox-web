@@ -53,7 +53,7 @@ export function EducationCircles({
         return (
           <div
             key={circle.src}
-            className="absolute z-[1] aspect-square w-[clamp(240px,22vw,380px)] -translate-x-1/2 -translate-y-1/2"
+            className="absolute z-[1] aspect-square w-[clamp(15rem,22vw,23.75rem)] -translate-x-1/2 -translate-y-1/2"
             style={{ top: tops[index], left: "38%" }}
           >
             <motion.div

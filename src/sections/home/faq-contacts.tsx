@@ -84,7 +84,7 @@ export function ContactsSection() {
           </div>
         </div>
 
-        <div className="rounded-2xl overflow-hidden bg-card aspect-square lg:aspect-auto lg:h-full min-h-[300px]">
+        <div className="rounded-2xl overflow-hidden bg-card aspect-square lg:aspect-auto lg:h-full min-h-[18.75rem]">
           <iframe
             src={CONTACT.mapEmbed}
             width="100%"

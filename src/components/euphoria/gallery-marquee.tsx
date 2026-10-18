@@ -219,7 +219,7 @@ function MarqueeRow({
 
   return (
     <motion.div
-      className="flex w-max cursor-grab gap-4 active:cursor-grabbing md:gap-6"
+      className="relative flex w-max cursor-grab gap-4 active:cursor-grabbing md:gap-6"
       style={{
         x,
         willChange: isDragging ? "transform" : "auto",
@@ -254,12 +254,21 @@ export function GalleryMarquee() {
     const root = sectionRef.current;
     if (!root) return;
 
-    const visibility = new IntersectionObserver(
-      (entries) => {
-        setInView(entries.some((entry) => entry.isIntersecting));
-      },
-      { threshold: 0 }
-    );
+    let visibility: IntersectionObserver;
+    try {
+      if (typeof IntersectionObserver === "undefined") {
+        throw new Error("IntersectionObserver unavailable");
+      }
+      visibility = new IntersectionObserver(
+        (entries) => {
+          setInView(entries.some((entry) => entry.isIntersecting));
+        },
+        { threshold: 0 }
+      );
+    } catch {
+      setInView(true);
+      return;
+    }
     visibility.observe(root);
     return () => visibility.disconnect();
   }, []);
@@ -292,7 +301,7 @@ export function GalleryMarquee() {
       )}
     >
       <div className="relative z-10 mx-auto mb-8 max-w-7xl overflow-visible px-6 text-center md:px-8">
-        <p className="enter mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
+        <p className="enter mb-4 flex items-center justify-center gap-3 text-[0.625rem] uppercase tracking-[0.32em] text-accent-yellow sm:text-[0.6875rem]">
           <span className="h-px w-8 bg-accent-yellow/40" />
           By Mary Fox
           <span className="h-px w-8 bg-accent-yellow/40" />

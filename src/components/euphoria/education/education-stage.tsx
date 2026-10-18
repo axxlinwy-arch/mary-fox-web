@@ -49,7 +49,7 @@ export function EducationStage({
   }, [inView, onInView, stage.id]);
 
   return (
-    <li className="enter grid grid-cols-[12px_minmax(0,1fr)] gap-x-4 lg:gap-x-6">
+    <li className="enter grid grid-cols-[0.75rem_minmax(0,1fr)] gap-x-4 lg:gap-x-6">
       <div className="relative">
         <span
           ref={nodeRef}
@@ -57,7 +57,7 @@ export function EducationStage({
           className={cn(
             "absolute left-1/2 top-[3.8rem] z-[2] h-2.5 w-2.5 -translate-x-1/2 rotate-45 border transition-all duration-500 motion-reduce:transition-none sm:top-[4.5rem] lg:top-[4.7rem] xl:top-[5.45rem]",
             filled
-              ? "border-transparent bg-gradient-euphoria shadow-[0_0_10px_rgba(245,181,27,0.7)]"
+              ? "border-transparent bg-gradient-euphoria shadow-[0_0_0.625rem_rgba(245,181,27,0.7)]"
               : "border-accent-gold/80 bg-background"
           )}
         />
@@ -84,7 +84,7 @@ export function EducationStage({
             >
               {stage.title}
             </span>
-            <span className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] uppercase tracking-[0.28em] text-accent-gold">
+            <span className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.625rem] uppercase tracking-[0.28em] text-accent-gold">
               {stage.tags.map((tag) => (
                 <span key={tag} className="whitespace-nowrap">
                   ◆ {tag}
@@ -123,9 +123,9 @@ export function EducationStage({
             {open ? (
               <motion.div
                 key={`${stage.id}-body`}
-                initial={reduced ? false : { height: 0, opacity: 0, y: 12 }}
+                initial={reduced ? false : { height: 0, opacity: 0, y: "0.75rem" }}
                 animate={{ height: "auto", opacity: 1, y: 0 }}
-                exit={reduced ? { opacity: 0 } : { height: 0, opacity: 0, y: 12 }}
+                exit={reduced ? { opacity: 0 } : { height: 0, opacity: 0, y: "0.75rem" }}
                 transition={{ duration: reduced ? 0 : 0.38, ease }}
                 className="overflow-hidden"
               >
@@ -186,17 +186,17 @@ function StageBody({ stage, reduced }: { stage: Stage; reduced: boolean }) {
           >
             <div>
               <div className="h-2.5 w-[30%] rounded-full bg-accent-gold/35" />
-              <div className="mt-[14px] flex flex-col gap-[14px]">
+              <div className="mt-[0.875rem] flex flex-col gap-[0.875rem]">
                 {skeletonLeft.map((width) => (
                   <div key={width} className={cn("edu-shimmer h-3 rounded-full blur-[2px]", width)} />
                 ))}
               </div>
-              <div className="mt-[14px] h-2.5 w-[35%] rounded-full bg-accent-gold/35" />
+              <div className="mt-[0.875rem] h-2.5 w-[35%] rounded-full bg-accent-gold/35" />
             </div>
             <div className="z-0 h-px w-full bg-[linear-gradient(90deg,transparent,rgba(245,181,27,0.55),transparent)] lg:h-auto lg:w-px lg:bg-[linear-gradient(180deg,transparent,rgba(245,181,27,0.6),transparent)]" />
             <div>
               <div className="h-2.5 w-[35%] rounded-full bg-accent-gold/35" />
-              <ul className="mt-[14px] flex flex-col gap-[14px]">
+              <ul className="mt-[0.875rem] flex flex-col gap-[0.875rem]">
                 {skeletonRight.map((width) => (
                   <li key={width} className="flex items-center gap-3">
                     <span className="h-px w-4 shrink-0 bg-accent-gold/70" />
@@ -208,9 +208,9 @@ function StageBody({ stage, reduced }: { stage: Stage; reduced: boolean }) {
           </div>
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
             <p
-              className="max-w-[420px] px-8 py-7 text-center text-sm leading-relaxed text-foreground sm:text-[15px]"
+              className="max-w-[26.25rem] px-8 py-7 text-center text-sm leading-relaxed text-foreground sm:text-[0.9375rem]"
               style={{
-                textShadow: "0 1px 2px rgba(9,7,9,0.45), 0 0 18px rgba(9,7,9,0.55)",
+                textShadow: "0 1px 2px rgba(9,7,9,0.45), 0 0 1.125rem rgba(9,7,9,0.55)",
                 backgroundImage:
                   "radial-gradient(ellipse, rgba(8,6,10,0.85) 0%, transparent 70%)",
               }}
@@ -236,10 +236,10 @@ function StageBody({ stage, reduced }: { stage: Stage; reduced: boolean }) {
                   className="my-5 h-px bg-[linear-gradient(90deg,transparent,rgba(245,181,27,0.45),transparent)]"
                 />
               ) : null}
-              <p className="text-[10px] uppercase tracking-[0.32em] text-accent-gold sm:text-[11px]">
+              <p className="text-[0.625rem] uppercase tracking-[0.32em] text-accent-gold sm:text-[0.6875rem]">
                 {track.label}
               </p>
-              <p className="mt-2 max-w-xl text-sm leading-relaxed text-foreground/70 sm:text-[15px]">
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-foreground/70 sm:text-[0.9375rem]">
                 {track.text}
               </p>
             </div>
@@ -255,7 +255,7 @@ function StageBody({ stage, reduced }: { stage: Stage; reduced: boolean }) {
       <div className={cn(SHOW_MOBILE_CIRCLES ? "lg:pt-6" : "pt-6")}>
         {SHOW_MOBILE_CIRCLES ? <MobileStageCircle stage={stage} reduced={reduced} /> : null}
         <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_1px_minmax(0,7fr)] lg:gap-8">
-        <p className="text-sm leading-relaxed text-foreground/70 sm:text-[15px]">
+        <p className="text-sm leading-relaxed text-foreground/70 sm:text-[0.9375rem]">
           {stage.description}
         </p>
         <div
@@ -263,14 +263,14 @@ function StageBody({ stage, reduced }: { stage: Stage; reduced: boolean }) {
           className="h-px w-full bg-[linear-gradient(90deg,transparent,rgba(245,181,27,0.55),transparent)] lg:h-auto lg:w-px lg:bg-[linear-gradient(180deg,transparent,rgba(245,181,27,0.6),transparent)]"
         />
         <div>
-          <p className="text-[10px] uppercase tracking-[0.32em] text-accent-gold sm:text-[11px]">
+          <p className="text-[0.625rem] uppercase tracking-[0.32em] text-accent-gold sm:text-[0.6875rem]">
             Что внутри
           </p>
           <ul className="mt-4 space-y-3">
             {stage.items.map((item) => (
               <li
                 key={item}
-                className="flex gap-3 text-sm leading-relaxed text-foreground/70 sm:text-[15px]"
+                className="flex gap-3 text-sm leading-relaxed text-foreground/70 sm:text-[0.9375rem]"
               >
                 <span aria-hidden className="mt-[0.7em] h-px w-4 shrink-0 bg-accent-gold/70" />
                 <span>{item}</span>
@@ -293,14 +293,14 @@ function MobileStageCircle({ stage, reduced }: { stage: Stage; reduced: boolean 
   return (
     <div aria-hidden className="mx-auto mb-4 mt-5 w-fit p-6 lg:hidden">
       <motion.div
-        className="relative aspect-square w-[clamp(120px,34vw,140px)]"
+        className="relative aspect-square w-[clamp(7.5rem,34vw,8.75rem)]"
         initial={reduced ? false : { opacity: 0, scale: 0.94 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={reduced ? { duration: 0 } : { duration: 0.4, ease, delay: 0.12 }}
       >
         {petrified ? null : (
           <div
-            className="pointer-events-none absolute rounded-full blur-[16px]"
+            className="pointer-events-none absolute rounded-full blur-[1rem]"
             style={{
               inset: -16,
               background: "radial-gradient(circle, rgba(242,27,131,0.18) 0%, transparent 68%)",
@@ -330,7 +330,7 @@ function MobileStageCircle({ stage, reduced }: { stage: Stage; reduced: boolean 
 
 function Duration({ value }: { value: string }) {
   return (
-    <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-accent-gold">
+    <p className="mt-6 text-[0.6875rem] uppercase tracking-[0.22em] text-accent-gold">
       Длительность: {value}
     </p>
   );

@@ -88,7 +88,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${inter.variable} ${bebas.variable} ${playfair.variable}`}>
+    <html lang="ru" data-scroll-behavior="smooth" className={`${inter.variable} ${bebas.variable} ${playfair.variable}`}>
       <body className="min-h-screen bg-background text-foreground touch-manipulation">
         <SiteShell>
           <ScrollEntrance />

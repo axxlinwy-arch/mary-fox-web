@@ -9,6 +9,12 @@ import { ASSETS } from "@/constants/site";
 import { BrandMark } from "@/components/euphoria/brand-mark";
 import { cn } from "@/lib/utils";
 
+function rootScale() {
+  if (typeof document === "undefined") return 1;
+  const root = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  return (Number.isFinite(root) ? root : 16) / 16;
+}
+
 const STUDIO_IMAGES = {
   studio: ASSETS.studio,
   studia1: ASSETS.studia1,
@@ -48,7 +54,7 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     fromX: 72,
     fromY: 46,
     delay: "0ms",
-    sizes: "450px",
+    sizes: "28.125rem",
     glint: 128,
     pushX: -36,
     pushY: -32,
@@ -63,7 +69,7 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     fromX: 36,
     fromY: 58,
     delay: "70ms",
-    sizes: "450px",
+    sizes: "28.125rem",
     glint: 210,
     pushX: -28,
     pushY: 38,
@@ -78,7 +84,7 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     fromX: 64,
     fromY: 0,
     delay: "140ms",
-    sizes: "450px",
+    sizes: "28.125rem",
     glint: 305,
     pushX: -48,
     pushY: 8,
@@ -93,7 +99,7 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     fromX: 58,
     fromY: -46,
     delay: "210ms",
-    sizes: "200px",
+    sizes: "12.5rem",
     glint: 48,
     pushX: -44,
     pushY: -8,
@@ -108,7 +114,7 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     fromX: -62,
     fromY: 48,
     delay: "280ms",
-    sizes: "190px",
+    sizes: "11.875rem",
     glint: 168,
     pushX: 46,
     pushY: 12,
@@ -123,7 +129,7 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     fromX: -56,
     fromY: 4,
     delay: "350ms",
-    sizes: "190px",
+    sizes: "11.875rem",
     glint: 242,
     pushX: 36,
     pushY: -32,
@@ -138,7 +144,7 @@ const COLLAGE_SLOTS: ReadonlyArray<{
     fromX: -54,
     fromY: -44,
     delay: "420ms",
-    sizes: "200px",
+    sizes: "12.5rem",
     glint: 78,
     pushX: 16,
     pushY: 44,
@@ -162,7 +168,7 @@ export function StudioSection() {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-  const collageY = useTransform(scrollYProgress, [0, 1], [22, -22]);
+  const collageY = useTransform(scrollYProgress, (progress) => (22 - 44 * progress) * rootScale());
   const photos = STUDIO.photos;
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState<"next" | "prev" | null>(null);
@@ -219,7 +225,7 @@ export function StudioSection() {
     >
       <div className="relative mx-auto w-full px-6 md:px-8">
         <header className="mx-auto max-w-xl text-center">
-          <p className="enter mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
+          <p className="enter mb-4 flex items-center justify-center gap-3 text-[0.625rem] uppercase tracking-[0.32em] text-accent-yellow sm:text-[0.6875rem]">
             <span className="h-px w-8 bg-accent-yellow/40" />
             {STUDIO.label}
             <span className="h-px w-8 bg-accent-yellow/40" />
@@ -231,7 +237,7 @@ export function StudioSection() {
             <br />
             {STUDIO.titleLine3}
           </h2>
-          <p className="enter mx-auto mt-4 max-w-lg text-sm leading-relaxed text-white/70 sm:text-[15px]">
+          <p className="enter mx-auto mt-4 max-w-lg text-sm leading-relaxed text-white/70 sm:text-[0.9375rem]">
             {STUDIO.text}
           </p>
         </header>
@@ -369,8 +375,8 @@ function DesktopCollage({
           const photo = photos[photoIndex];
           if (!photo) return null;
           const style = {
-            "--ox": `${slot.fromX}px`,
-            "--oy": `${slot.fromY}px`,
+            "--ox": `${slot.fromX / 16}rem`,
+            "--oy": `${slot.fromY / 16}rem`,
             "--rot": `${slot.rotate}deg`,
             "--rot-from": `${slot.fromRotate}deg`,
             "--rx": `${slot.rx}deg`,
@@ -448,8 +454,8 @@ function StudioSatellite({
   progress: MotionValue<number>;
   reduced: boolean;
 }) {
-  const x = useTransform(progress, [0, 1], [0, pushX]);
-  const y = useTransform(progress, [0, 1], [0, pushY]);
+  const x = useTransform(progress, (value) => value * pushX * rootScale());
+  const y = useTransform(progress, (value) => value * pushY * rootScale());
 
   return (
     <motion.div className={className} style={reduced ? undefined : { x, y }}>
@@ -520,7 +526,7 @@ function MobileCollage({
           direction={direction}
           activeIndex={activeIndex}
         />
-        <p className="pointer-events-none absolute inset-x-10 top-[calc(100%+0.7rem+14px)] z-30 text-center font-serif text-sm tracking-[0.18em] text-white/70">
+        <p className="pointer-events-none absolute inset-x-10 top-[calc(100%+0.7rem+0.875rem)] z-30 text-center font-serif text-sm tracking-[0.18em] text-white/70">
           {padIndex(activeIndex)}
           <span className="text-white/35"> / {padIndex(photos.length - 1)}</span>
         </p>

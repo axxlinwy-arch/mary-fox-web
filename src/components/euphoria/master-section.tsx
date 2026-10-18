@@ -65,14 +65,26 @@ function MfStatRings() {
     }
     const el = rootRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (!entries[0]?.isIntersecting) return;
-        setActive(true);
-        io.disconnect();
-      },
-      { threshold: 0.45, rootMargin: "0px 0px -8% 0px" }
-    );
+    let io: IntersectionObserver;
+    try {
+      if (typeof IntersectionObserver === "undefined") {
+        throw new Error("IntersectionObserver unavailable");
+      }
+      io = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0]?.isIntersecting) return;
+          setActive(true);
+          io.disconnect();
+        },
+        { threshold: 0.45, rootMargin: "0px 0px -8% 0px" }
+      );
+    } catch {
+      setActive(true);
+      setDone(true);
+      setProgress(1);
+      setCounts(MF_STATS.map((stat) => stat.target));
+      return;
+    }
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -197,7 +209,7 @@ function MfStatRings() {
 }
 
 const photoArrowClass =
-  "absolute top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(241,236,229,0.2)] bg-[rgba(9,7,9,0.7)] text-[#f1ece5] transition-[color,border-color,box-shadow] duration-200 hover:border-[#f21b83] hover:text-[#f21b83] hover:shadow-[0_0_16px_rgba(242,27,131,0.35)] focus-visible:border-[#f21b83] focus-visible:text-[#f21b83] focus-visible:shadow-[0_0_16px_rgba(242,27,131,0.35)] focus-visible:outline-none";
+  "absolute top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(241,236,229,0.2)] bg-[rgba(9,7,9,0.7)] text-[#f1ece5] transition-[color,border-color,box-shadow] duration-200 hover:border-[#f21b83] hover:text-[#f21b83] hover:shadow-[0_0_1rem_rgba(242,27,131,0.35)] focus-visible:border-[#f21b83] focus-visible:text-[#f21b83] focus-visible:shadow-[0_0_1rem_rgba(242,27,131,0.35)] focus-visible:outline-none";
 
 function TelegramIcon({ className }: { className?: string }) {
   return (
@@ -296,7 +308,7 @@ function MobilePhotoCarousel() {
                   alt={photo.alt}
                   fill
                   className={cn("object-cover", photo.src === ASSETS.mary && "object-top")}
-                  sizes="(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1024px) 76vw, 420px"
+                  sizes="(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1024px) 76vw, 26.25rem"
                   priority={i === 0}
                 />
               </div>
@@ -337,7 +349,7 @@ export function MasterSection() {
         <div className="grid items-center gap-5 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-12 xl:gap-16">
           <div className="relative z-20 order-2 mx-auto flex w-full max-w-[28rem] flex-col items-center justify-center text-center md:max-w-[34rem] lg:order-1 lg:mx-0 lg:max-w-[28rem] lg:items-start lg:text-left">
             <div>
-              <p className="cascade-item mb-[18px] flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.25em] text-accent-yellow lg:mb-3 lg:justify-start lg:gap-3 lg:text-xs lg:tracking-[0.32em]">
+              <p className="cascade-item mb-[1.125rem] flex items-center justify-center gap-2 text-[0.6875rem] uppercase tracking-[0.25em] text-accent-yellow lg:mb-3 lg:justify-start lg:gap-3 lg:text-xs lg:tracking-[0.32em]">
                 <span className="h-px w-6 bg-accent-yellow/40 lg:w-8" />
                 {MARY_FOX.label}
                 <span className="h-px w-6 bg-accent-yellow/40 lg:w-8" />
@@ -354,7 +366,7 @@ export function MasterSection() {
               </h2>
             </div>
 
-            <p className="mf-lead cascade-item mx-auto mt-6 max-w-[19rem] text-[13.5px] font-normal leading-[1.5] text-white/75 lg:mx-0 lg:mt-6 lg:max-w-[26rem] lg:text-[15px] lg:leading-[1.55] lg:text-white/70">
+            <p className="mf-lead cascade-item mx-auto mt-6 max-w-[19rem] text-[0.84375rem] font-normal leading-[1.5] text-white/75 lg:mx-0 lg:mt-6 lg:max-w-[26rem] lg:text-[0.9375rem] lg:leading-[1.55] lg:text-white/70">
               {MARY_FOX.roles
                 .map((role, i) => (i === 0 ? role : role.charAt(0).toLowerCase() + role.slice(1)))
                 .join(", ")}
@@ -405,7 +417,7 @@ export function MasterSection() {
                   <PhotoFrame
                     src={shot.src}
                     alt={shot.alt}
-                    sizes="240px"
+                    sizes="15rem"
                     className="aspect-[4/5] w-full"
                   />
                 </div>
@@ -416,7 +428,7 @@ export function MasterSection() {
                 <PhotoFrame
                   src={ASSETS.mary}
                   alt={`${MARY_FOX.label} — ${MARY_FOX.title}`}
-                  sizes="420px"
+                  sizes="26.25rem"
                   priority
                   className="aspect-[3/4] w-full"
                 />
@@ -454,12 +466,12 @@ export function MasterSection() {
               >
                 <div className="gem-row mb-2.5">
                   <span aria-hidden className="gem" />
-                  <h3 className="shrink-0 text-[12px] font-semibold uppercase leading-snug tracking-[0.14em] text-[#f5b51b]">
+                  <h3 className="shrink-0 text-[0.75rem] font-semibold uppercase leading-snug tracking-[0.14em] text-[#f5b51b]">
                     {item.title}
                   </h3>
                   <span aria-hidden className="gem-rule" />
                 </div>
-                <p className="master-highlight-text text-[14.5px] leading-[1.6] text-[rgba(241,236,229,0.92)]">
+                <p className="master-highlight-text text-[0.90625rem] leading-[1.6] text-[rgba(241,236,229,0.92)]">
                   {item.text}
                 </p>
               </div>

@@ -39,7 +39,7 @@ export function HeroNavCard({
       onMouseMove={onMove}
       onMouseLeave={() => setTilt({ x: 0, y: 0, hover: false })}
       className={cn("hero-nav-card block", className)}
-      style={disableTilt ? undefined : { perspective: "900px" }}
+      style={disableTilt ? undefined : { perspective: "56.25rem" }}
     >
       <span className="hero-nav-card__chip md:hidden">
         <span className="hero-nav-card__thumb">
@@ -54,13 +54,13 @@ export function HeroNavCard({
           "hero-nav-card__tile relative block aspect-square w-full overflow-hidden rounded-[0.9rem] bg-black/40 max-md:hidden",
           glossy
             ? "hero-space-card-face"
-            : "border border-accent/60 shadow-[0_18px_36px_rgba(0,0,0,0.55)]"
+            : "border border-accent/60 shadow-[0_1.125rem_2.25rem_rgba(0,0,0,0.55)]"
         )}
         style={
           disableTilt
             ? undefined
             : {
-                transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateZ(${tilt.hover ? 26 : 6}px)`,
+                transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateZ(${tilt.hover ? "1.625rem" : "0.375rem"})`,
                 transformStyle: "preserve-3d",
                 transition: "transform 160ms ease-out",
               }
@@ -71,7 +71,7 @@ export function HeroNavCard({
         {glossy ? <span className="hero-space-card-sheen" aria-hidden /> : null}
         <span className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent" />
         <span className="absolute inset-x-2.5 bottom-2.5 z-[1] flex items-end justify-between gap-1">
-          <span className="text-[9px] font-medium uppercase leading-tight tracking-[0.14em] text-white md:text-[10px]">
+          <span className="text-[0.5625rem] font-medium uppercase leading-tight tracking-[0.14em] text-white md:text-[0.625rem]">
             {title}
           </span>
           <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-white" strokeWidth={1.75} />

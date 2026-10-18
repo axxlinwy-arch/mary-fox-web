@@ -6,7 +6,7 @@ const pad = (value: number) => String(value).padStart(2, "0");
 
 export function SlideCounter({ index, total }: { index: number; total: number }) {
   return (
-    <span className="font-serif text-[13px] tracking-[0.2em] text-[hsl(var(--muted-foreground))]" aria-live="polite">
+    <span className="font-serif text-[0.8125rem] tracking-[0.2em] text-[hsl(var(--muted-foreground))]" aria-live="polite">
       {pad(index + 1)} / {pad(total)}
     </span>
   );
@@ -32,7 +32,7 @@ export function CarouselArrows({
         onClick={onPrev}
         aria-label={prevLabel}
         className="review-arrow"
-        style={{ width: 44, height: 44 }}
+        style={{ width: "2.75rem", height: "2.75rem" }}
       >
         <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
       </button>
@@ -42,7 +42,7 @@ export function CarouselArrows({
         onClick={onNext}
         aria-label={nextLabel}
         className="review-arrow"
-        style={{ width: 44, height: 44 }}
+        style={{ width: "2.75rem", height: "2.75rem" }}
       >
         <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
       </button>

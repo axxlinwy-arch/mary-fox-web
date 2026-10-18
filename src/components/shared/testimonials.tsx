@@ -15,7 +15,7 @@ export function Testimonials({ items }: TestimonialsProps) {
       {items.map((item, index) => (
         <motion.div
           key={item.id}
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: "1.5rem" }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: index * 0.1 }}

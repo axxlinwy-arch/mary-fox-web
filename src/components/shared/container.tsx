@@ -18,7 +18,7 @@ export function Container({
         {
           "max-w-7xl": size === "default",
           "max-w-4xl": size === "narrow",
-          "max-w-[1400px]": size === "wide",
+          "max-w-[87.5rem]": size === "wide",
         },
         className
       )}

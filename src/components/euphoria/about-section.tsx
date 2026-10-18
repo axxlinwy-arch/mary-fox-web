@@ -13,7 +13,7 @@ export function EuphoriaAbout() {
       <div className="relative mx-auto max-w-7xl px-6 md:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-20">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: "-1.875rem" }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7 }}
@@ -32,7 +32,7 @@ export function EuphoriaAbout() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: "1.875rem" }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, delay: 0.15 }}
@@ -49,7 +49,7 @@ export function EuphoriaAbout() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
             </div>
             <motion.div
-              animate={{ y: [0, -10, 0] }}
+              animate={{ y: [0, "-0.625rem", 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               className="absolute -bottom-6 -left-4 md:-left-8 w-32 h-40 md:w-40 md:h-52 overflow-hidden rounded-xl neon-border-gold shadow-glow-gold hidden sm:block"
             >
@@ -58,14 +58,14 @@ export function EuphoriaAbout() {
                 alt="Mary Fox за работой"
                 fill
                 className="object-cover"
-                sizes="160px"
+                sizes="10rem"
               />
             </motion.div>
           </motion.div>
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: "1.5rem" }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.2 }}

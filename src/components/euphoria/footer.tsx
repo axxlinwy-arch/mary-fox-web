@@ -24,7 +24,7 @@ export function EuphoriaFooter() {
 
           <Reveal delay={0.12}>
             <div className="space-y-3">
-              <p className="flex items-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow">
+              <p className="flex items-center gap-3 text-[0.625rem] uppercase tracking-[0.32em] text-accent-yellow">
                 <span className="h-px w-8 bg-accent-yellow/40" />
                 Контакты
                 <span className="h-px w-8 bg-accent-yellow/40" />
@@ -59,7 +59,7 @@ export function EuphoriaFooter() {
 
           <Reveal delay={0.24}>
             <div className="space-y-3">
-              <p className="flex items-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow">
+              <p className="flex items-center gap-3 text-[0.625rem] uppercase tracking-[0.32em] text-accent-yellow">
                 <span className="h-px w-8 bg-accent-yellow/40" />
                 Юридическая информация
                 <span className="h-px w-8 bg-accent-yellow/40" />

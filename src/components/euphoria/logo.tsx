@@ -9,9 +9,9 @@ interface EuphoriaLogoProps {
 }
 
 const sizes = {
-  sm: { height: 36, width: 90 },
-  md: { height: 52, width: 128 },
-  lg: { height: 80, width: 88 },
+  sm: { height: "2.25rem", width: "5.625rem" },
+  md: { height: "3.25rem", width: "8rem" },
+  lg: { height: "5rem", width: "5.5rem" },
 } as const;
 
 export function EuphoriaLogo({
@@ -24,7 +24,7 @@ export function EuphoriaLogo({
   return (
     <div
       className={cn(
-        "relative shrink-0 drop-shadow-[0_0_16px_rgba(242,27,131,0.32)]",
+        "relative shrink-0 drop-shadow-[0_0_1rem_rgba(242,27,131,0.32)]",
         className
       )}
       style={{ height: s.height, width: s.width }}
@@ -35,7 +35,7 @@ export function EuphoriaLogo({
         fill
         className="object-contain object-left"
         priority={priority}
-        sizes={`${s.width}px`}
+        sizes={s.width}
       />
     </div>
   );

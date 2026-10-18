@@ -10,6 +10,12 @@ import { Reveal } from "@/components/euphoria/education/reveal";
 import { StudentReviews } from "@/components/euphoria/education/student-reviews";
 import { stages } from "@/components/euphoria/education/stages";
 
+function rootScale() {
+  if (typeof document === "undefined") return 1;
+  const root = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  return (Number.isFinite(root) ? root : 16) / 16;
+}
+
 export function EducationSection() {
   const reduced = useReducedMotion() === true;
   const sectionRef = useRef<HTMLElement>(null);
@@ -26,9 +32,9 @@ export function EducationSection() {
     offset: ["start end", "end start"],
   });
   const circleY = [
-    useTransform(sectionProgress, [0, 1], [14, -14]),
-    useTransform(sectionProgress, [0, 1], [24, -24]),
-    useTransform(sectionProgress, [0, 1], [34, -34]),
+    useTransform(sectionProgress, (progress) => (14 - 28 * progress) * rootScale()),
+    useTransform(sectionProgress, (progress) => (24 - 48 * progress) * rootScale()),
+    useTransform(sectionProgress, (progress) => (34 - 68 * progress) * rootScale()),
   ] as const;
 
   const onInView = useCallback((id: string, visible: boolean) => {
@@ -70,7 +76,7 @@ export function EducationSection() {
           <div className="min-w-0 lg:col-span-7">
             <header className="mb-10 w-full text-center lg:mb-0 lg:max-w-xl lg:text-left">
               <Reveal>
-                <p className="mb-4 flex items-center justify-start gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
+                <p className="mb-4 flex items-center justify-start gap-3 text-[0.625rem] uppercase tracking-[0.32em] text-accent-yellow sm:text-[0.6875rem]">
                   <span className="h-px w-8 bg-accent-yellow/40" />
                   {EDUCATION.label}
                   <span className="h-px w-8 bg-accent-yellow/40" />
@@ -141,7 +147,7 @@ function PathThread({
       }}
     >
       <motion.div
-        className="absolute bottom-0 left-1/2 top-0 w-[2px] origin-top shadow-[0_0_8px_rgba(245,181,27,0.75),0_0_16px_rgba(242,27,131,0.4)]"
+        className="absolute bottom-0 left-1/2 top-0 w-[2px] origin-top shadow-[0_0_0.5rem_rgba(245,181,27,0.75),0_0_1rem_rgba(242,27,131,0.4)]"
         style={{
           x: "-50%",
           scaleY: reduced ? 1 : progress,
@@ -151,7 +157,7 @@ function PathThread({
       />
       {reduced ? null : (
         <motion.span
-          className="absolute left-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-gold-soft shadow-[0_0_12px_2px_rgba(245,181,27,0.9)]"
+          className="absolute left-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-gold-soft shadow-[0_0_0.75rem_2px_rgba(245,181,27,0.9)]"
           style={{ top: needleTop }}
         />
       )}

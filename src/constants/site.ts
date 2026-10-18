@@ -73,7 +73,7 @@ export const ASSETS = {
   studia7: "/assets/euphoria/studia7.JPG",
   studia8: "/assets/euphoria/studia8.jpg",
   course: "/assets/euphoria/course.jpg",
-  team: "/assets/euphoria/team.jpg",
+  team: "/assets/euphoria/team.JPG",
   golova1: "/assets/euphoria/golova1.png",
   golova3: "/assets/euphoria/golova3.png",
   golova4: "/assets/euphoria/golova4.png",

@@ -7,6 +7,12 @@ import { ASSETS } from "@/constants/site";
 import type { PHOTO_SECTIONS } from "@/constants/content";
 import { cn } from "@/lib/utils";
 
+function rootScale() {
+  if (typeof document === "undefined") return 1;
+  const root = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  return (Number.isFinite(root) ? root : 16) / 16;
+}
+
 type ImageKey = (typeof PHOTO_SECTIONS)[number]["imageKey"];
 
 const IMAGE_MAP: Record<ImageKey, string> = {
@@ -39,12 +45,14 @@ export function PhotoSection({
     offset: ["start end", "end start"],
   });
 
-  const imageY = useTransform(scrollYProgress, [0, 1], [60, -60]);
-  const textX = useTransform(
-    scrollYProgress,
-    [0, 0.5, 1],
-    align === "left" ? [40, 0, -20] : [-40, 0, 20]
-  );
+  const imageY = useTransform(scrollYProgress, (progress) => (60 - 120 * progress) * rootScale());
+  const textX = useTransform(scrollYProgress, (progress) => {
+    const scale = rootScale();
+    const from = align === "left" ? 40 : -40;
+    const to = align === "left" ? -20 : 20;
+    if (progress <= 0.5) return (from + (0 - from) * (progress / 0.5)) * scale;
+    return (to * ((progress - 0.5) / 0.5)) * scale;
+  });
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.4, 1, 1, 0.4]);
 
   const imageFirst = align === "left";
@@ -76,11 +84,11 @@ export function PhotoSection({
                 alt={title}
                 fill
                 className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 512px"
+                sizes="(max-width: 1024px) 100vw, 32rem"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
               <div className="absolute bottom-4 left-4 right-4">
-                <span className="inline-block rounded-full border border-accent-gold/30 bg-black/60 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-accent-gold backdrop-blur-sm">
+                <span className="inline-block rounded-full border border-accent-gold/30 bg-black/60 px-3 py-1 text-[0.625rem] uppercase tracking-[0.3em] text-accent-gold backdrop-blur-sm">
                   {label}
                 </span>
               </div>

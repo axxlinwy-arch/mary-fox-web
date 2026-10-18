@@ -24,7 +24,7 @@ const STAT_ICONS = [Users, Star, ShieldCheck] as const;
 
 export function EuphoriaHero() {
   return (
-    <section className="hero relative flex h-auto min-h-[100svh] w-full flex-col overflow-x-hidden bg-[#090709] md:block md:h-dvh md:min-h-[640px] md:overflow-hidden">
+    <section className="hero relative flex h-auto min-h-[100svh] w-full flex-col overflow-x-hidden bg-[#090709] md:block md:h-dvh md:min-h-[40rem] md:overflow-hidden">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={ASSETS.finalPhoto}
@@ -33,7 +33,7 @@ export function EuphoriaHero() {
         height={1254}
         decoding="async"
         fetchPriority="high"
-        className="hero__photo pointer-events-none relative z-[1] mx-auto aspect-square w-[min(74vw,19.5rem)] max-w-none object-cover object-[center_32%] md:absolute md:inset-auto md:right-0 md:top-[48px] md:mx-0 md:aspect-auto md:h-[118%] md:w-[70%] md:object-[68%_36%] lg:w-[64%] md:[mask-image:linear-gradient(90deg,transparent,black_16%,black)]"
+        className="hero__photo pointer-events-none relative z-[1] mx-auto aspect-square w-[min(74vw,19.5rem)] max-w-none object-cover object-[center_32%] md:absolute md:inset-auto md:right-0 md:top-[3rem] md:mx-0 md:aspect-auto md:h-[118%] md:w-[70%] md:object-[68%_36%] lg:w-[64%] md:[mask-image:linear-gradient(90deg,transparent,black_16%,black)]"
       />
       <div className="hero__wash pointer-events-none absolute inset-x-0 top-0 z-0 h-[68%] bg-[radial-gradient(ellipse_at_50%_40%,rgba(242,27,131,0.08)_0%,rgba(122,18,62,0.045)_48%,transparent_74%)] md:hidden" />
 
@@ -45,7 +45,7 @@ export function EuphoriaHero() {
       />
 
       <div className="hero__copy relative z-10 flex w-full max-w-none flex-1 flex-col justify-end bg-transparent px-3 pb-3 pt-24 md:h-full md:max-w-[46%] md:flex-none md:justify-center md:bg-gradient-to-r md:from-[#090709] md:via-[#090709]/80 md:to-transparent md:px-10 md:pb-24 lg:max-w-[40%] lg:px-16 xl:px-20">
-        <p className="hero__kicker flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-accent-yellow md:text-[11px] md:tracking-[0.32em]">
+        <p className="hero__kicker flex items-center gap-3 text-[0.6875rem] uppercase tracking-[0.22em] text-accent-yellow md:text-[0.6875rem] md:tracking-[0.32em]">
           <span className="hidden h-px w-8 shrink-0 bg-accent-yellow/40 xl:block" />
           <span className="hidden xl:inline">{HERO.kicker}</span>
           <span className="hero__brand font-display xl:hidden">EUPHORIA</span>
@@ -59,13 +59,13 @@ export function EuphoriaHero() {
           </span>
           <span>{HERO.titleEnd}</span>
         </h1>
-        <p className="hero__lead mt-5 max-w-md text-[15px] leading-relaxed text-white/70">
+        <p className="hero__lead mt-5 max-w-md text-[0.9375rem] leading-relaxed text-white/70">
           {HERO.description}
         </p>
 
         <div className="hero__actions mt-10 flex flex-nowrap items-center gap-3 md:mt-8 md:flex-wrap">
           <CtaButton href={CONTACT.maryInstagram} className="h-11 min-w-0 flex-1 gap-1.5 px-3 py-0 md:h-12 md:flex-none md:gap-2 md:px-7">
-            <span className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.06em] md:text-xs md:tracking-[0.14em] lg:text-sm">
+            <span className="whitespace-nowrap text-[0.6875rem] font-semibold uppercase tracking-[0.06em] md:text-xs md:tracking-[0.14em] lg:text-sm">
               {HERO.ctaBook}
             </span>
             <ArrowRight className="h-4 w-4 shrink-0" strokeWidth={1.75} />
@@ -74,7 +74,7 @@ export function EuphoriaHero() {
             href={CONTACT.telegram}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-11 min-w-0 flex-1 items-center justify-center rounded-full border border-white/25 px-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-white transition-colors hover:border-accent hover:bg-accent/10 md:h-12 md:flex-none md:px-7 md:text-xs md:tracking-[0.14em] lg:text-sm"
+            className="inline-flex h-11 min-w-0 flex-1 items-center justify-center rounded-full border border-white/25 px-3 text-[0.6875rem] font-semibold uppercase tracking-[0.06em] text-white transition-colors hover:border-accent hover:bg-accent/10 md:h-12 md:flex-none md:px-7 md:text-xs md:tracking-[0.14em] lg:text-sm"
           >
             <span className="whitespace-nowrap">{HERO.ctaWorks}</span>
           </a>
@@ -94,10 +94,10 @@ export function EuphoriaHero() {
                     strokeWidth={1.5}
                   />
                   <div>
-                    <p className="text-[15px] font-medium leading-none tracking-wide text-[#F1ECE5] md:text-base">
+                    <p className="text-[0.9375rem] font-medium leading-none tracking-wide text-[#F1ECE5] md:text-base">
                       {stat.value}
                     </p>
-                    <p className="mt-1 text-[9px] uppercase tracking-[0.16em] text-[#F1ECE5]/70 md:text-[10px]">
+                    <p className="mt-1 text-[0.5625rem] uppercase tracking-[0.16em] text-[#F1ECE5]/70 md:text-[0.625rem]">
                       {stat.label}
                     </p>
                   </div>

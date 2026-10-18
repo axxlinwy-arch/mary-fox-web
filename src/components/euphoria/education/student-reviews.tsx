@@ -27,7 +27,7 @@ export function StudentReviews() {
     <div id={STUDENT_REVIEWS.id} className="scroll-mt-20 mx-auto mt-24 max-w-5xl text-center lg:mt-36">
       <header>
         <Reveal>
-          <p className="mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]">
+          <p className="mb-4 flex items-center justify-center gap-3 text-[0.625rem] uppercase tracking-[0.32em] text-accent-yellow sm:text-[0.6875rem]">
             <span className="h-px w-8 bg-accent-yellow/40" />
             Выпускники
             <span className="h-px w-8 bg-accent-yellow/40" />
@@ -40,7 +40,7 @@ export function StudentReviews() {
         </Reveal>
       </header>
 
-      <Reveal className="relative mx-auto mt-14 max-w-[760px] lg:mt-16" delay={0.08}>
+      <Reveal className="relative mx-auto mt-14 max-w-[47.5rem] lg:mt-16" delay={0.08}>
         <span
           aria-hidden
           className="pointer-events-none absolute -left-1 -top-12 select-none font-serif text-[7.5rem] leading-none text-accent-gold opacity-[0.15] sm:-top-16 sm:text-[9rem]"
@@ -51,9 +51,9 @@ export function StudentReviews() {
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={review.name}
-            initial={reduced ? false : { opacity: 0, y: 16 }}
+            initial={reduced ? false : { opacity: 0, y: "1rem" }}
             animate={{ opacity: 1, y: 0 }}
-            exit={reduced ? { opacity: 0 } : { opacity: 0, y: -16 }}
+            exit={reduced ? { opacity: 0 } : { opacity: 0, y: "-1rem" }}
             transition={{ duration: reduced ? 0 : 0.45, ease }}
           >
             <blockquote className="relative font-serif text-2xl italic leading-snug text-foreground/90 sm:text-[2rem] sm:leading-snug">
@@ -84,7 +84,7 @@ export function StudentReviews() {
           <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
         </button>
         <span
-          className="font-serif text-[13px] tracking-[0.2em] text-secondary-foreground"
+          className="font-serif text-[0.8125rem] tracking-[0.2em] text-secondary-foreground"
           aria-live="polite"
         >
           {pad(index + 1)} / {pad(total)}

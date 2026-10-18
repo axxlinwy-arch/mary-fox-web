@@ -35,12 +35,12 @@ const config: Config = {
         sans: ["var(--font-inter)", "sans-serif"],
       },
       boxShadow: {
-        glow: "0 0 60px rgba(220, 20, 100, 0.22)",
-        "glow-sm": "0 0 24px rgba(220, 20, 100, 0.14)",
-        "glow-gold": "0 0 40px rgba(245, 181, 27, 0.24)",
-        neon: "0 0 20px rgba(242, 27, 131, 0.32), 0 0 40px rgba(245, 181, 27, 0.14)",
+        glow: "0 0 3.75rem rgba(220, 20, 100, 0.22)",
+        "glow-sm": "0 0 1.5rem rgba(220, 20, 100, 0.14)",
+        "glow-gold": "0 0 2.5rem rgba(245, 181, 27, 0.24)",
+        neon: "0 0 1.25rem rgba(242, 27, 131, 0.32), 0 0 2.5rem rgba(245, 181, 27, 0.14)",
         volume:
-          "inset 0 1px 0 rgba(221, 208, 186, 0.12), 0 14px 36px rgba(0, 0, 0, 0.55), 0 0 28px rgba(220, 20, 100, 0.12)",
+          "inset 0 1px 0 rgba(221, 208, 186, 0.12), 0 0.875rem 2.25rem rgba(0, 0, 0, 0.55), 0 0 1.75rem rgba(220, 20, 100, 0.12)",
       },
       backgroundImage: {
         "gradient-euphoria":
@@ -64,22 +64,22 @@ const config: Config = {
           "100%": { opacity: "1" },
         },
         slideUp: {
-          "0%": { opacity: "0", transform: "translateY(24px)" },
+          "0%": { opacity: "0", transform: "translateY(1.5rem)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         pulseGlow: {
           "0%, 100%": {
             opacity: "0.6",
-            filter: "drop-shadow(0 0 20px rgba(242, 27, 131, 0.4))",
+            filter: "drop-shadow(0 0 1.25rem rgba(242, 27, 131, 0.4))",
           },
           "50%": {
             opacity: "1",
-            filter: "drop-shadow(0 0 40px rgba(242, 27, 131, 0.65))",
+            filter: "drop-shadow(0 0 2.5rem rgba(242, 27, 131, 0.65))",
           },
         },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-12px)" },
+          "50%": { transform: "translateY(-0.75rem)" },
         },
       },
     },

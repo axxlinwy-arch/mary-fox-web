@@ -14,7 +14,7 @@ export function AnimatedHeroBg() {
       {WAVES.map((wave, i) => (
         <motion.div
           key={i}
-          className="absolute rounded-full blur-[80px] md:blur-[100px]"
+          className="absolute rounded-full blur-[5rem] md:blur-[6.25rem]"
           style={{
             left: wave.left,
             top: wave.top,
@@ -24,8 +24,8 @@ export function AnimatedHeroBg() {
               "radial-gradient(circle, rgba(122,18,62,0.35) 0%, rgba(196,20,98,0.16) 40%, transparent 70%)",
           }}
           animate={{
-            x: [0, 40, -30, 20, 0],
-            y: [0, -30, 25, -15, 0],
+            x: [0, "2.5rem", "-1.875rem", "1.25rem", 0],
+            y: [0, "-1.875rem", "1.5625rem", "-0.9375rem", 0],
             scale: [1, 1.2, 0.9, 1.1, 1],
             opacity: [0.5, 0.85, 0.6, 0.75, 0.5],
           }}

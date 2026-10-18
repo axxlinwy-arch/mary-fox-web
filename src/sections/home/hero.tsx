@@ -26,7 +26,7 @@ export function HeroSection() {
       <Container className="relative z-10 pt-32 pb-20">
         <div className="max-w-3xl">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: "1.875rem" }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="mb-8"
@@ -35,7 +35,7 @@ export function HeroSection() {
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: "1.875rem" }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="font-display text-6xl md:text-7xl lg:text-8xl font-medium tracking-tight"
@@ -44,7 +44,7 @@ export function HeroSection() {
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: "1.25rem" }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="mt-4 text-xl md:text-2xl text-secondary-foreground tracking-wide"
@@ -53,7 +53,7 @@ export function HeroSection() {
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: "1.25rem" }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="mt-10 flex flex-wrap gap-4"
@@ -77,7 +77,7 @@ export function HeroSection() {
       >
         <span className="text-xs tracking-widest uppercase">Scroll</span>
         <motion.div
-          animate={{ y: [0, 6, 0] }}
+          animate={{ y: [0, "0.375rem", 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
           <ChevronDown className="h-5 w-5" />

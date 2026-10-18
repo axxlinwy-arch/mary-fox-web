@@ -85,6 +85,7 @@ export function TestimonialsSection() {
 
   useEffect(() => {
     if (!dialogOpen) return;
+    const readMore = readMoreRef.current;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     closeRef.current?.focus();
@@ -96,7 +97,7 @@ export function TestimonialsSection() {
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKey);
-      readMoreRef.current?.focus();
+      readMore?.focus();
     };
   }, [dialogOpen]);
 
@@ -118,7 +119,7 @@ export function TestimonialsSection() {
   return (
     <section
       ref={sectionRef}
-      className="cascade relative isolate flex scroll-mt-20 flex-col justify-center overflow-hidden bg-[#090709] px-5 pb-[9rem] pt-[7.5rem] md:min-h-[clamp(720px,48vw,900px)] md:px-0 md:pb-16 md:pt-8"
+      className="cascade relative isolate flex scroll-mt-20 flex-col justify-center overflow-hidden bg-[#090709] px-5 pb-[9rem] pt-[7.5rem] md:min-h-[clamp(45rem,48vw,56.25rem)] md:px-0 md:pb-16 md:pt-8"
     >
       <div className="reviews-fon-stage" aria-hidden>
         <div className="reviews-fon-frame reviews-picture">
@@ -157,7 +158,7 @@ export function TestimonialsSection() {
       <div className="relative z-10 flex w-full flex-col items-center">
         <header className="relative mx-auto mb-9 max-w-xl text-center md:mb-10">
           <p
-            className="cascade-item mb-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.32em] text-accent-yellow sm:text-[11px]"
+            className="cascade-item mb-4 flex items-center justify-center gap-3 text-[0.625rem] uppercase tracking-[0.32em] text-accent-yellow sm:text-[0.6875rem]"
           >
             <span className="h-px w-8 bg-accent-yellow/40" />
             {TESTIMONIALS_INTRO.label}
@@ -173,7 +174,7 @@ export function TestimonialsSection() {
             {TESTIMONIALS_INTRO.titleLine3}
           </h2>
           <p
-            className="reviews-lead cascade-item mx-auto mt-4 max-w-lg text-sm leading-relaxed text-white/70 sm:text-[15px]"
+            className="reviews-lead cascade-item mx-auto mt-4 max-w-lg text-sm leading-relaxed text-white/70 sm:text-[0.9375rem]"
           >
             {TESTIMONIALS_INTRO.text}
           </p>
@@ -193,17 +194,17 @@ export function TestimonialsSection() {
             onTouchEnd={onTouchEnd}
           >
             <div key={index} className="review-enter">
-              <p className="reviews-name font-serif text-[15px] text-foreground">{review.name}</p>
-              <p className="mt-[0.4rem] text-[12px] tracking-[0.2em] text-[#f5b51b] md:mt-1" aria-label="Оценка 5 из 5">
+              <p className="reviews-name font-serif text-[0.9375rem] text-foreground">{review.name}</p>
+              <p className="mt-[0.4rem] text-[0.75rem] tracking-[0.2em] text-[#f5b51b] md:mt-1" aria-label="Оценка 5 из 5">
                 ★★★★★
               </p>
               <blockquote
                 ref={quoteRef}
-                className="review-lines is-clamped mt-5 font-serif text-[15px] text-foreground md:mt-3 md:text-[clamp(0.9375rem,1vw,1rem)]"
+                className="review-lines is-clamped mt-5 font-serif text-[0.9375rem] text-foreground md:mt-3 md:text-[clamp(0.9375rem,1vw,1rem)]"
               >
                 {review.text}
               </blockquote>
-              <div className="mt-4 min-h-[13px] md:mt-2">
+              <div className="mt-4 min-h-[0.8125rem] md:mt-2">
                 {overflows ? (
                   <button
                     ref={readMoreRef}
@@ -229,7 +230,7 @@ export function TestimonialsSection() {
           <button type="button" onClick={goPrev} aria-label="Предыдущий отзыв" className="review-arrow">
             <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
           </button>
-          <span className="font-serif text-[13px] tracking-[0.2em] text-[hsl(var(--muted-foreground))]" aria-live="polite">
+          <span className="font-serif text-[0.8125rem] tracking-[0.2em] text-[hsl(var(--muted-foreground))]" aria-live="polite">
             {pad(index + 1)} / {pad(total)}
           </span>
           <button type="button" onClick={goNext} aria-label="Следующий отзыв" className="review-arrow">
@@ -239,7 +240,7 @@ export function TestimonialsSection() {
 
         <div className="relative z-30 mt-8 flex flex-col items-center text-center md:mt-6">
           <p
-            className="cascade-item max-w-md text-[14px] leading-relaxed text-foreground/75"
+            className="cascade-item max-w-md text-[0.875rem] leading-relaxed text-foreground/75"
           >
             Подарочный заживляющий набор в конце сеанса
           </p>
@@ -271,8 +272,8 @@ export function TestimonialsSection() {
                 className="review-read-column scrollbar-hide"
                 onClick={(event) => event.stopPropagation()}
               >
-                <ReviewName name={review.name} className="text-center font-serif text-[18px] text-foreground" />
-                <p className="mt-1 text-center text-[12px] tracking-[0.2em] text-[#f5b51b]" aria-label="Оценка 5 из 5">
+                <ReviewName name={review.name} className="text-center font-serif text-[1.125rem] text-foreground" />
+                <p className="mt-1 text-center text-[0.75rem] tracking-[0.2em] text-[#f5b51b]" aria-label="Оценка 5 из 5">
                   ★★★★★
                 </p>
                 <p className="review-read-text">{review.text}</p>

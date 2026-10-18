@@ -47,7 +47,7 @@ export function CertificateCta() {
           </div>
           <figcaption className="absolute bottom-[12%] left-4 flex items-center gap-3.5 sm:left-8 sm:gap-4 md:bottom-[16%] md:left-10">
             <ScrollSeal />
-            <span className="max-w-[16rem] text-sm leading-snug text-champagne sm:max-w-none sm:text-[15px]">
+            <span className="max-w-[16rem] text-sm leading-snug text-champagne sm:max-w-none sm:text-[0.9375rem]">
               В конце обучения — сертификат
             </span>
           </figcaption>
