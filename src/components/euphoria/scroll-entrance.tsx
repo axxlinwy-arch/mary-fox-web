@@ -16,17 +16,24 @@ const SELECTOR = [
 const MAX_STAGGER = 6;
 const STAGGER_STEP = 0.11;
 
-function ready(entry: IntersectionObserverEntry, mobile: boolean) {
-  if (!entry.isIntersecting) return false;
-  const box = entry.boundingClientRect;
-  if (box.height < 8 || box.width < 8) return false;
-  const view = entry.rootBounds?.height || window.innerHeight;
-  if (mobile) {
-    const onScreen = Math.min(box.bottom, view) - Math.max(box.top, 0);
-    return onScreen >= 16;
-  }
-  const visible = entry.intersectionRect.height;
-  if (box.height > view * 0.72) return visible >= view * 0.22;
+function isMobile() {
+  return window.matchMedia("(max-width: 1023px)").matches;
+}
+
+function viewportBox() {
+  const visual = window.visualViewport;
+  const top = visual?.offsetTop ?? 0;
+  const height = visual?.height ?? window.innerHeight;
+  return { top, bottom: top + height };
+}
+
+function onScreen(node: Element, mobile: boolean) {
+  const box = node.getBoundingClientRect();
+  if (box.width < 1 || box.height < 1) return false;
+  const view = viewportBox();
+  const visible = Math.min(box.bottom, view.bottom) - Math.max(box.top, view.top);
+  if (mobile) return visible > 0;
+  if (box.height > (view.bottom - view.top) * 0.72) return visible >= (view.bottom - view.top) * 0.22;
   const need = box.height <= 40 ? box.height * 0.7 : Math.min(Math.max(box.height * 0.45, 24), 120);
   return visible >= need;
 }
@@ -76,13 +83,18 @@ function showEntranceTargets() {
 export function ScrollEntrance() {
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const mobileQuery = window.matchMedia("(max-width: 1023px)");
-    const mobile = mobileQuery.matches;
     const seen = new WeakSet<Element>();
     let frame = 0;
     let observer: IntersectionObserver | null = null;
 
-    const scan = () => {
+    const revealNow = (nodes: Element[]) => {
+      if (nodes.length === 0) return;
+      revealBatch(nodes);
+    };
+
+    const collectVisible = () => {
+      const mobile = isMobile();
+      const batch: Element[] = [];
       document.querySelectorAll(SELECTOR).forEach((node) => {
         if (seen.has(node) || node.classList.contains("is-shown")) return;
         if (node.closest(".hero, header.fixed")) return;
@@ -92,12 +104,19 @@ export function ScrollEntrance() {
         ) {
           return;
         }
-        if (reduced || !observer) {
-          node.classList.add("is-shown");
-          return;
+        if (reduced || onScreen(node, mobile)) {
+          seen.add(node);
+          observer?.unobserve(node);
+          batch.push(node);
+        } else if (observer) {
+          observer.observe(node);
         }
-        observer.observe(node);
       });
+      revealNow(batch);
+    };
+
+    const scan = () => {
+      collectVisible();
     };
 
     const schedule = () => {
@@ -114,8 +133,9 @@ export function ScrollEntrance() {
           const current = observer;
           if (!current) return;
           const groups = new Map<Element, Element[]>();
+          const mobile = isMobile();
           entries.forEach((entry) => {
-            if (!ready(entry, mobile) || seen.has(entry.target)) return;
+            if (!entry.isIntersecting || !onScreen(entry.target, mobile) || seen.has(entry.target)) return;
             seen.add(entry.target);
             current.unobserve(entry.target);
             const group = entry.target.closest("section, footer") ?? entry.target;
@@ -125,12 +145,12 @@ export function ScrollEntrance() {
           });
           groups.forEach((nodes) => {
             requestAnimationFrame(() => {
-              requestAnimationFrame(() => revealBatch(nodes));
+              requestAnimationFrame(() => revealNow(nodes));
             });
           });
         },
-        mobile
-          ? { rootMargin: "0px 0px -12px 0px", threshold: [0, 0.03, 0.08, 0.15] }
+        isMobile()
+          ? { rootMargin: "40px 0px 40px 0px", threshold: [0, 0.01] }
           : { rootMargin: "0px 0px -8% 0px", threshold: [0, 0.2, 0.45, 0.7] }
       );
     } catch {
@@ -139,6 +159,12 @@ export function ScrollEntrance() {
     }
 
     schedule();
+    const onMove = () => schedule();
+    window.addEventListener("scroll", onMove, { passive: true });
+    window.addEventListener("resize", onMove);
+    window.visualViewport?.addEventListener("resize", onMove);
+    window.visualViewport?.addEventListener("scroll", onMove);
+    const later = window.setTimeout(onMove, 400);
     const mutations = new MutationObserver((records) => {
       if (records.some((record) => record.addedNodes.length > 0)) schedule();
     });
@@ -146,6 +172,11 @@ export function ScrollEntrance() {
 
     return () => {
       cancelAnimationFrame(frame);
+      window.clearTimeout(later);
+      window.removeEventListener("scroll", onMove);
+      window.removeEventListener("resize", onMove);
+      window.visualViewport?.removeEventListener("resize", onMove);
+      window.visualViewport?.removeEventListener("scroll", onMove);
       observer?.disconnect();
       mutations.disconnect();
     };

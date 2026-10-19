@@ -51,7 +51,7 @@ export function CoworkingSection() {
   const [statueSize, setStatueSize] = useState<{ w: number; h: number } | null>(null);
   const [perseyTop, setPerseyTop] = useState<number | null>(null);
   const [photoMask, setPhotoMask] = useState<{ top: string; fade: string } | null>(null);
-  const [isLg, setIsLg] = useState(true);
+  const [isLg, setIsLg] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,

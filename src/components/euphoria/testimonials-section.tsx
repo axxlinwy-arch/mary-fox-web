@@ -139,7 +139,10 @@ export function TestimonialsSection() {
             style={
               reduced
                 ? { backgroundImage: `url(${ASSETS.fonzmeimob})` }
-                : { backgroundImage: `url(${ASSETS.fonzmeimob})`, scale: photoScale }
+                : {
+                    backgroundImage: `url(${ASSETS.fonzmeimob})`,
+                    scale: photoScale,
+                  }
             }
           />
         </div>
@@ -149,7 +152,10 @@ export function TestimonialsSection() {
             style={
               reduced
                 ? { backgroundImage: `url(${ASSETS.fonzmeimob})` }
-                : { backgroundImage: `url(${ASSETS.fonzmeimob})`, scale: photoScale }
+                : {
+                    backgroundImage: `url(${ASSETS.fonzmeimob})`,
+                    scale: photoScale,
+                  }
             }
           />
         </div>
